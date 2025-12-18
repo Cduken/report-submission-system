@@ -145,10 +145,29 @@
 .landing-page, .login-page {
     position: relative;
     overflow: hidden;
-    background: #ffffff; /* Clean white base */
-    isolation: isolate; /* Helps with stacking if needed */
+    background: var(--background);
+    isolation: isolate;
 }
 
+<<<<<<< HEAD
+.landing-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -2;
+
+    background-image: 
+        linear-gradient(oklch(from var(--foreground) l c h / 0.13) 1px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--foreground) l c h / 0.13) 1px, transparent 1px);
+    background-size: 40px 40px;
+
+    background: 
+        radial-gradient(ellipse 85% 75% at center, transparent 40%, var(--background) 90%),
+        linear-gradient(oklch(from var(--foreground) l c h / 0.13) 1px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--foreground) l c h / 0.13) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+=======
 .landing-page::before, .login-page::before {
     /* Combined grid + vignette fade in ONE layer (best for sharpness) */
     content: '';
@@ -169,4 +188,12 @@
 
     pointer-events: none; /* Ensures no interaction issues */
     z-index: -2; /* Double-safety: behind everything */
+>>>>>>> upstream/main
+}
+
+.overlay-container {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
 }
