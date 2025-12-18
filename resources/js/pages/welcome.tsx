@@ -41,8 +41,9 @@ export default function Welcome({
                                 
                                 <div>
                                     <p className='text-base my-3 text-gray-700'>A centralized system that enables efficient submission, tracking, and management of DTRs and official reports for DILG field operations.</p>
-                                    <button 
-                                        className='bg-blue-500 py-3 px-8 rounded flex items-center gap-2 text-white '
+                                    <Link 
+                                        className='bg-blue-500 py-3 px-8 rounded items-center gap-2 text-white inline-flex'
+                                        href={login()}
                                     >
                                         Login
                                         <img 
@@ -50,7 +51,7 @@ export default function Welcome({
                                             alt="Login Icon"
                                             className='h-5' 
                                         />
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
 
@@ -70,3 +71,5 @@ export default function Welcome({
         </>
     );
 }
+
+
