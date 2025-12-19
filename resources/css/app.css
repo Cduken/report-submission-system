@@ -142,6 +142,10 @@
     }
 }
 
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
 .landing-page, .login-page {
     position: relative;
     overflow: hidden;

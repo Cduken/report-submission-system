@@ -30,7 +30,7 @@ export default function AuthSimpleLayout({
                         <div className="flex flex-col items-center gap-6 text-center">
                             <AppLogoIcon className="h-32 w-32 fill-current text-[var(--foreground)] dark:text-white" />
                             <div className="space-y-4">
-                                <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-100">
+                                <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-100 font-poppins">
                                     {title}
                                 </h1>
 
@@ -63,11 +63,11 @@ export default function AuthSimpleLayout({
                             </div>
 
                             {/* Welcome text for desktop */}
-                            <div className="hidden space-y-2 md:block">
-                                <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-100">
+                            <div className="hidden space-y-1 md:block font-poppins">
+                                <h1 className="text-2xl font-semibold text-gray-800 dark:text-neutral-100">
                                     Welcome back!
                                 </h1>
-                                <p className="text-lg text-gray-600 dark:text-neutral-100">
+                                <p className="text-sm text-gray-600 dark:text-neutral-100">
                                     Sign in to your account to continue.
 
                                 </p>
@@ -78,9 +78,8 @@ export default function AuthSimpleLayout({
                                 <h1 className="text-2xl font-bold text-gray-800">
                                     Welcome back!
                                 </h1>
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 dark:text-neutral-100 text-sm">
                                     Sign in to your account to continue.
-
                                 </p>
                             </div>
 

@@ -29,18 +29,18 @@ export default function Welcome({
             <main className="landing-page relative h-screen">
                 <Header />
 
-                <div className="mt-20 flex items-center justify-center">
-                    <section className="flex w-full px-20">
-                        <div className="flex w-full items-center justify-center">
+                <div className="mt-15 lg:mt-20 flex items-center justify-center">
+                    <section className="flex w-full px-10 lg:px-20">
+                        <div className="w-full lg:flex items-center justify-center">
                             {/* Headline and text */}
-                            <div className='w-1/2 flex flex-col gap-2'>
+                            <div className='lg:w-1/2 flex flex-col gap-2'>
                                 <div className=''>
                                     <p className='inline-flex px-3 py-1 rounded-md mb-5 border border-blue-500 bg-blue-100  font-medium items-center gap-2 text-xs text-blue-600'
                                     >
                                         <div className='h-2 bg-blue-500 w-2 rounded-full animate-pulse'></div>
                                         { department }
                                     </p>
-                                    <h4 className="text-7xl font-extrabold text-blue-600 dark:text-foreground">{ headline }</h4>
+                                    <h4 className="text-3xl lg:text-6xl font-bold text-blue-600 dark:text-foreground font-poppins">{ headline }</h4>
                                 </div>
 
                                 <div>
@@ -50,7 +50,7 @@ export default function Welcome({
 
                                     <Link
                                         href={login()}
-                                        className="inline-flex items-center gap-2 rounded bg-blue-500 px-8 py-3 text-white"
+                                        className="inline-flex items-center gap-2 rounded bg-blue-500 px-3 py-2 lg:px-5 lg:py-3 text-white transition duration-300 hover:scale-110 text-xs lg:text-base"
                                     >
                                         Login
                                         <img
@@ -63,7 +63,7 @@ export default function Welcome({
                             </div>
 
                             {/* Logo */}
-                            <div className="flex w-1/2">
+                            <div className="w-1/2 hidden lg:block">
                                 <img
                                     src="/Logo/DILG-logo.png"
                                     alt="DILG Logo"
