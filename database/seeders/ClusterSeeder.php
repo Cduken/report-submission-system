@@ -12,6 +12,15 @@ class ClusterSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+       $clusters = [
+        "D'One",
+        "M&M",
+       ];
+
+       foreach( $clusters as $clusterName ) {
+        \App\Models\Cluster::firstOrCreate([
+            'name' => $clusterName,
+        ]);
+       }
     }
 }

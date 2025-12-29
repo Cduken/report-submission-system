@@ -42,3 +42,12 @@ export interface User {
     role: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Program {
+    id: number;
+    name: string;
+    description: string;
+    coordinator: User;
+    created_at: string;
+    updated_at: string;
+}

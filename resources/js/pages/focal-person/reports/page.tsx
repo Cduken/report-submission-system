@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { EllipsisVertical, Folder } from 'lucide-react';
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import { breadcrumbs } from '../dashboard/page';
 import EmptyReport from './components/empty-report';
 import ReportDialog from './components/report-dialog';
@@ -24,8 +24,11 @@ export default function CreateReport() {
                     setOpen={setOpen}
                 />
 
-                {reports.length === 0 && <EmptyReport setIsOpen={setOpen} />}
-                {reports.length > 0 && (
+                <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
+                    <EmptyReport setIsOpen={setOpen} />
+                </Activity>
+
+                <Activity mode={reports.length > 0 ? 'visible' : 'hidden'}>
                     <div className="grid grid-cols-3 gap-5">
                         {reports.map((report, index) => (
                             <div
@@ -52,7 +55,7 @@ export default function CreateReport() {
                             </div>
                         ))}
                     </div>
-                )}
+                </Activity>
             </div>
         </AppLayout>
     );

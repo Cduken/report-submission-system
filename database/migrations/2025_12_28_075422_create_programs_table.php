@@ -17,7 +17,7 @@ return new class extends Migration
                 $table->text('description')->nullable();
                 $table->unsignedBigInteger('coordinator_id'); // user assigned as focal
 
-                $table->timestamps();
+                $table->timestamps();  
 
                 $table->foreign('coordinator_id')
                 ->references('id')->on('users')

@@ -14,7 +14,7 @@ return new class extends Migration
        Schema::create('clusters', function (Blueprint $table) {
     $table->uuid('id')->primary();
     $table->string('name')->unique();  // D'ONE, M&M
-    $table->string('code')->nullable(); // optional: ONE, MM
+    // $table->string('code')->nullable(); // optional: ONE, MM
     $table->timestamps();
 });
 

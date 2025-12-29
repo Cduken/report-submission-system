@@ -35,6 +35,11 @@ export function mainNavigationPath(role: string): NavItem[] {
                     href: ProgramHeadNavigationPath.dashboard().url,
                     icon: LayoutGrid,
                 },
+                {
+                    title: 'Programs',
+                    href: ProgramHeadNavigationPath.programs().url,
+                    icon: LayoutGrid,
+                },
             ];
 
         case 'provincial_director':

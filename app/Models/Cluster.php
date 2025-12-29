@@ -22,7 +22,7 @@ class Cluster extends Model
 
     protected $fillable = [
         'name',
-        'code',
+       
     ];
 
     public function assignments()
