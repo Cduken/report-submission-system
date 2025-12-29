@@ -37,6 +37,30 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+     // ────────────────────────────────────────────────
+    // RELATIONSHIPS
+    // ────────────────────────────────────────────────
+
+    public function programsAsCoordinator()
+    {
+        return $this->hasMany(Program::class, 'coordinator_id');
+    }
+
+    public function createdReports()
+    {
+        return $this->hasMany(Report::class, 'created_by');
+    }
+
+    public function assignments()
+    {
+        return $this->hasMany(ReportAssignment::class, 'field_officer_id');
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(ReportSubmission::class, 'field_officer_id');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
