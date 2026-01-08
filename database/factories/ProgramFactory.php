@@ -19,7 +19,7 @@ class ProgramFactory extends Factory
         return [
             "name" => $this->faker->words(3, true),
             'description' => $this->faker->sentence(),
-            'coordinator_id' =>  3
+            'coordinator_id' =>  2
         ];
     }
 }

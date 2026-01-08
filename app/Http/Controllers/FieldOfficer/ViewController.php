@@ -32,11 +32,49 @@ class ViewController extends Controller
 
         $hasSubmitted = $report->hasSubmissionFromUser(Auth::id());
 
-        $report->load('submissions.fieldOfficer');
+        
+        $report->load([
+            'submissions.fieldOfficer',
+            'media',
+        ]);
+
+        $serializedReport = [
+        'id' => $report->id,
+        'title' => $report->title,
+        'content' => $report->content,
+        'form_schema' => $report->form_schema,  
+
+        'program' => [
+                'id' => $report->program->id,
+                'name' => $report->program->name,
+                'description' => $report->program->description,
+        ],
+
+        'coordinator' => [
+                'id' => $report->coordinator->id,
+                'name' => $report->coordinator->name,
+                'email' => $report->coordinator->email,
+                'avatar' => $report->coordinator->avatar,
+        ],
+
+        'templates' => $report
+            ->getMedia('templates')
+            ->map(fn ($media) => [
+                'id' => $media->id,
+                'name' => $media->name,
+                'file_name' => $media->file_name,
+                'mime_type' => $media->mime_type,
+                'size' => $media->size,
+                'url' => $media->getFullUrl(),
+            ]),
+
+        'created_at' => $report->created_at->toISOString(),
+        'updated_at' => $report->updated_at->toISOString(),
+    ];
 
         return inertia('field-officer/programs/reports/report-submissions/page', [
             'program' => $program,
-            'report' => $report,
+            'report' => $serializedReport,
             'reportSubmissions' => $report->submissions,
             'hasSubmitted' => $hasSubmitted
         ]);

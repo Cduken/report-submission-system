@@ -5,7 +5,9 @@ import { Program, Report, ReportSubmission } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 import { Activity, useState } from 'react';
+import EmptyReportSubmission from './components/empty-submission';
 import ReportSubmissionDialog from './components/report-submission-dialog';
+import SampleTemplate from './components/sample-template';
 
 export default function page() {
     const [open, setOpen] = useState<boolean>(false);
@@ -16,6 +18,8 @@ export default function page() {
         reportSubmissions: ReportSubmission[];
         hasSubmitted: boolean;
     }>().props;
+
+    console.log({ report });
 
     return (
         <AppLayout>
@@ -32,10 +36,12 @@ export default function page() {
                     />
                 </div>
 
+                <SampleTemplate templates={report.templates} />
+
                 <Activity
                     mode={reportSubmissions.length === 0 ? 'visible' : 'hidden'}
                 >
-                    No Submissions yet
+                    <EmptyReportSubmission setIsOpen={setOpen} />
                 </Activity>
 
                 <Activity

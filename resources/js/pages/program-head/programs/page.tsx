@@ -13,7 +13,7 @@ import GridView from './components/grid';
 import ListView from './components/list';
 import ProgramDialog from './components/program-dialog';
 import ReviewProgram from './components/review';
-import ToggleGridList from './components/toggle-list-grid';
+import ToggleGridList from '../../../components/toggle-list-grid';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

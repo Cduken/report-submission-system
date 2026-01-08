@@ -71,8 +71,18 @@ export interface Report {
     deadline: Date;
     final_deadline: Date;
     form_schema: Array;
+    templates: Media[];
     created_at: string;
     updated_at: string;
+}
+
+export interface Media {
+    id: string;
+    name: string;
+    file_name: string;
+    mime_type: string;
+    size: number;
+    url: string;
 }
 
 export interface ReportSubmission {
