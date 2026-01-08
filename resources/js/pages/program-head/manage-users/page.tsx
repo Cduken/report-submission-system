@@ -26,7 +26,7 @@ export default function ManageUsers() {
     const usersData = users.data;
     const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
 
-    console.log({ selectedUsers });
+    console.log({ users });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -43,7 +43,7 @@ export default function ManageUsers() {
                         setSelectedUsers={setSelectedUsers}
                     />
 
-                    <div className="flex items-center justify-center space-x-3 border-t py-4">
+                    <div>
                         {/* First Page */}
                         {users.first_page_url && (
                             <Link href={users.first_page_url}>

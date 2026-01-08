@@ -26,6 +26,7 @@ public function store(Request $request)
         // Work Info
         'department' => ['required', 'string', 'max:255'],
         'position' => ['required', 'string', 'max:255'],
+        'cluster' => ['required', 'string'],
 
         // Role (Spatie Permission)
         'role' => ['required', 'in:focal_person,field_officer'],

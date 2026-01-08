@@ -38,9 +38,11 @@ export interface User {
     middle_name?: string;
     last_name: string;
     gender: string;
+    birthday: Date | null;
+
     department: string;
     position: string;
-    birthday: Date | null;
+    cluster: 'M&M' | "D'ONE" | null;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
@@ -69,8 +71,18 @@ export interface Report {
     deadline: Date;
     final_deadline: Date;
     form_schema: Array;
+    templates: Media[];
     created_at: string;
     updated_at: string;
+}
+
+export interface Media {
+    id: string;
+    name: string;
+    file_name: string;
+    mime_type: string;
+    size: number;
+    url: string;
 }
 
 export interface ReportSubmission {

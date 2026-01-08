@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('department');
             $table->string('position');
             $table->date('birthday')->nullable();
+            $table->enum('cluster', ["M&M", "D''ONE"])->nullable();
 
             // Accounts
             $table->string('email')->unique();

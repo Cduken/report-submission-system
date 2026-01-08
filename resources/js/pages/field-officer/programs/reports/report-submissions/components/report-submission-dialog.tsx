@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Report } from '@/types';
-// Back to using the Form component wrapper
+
 import { Form } from '@inertiajs/react';
 import { Folder, UploadCloud } from 'lucide-react';
 import { useState } from 'react';
@@ -40,11 +40,8 @@ export default function ReportSubmissionDialog({
 }: ReportSubmissionDialogProps) {
     const schema = (report.form_schema || []) as DynamicFieldDefinition[];
 
-    // 1. Local State (Just like your TestReportDialog pattern)
-    // We use this to make the inputs "Controlled" so we can see what we type
     const [answers, setAnswers] = useState<Record<string, any>>({});
 
-    // Helper to update local state
     const handleFieldChange = (fieldId: string, value: any) => {
         setAnswers((prev) => ({
             ...prev,
@@ -84,21 +81,19 @@ export default function ReportSubmissionDialog({
 
                 <Form
                     {...ReportSubmissionController.store.form()}
-                    encType="multipart/form-data" // Required for files to work
+                    encType="multipart/form-data"
                     onSuccess={() => {
                         setOpen(false);
-                        setAnswers({}); // Reset local state
+                        setAnswers({});
                     }}
                 >
                     {({ processing, errors }) => (
                         <div className="mt-4 space-y-6">
-                            {/* --- STATIC FIELDS --- */}
                             <div className="space-y-4 rounded-md border bg-gray-50/50 p-4">
                                 <h4 className="text-sm font-semibold text-gray-900">
                                     General Information
                                 </h4>
 
-                                {/* Hidden Input for Report ID */}
                                 <input
                                     type="hidden"
                                     name="report_id"
@@ -111,7 +106,7 @@ export default function ReportSubmissionDialog({
                                     </Label>
                                     <Textarea
                                         id="description"
-                                        name="description" // Standard HTML name
+                                        name="description"
                                         placeholder="General remarks about this report..."
                                         className="bg-white"
                                     />
@@ -150,11 +145,6 @@ export default function ReportSubmissionDialog({
                                                     )}
                                                 </Label>
 
-                                                {/* CRITICAL PART:
-                                                    We use the `name` attribute with array syntax.
-                                                    Laravel reads this as: $request->input('submission_data')[field_id]
-                                                */}
-
                                                 {field.type === 'textarea' ? (
                                                     <Textarea
                                                         id={field.id}
@@ -189,8 +179,6 @@ export default function ReportSubmissionDialog({
                                                                 onChange={(
                                                                     e,
                                                                 ) => {
-                                                                    // For files, we just let the native input handle it,
-                                                                    // but we update state just to track that it changed if needed
                                                                     if (
                                                                         e.target
                                                                             .files?.[0]

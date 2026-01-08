@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Program;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,12 +17,14 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             RolesAndPermissionsSeeder::class, 
-            ClusterSeeder::class
+          
         ]);
 
           // 2. Seed users WITH roles (via factory states)
         User::factory()->count(50)->focalPerson()->create();
         User::factory()->count(50)->fieldOfficer()->create();
+
+        Program::factory(100)->create();
 
     }
 }

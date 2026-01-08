@@ -1,17 +1,19 @@
-import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import { FlashToaster } from '@/components/flash-toaster';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { Program, User, type BreadcrumbItem } from '@/types';
-import { Head, router, usePage } from '@inertiajs/react';
-import { Eye, EyeClosed, Folders } from 'lucide-react';
+import { Head, usePage } from '@inertiajs/react';
+import { Eye, EyeClosed } from 'lucide-react';
 import { Activity, useState } from 'react';
-import EllipsisVerticalCard from './components/ellipsis-vertival';
 import EmptyProgram from './components/empty-programs';
+import GridView from './components/grid';
+import ListView from './components/list';
 import ProgramDialog from './components/program-dialog';
 import ReviewProgram from './components/review';
+import ToggleGridList from '../../../components/toggle-list-grid';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,6 +24,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Programs() {
     const [open, setOpen] = useState<boolean>(false);
+    const [isList, setIsList] = useState<boolean>(false);
     const [selectReviewProgram, setSelecReviewProgram] =
         useState<Program | null>();
     const [reviewOpen, setReviewOpen] = useState<boolean>(true);
@@ -60,6 +63,7 @@ export default function Programs() {
                         {reviewOpen ? <EyeClosed /> : <Eye />}
                         {reviewOpen ? 'Hide' : 'Show'} Preview
                     </Button>
+                    <ToggleGridList isList={isList} setIsList={setIsList} />
                 </div>
 
                 <div
@@ -69,62 +73,61 @@ export default function Programs() {
                             setSelecReviewProgram(null);
                     }}
                 >
-                    <div
-                        className={cn(
-                            'space-x-3 transition-all duration-300 ease-in-out',
-                            reviewOpen ? 'mr-[350px]' : 'mr-0',
-                        )}
-                    >
-                        <h1 className="mb-3 font-semibold">All Programs</h1>
-                        <Activity
-                            mode={programs.length === 0 ? 'visible' : 'hidden'}
+                    <ScrollArea className="relative h-[600px] w-full">
+                        <div
+                            className={cn(
+                                'space-x-3 transition-all duration-300 ease-in-out',
+                                reviewOpen ? 'mr-[350px]' : 'mr-0',
+                            )}
                         >
-                            <EmptyProgram setIsOpen={setOpen} />
-                        </Activity>
-
-                        <Activity
-                            mode={programs.length > 0 ? 'visible' : 'hidden'}
-                        >
-                            <div className="grid grid-cols-3 gap-5">
-                                {programs.map((program, index) => (
-                                    <div
-                                        key={index}
-                                        onClick={() => {
-                                            setSelecReviewProgram(program);
-                                        }}
-                                        onDoubleClick={() => {
-                                            router.visit(
-                                                ViewController.reports(program),
-                                            );
-                                        }}
-                                        className={cn(
-                                            'flex cursor-pointer items-center justify-start gap-5 rounded-sm border bg-background/50 px-4 py-2 transition-colors',
-                                            program.id ===
-                                                selectReviewProgram?.id
-                                                ? 'border-primary/50 bg-muted'
-                                                : 'hover:bg-muted/50',
-                                        )}
-                                    >
-                                        <div>
-                                            <Folders className="" />
-                                        </div>
-                                        <div className="flex w-full items-center justify-between text-left">
-                                            <div>
-                                                <h2 className="">
-                                                    {program.name}
-                                                </h2>
-                                            </div>
-                                            <div>
-                                                <EllipsisVerticalCard
-                                                    program={program}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="">
+                                <h1 className="mb-3 font-semibold">
+                                    All Programs
+                                </h1>
                             </div>
-                        </Activity>
-                    </div>
+                            <div>
+                                <Activity
+                                    mode={
+                                        programs.length === 0
+                                            ? 'visible'
+                                            : 'hidden'
+                                    }
+                                >
+                                    <EmptyProgram setIsOpen={setOpen} />
+                                </Activity>
+
+                                <Activity
+                                    mode={
+                                        programs.length > 0
+                                            ? 'visible'
+                                            : 'hidden'
+                                    }
+                                >
+                                    {isList ? (
+                                        <ListView
+                                            programs={programs}
+                                            selectReviewProgram={
+                                                selectReviewProgram
+                                            }
+                                            setSelecReviewProgram={
+                                                setSelecReviewProgram
+                                            }
+                                        />
+                                    ) : (
+                                        <GridView
+                                            programs={programs}
+                                            selectReviewProgram={
+                                                selectReviewProgram
+                                            }
+                                            setSelecReviewProgram={
+                                                setSelecReviewProgram
+                                            }
+                                        />
+                                    )}
+                                </Activity>
+                            </div>
+                        </div>
+                    </ScrollArea>
 
                     {/* Review Panel with Slide Transition */}
                     <div

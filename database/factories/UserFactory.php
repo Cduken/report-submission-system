@@ -33,6 +33,8 @@ class UserFactory extends Factory
             'Field Officer',
         ]),
         'birthday' => fake()->optional()->date(),
+        'cluster' => fake()->randomElement(['M&M', "D'ONE"]),
+
 
         'email'             => fake()->unique()->safeEmail(),
         'email_verified_at' => now(),

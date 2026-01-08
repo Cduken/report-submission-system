@@ -17,7 +17,9 @@ class ProgramFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "name" => $this->faker->words(3, true),
+            'description' => $this->faker->sentence(),
+            'coordinator_id' =>  2
         ];
     }
 }

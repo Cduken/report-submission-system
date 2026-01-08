@@ -43,40 +43,57 @@ class ViewController extends Controller
     }
 
     public function reports(Program $program)
-    {
-        $reports = auth()->user()
+{
+    $reports = auth()->user()
         ->createdReports()
         ->where('program_id', $program->id)
-        ->with('program', 'coordinator')
+        ->with(['program', 'coordinator', 'media'])
         ->get()
         ->map(fn ($report) => [
             'id' => $report->id,
             'title' => $report->title,
             'content' => $report->content,
+            'form_schema' => $report->form_schema,  
+
+
             'program' => [
                 'id' => $report->program->id,
                 'name' => $report->program->name,
                 'description' => $report->program->description,
             ],
+
             'coordinator' => [
                 'id' => $report->coordinator->id,
                 'name' => $report->coordinator->name,
                 'email' => $report->coordinator->email,
                 'avatar' => $report->coordinator->avatar,
             ],
+
+            'templates' => $report
+                ->getMedia('templates')
+                ->map(fn ($media) => [
+                    'id' => $media->id,
+                    'name' => $media->name,
+                    'file_name' => $media->file_name,
+                    'mime_type' => $media->mime_type,
+                    'size' => $media->size,
+                    'url' => $media->getFullUrl(),
+                ]),
+
             'created_at' => $report->created_at->toISOString(),
             'updated_at' => $report->updated_at->toISOString(),
         ]);
 
-        return inertia('focal-person/programs/reports/page',[
-            "program" => $program,
-            "reports" => $reports,
-        ]);
-    }
+    return inertia('focal-person/programs/reports/page', [
+        'program' => $program,
+        'reports' => $reports,
+    ]);
+}
+
 
     public function reportSubmissions(Program $program, Report $report){
 
-            $report->load('submissions.fieldOfficer');
+        $report->load('submissions.fieldOfficer');
 
         return inertia('focal-person/programs/reports/report-submissions/page', [
             'program' => $program,

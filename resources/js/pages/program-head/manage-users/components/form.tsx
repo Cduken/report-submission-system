@@ -32,9 +32,6 @@ export default function UserForm({ setOpen }: Props) {
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
     ];
-    const departments = [
-        { value: 'provincial office', label: 'Provincial Office' },
-    ];
 
     const handleAvatarClick = () => {
         fileInputRef.current?.click();
@@ -220,27 +217,13 @@ export default function UserForm({ setOpen }: Props) {
                                     Department{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
-                                {/* <Input
-                            id="department"
-                            name="department"
-                            placeholder="e.g., Human Resources"
-                            required
-                        /> */}
-                                <Select name="department" required>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a department" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {departments.map((role) => (
-                                            <SelectItem
-                                                key={role.value}
-                                                value={role.value}
-                                            >
-                                                {role.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Input
+                                    id="department"
+                                    name="department"
+                                    placeholder="e.g., DILG - Tubigon"
+                                    required
+                                />
+
                                 <InputError message={errors.department} />
                             </div>
 
@@ -252,9 +235,28 @@ export default function UserForm({ setOpen }: Props) {
                                 <Input
                                     id="position"
                                     name="position"
-                                    placeholder="e.g., Senior Manager"
+                                    placeholder="e.g., LGOO VI"
                                     required
                                 />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="cluster">
+                                    Cluster
+                                    <span className="text-destructive">*</span>
+                                </Label>
+                                <Select name="cluster" required>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select cluster" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value={'M&M'}>
+                                            M&M
+                                        </SelectItem>
+                                        <SelectItem value={"D'ONE"}>
+                                            D'ONE
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div className="space-y-2">

@@ -20,6 +20,7 @@ interface Props {
 const headers = [
     'User name',
     'Emp Code',
+    'Cluster',
     'Position',
     'Department',
     'Role',
@@ -110,6 +111,7 @@ export default function UsersTable({
                             </div>
                         </TableCell>
                         <TableCell>{user.employee_code}</TableCell>
+                        <TableCell>{user.cluster}</TableCell>
                         <TableCell>{user.position}</TableCell>
                         <TableCell className="capitalize">
                             {user.department}

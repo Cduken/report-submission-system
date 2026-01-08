@@ -15,7 +15,6 @@ return new class extends Migration
     $table->uuid('id')->primary();
     $table->uuid('report_id');
     $table->unsignedBigInteger('field_officer_id');
-    $table->uuid('cluster_id'); // NEW: cluster FK
     $table->boolean('is_submitted')->default(false);
     $table->dateTime('submitted_at')->nullable();
     $table->string('status')->default('pending');
@@ -30,9 +29,6 @@ return new class extends Migration
         ->references('id')->on('users')
         ->onDelete('cascade');
 
-    $table->foreign('cluster_id')
-        ->references('id')->on('clusters')
-        ->onDelete('cascade');
 });
 
 

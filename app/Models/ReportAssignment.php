@@ -23,7 +23,6 @@ class ReportAssignment extends Model
     protected $fillable = [
         'report_id',
         'field_officer_id',
-        'cluster_id',
         'is_submitted',
         'submitted_at',
         'status',
