@@ -39,7 +39,7 @@ export default function ReportDialog({
                 <div className="flex justify-end">
                     <Button type="button" variant={'secondary'}>
                         <Folder className="mr-2 h-4 w-4" />
-                        <span>Create new Report</span>
+                        <span>Create New Report</span>
                     </Button>
                 </div>
             </DialogTrigger>
@@ -94,36 +94,6 @@ export default function ReportDialog({
                                     id="final_deadline"
                                 />
                             </div>
-                            {/* If type is required */}
-                            {/* <div className="space-y-2">
-                                <Label
-                                    htmlFor="type"
-                                    className="text-sm font-medium"
-                                >
-                                    Report Type{' '}
-                                    <span className="text-destructive">*</span>
-                                </Label>
-                                <Select name="type" defaultValue={''}>
-                                    <SelectTrigger className="h-10">
-                                        <SelectValue placeholder="Select type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem value="male">
-                                                Sample TYpe
-                                            </SelectItem>
-                                            <SelectItem value="female">
-                                                Sample TYpe
-                                            </SelectItem>
-                                            <SelectItem value="other">
-                                                Other
-                                            </SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.type} />
-                            </div> */}
-
                             <div className="mt-4 flex justify-end">
                                 <Button type="submit">
                                     {processing

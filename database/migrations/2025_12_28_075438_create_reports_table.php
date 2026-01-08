@@ -19,6 +19,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('created_by'); // coordinator
                 $table->date('deadline');
                 $table->date('final_deadline')->nullable();
+                $table->json('form_schema')->nullable();
                 $table->timestamps();
 
                 $table->foreign('program_id')

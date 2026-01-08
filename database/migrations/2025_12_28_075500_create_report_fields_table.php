@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('report_fields', function (Blueprint $table) {
-    $table->uuid('id')->primary();
-    $table->uuid('report_id');
-    $table->string('field_label');
-    $table->string('field_type'); // text, number, file, select, etc.
-    $table->boolean('is_required')->default(true);
-    $table->integer('order')->default(0);
-    $table->timestamps();
+            $table->uuid('id')->primary();
+            $table->uuid('report_id');
+            $table->string('field_label');
+            $table->string('field_type'); // text, number, file, select, etc.
+            $table->boolean('is_required')->default(true);
+            $table->integer('order')->default(0);
+            $table->timestamps();
 
-    $table->foreign('report_id')
-        ->references('id')->on('reports')
-        ->onDelete('cascade');
-});
+            $table->foreign('report_id')
+                ->references('id')->on('reports')
+                ->onDelete('cascade');
+        });
     }
 
     /**

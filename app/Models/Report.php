@@ -27,6 +27,13 @@ class Report extends Model
         'created_by',
         'deadline',
         'final_deadline',
+        'form_schema'
+    ];
+
+    protected $casts = [
+        'form_schema' => 'array',
+        'deadline' => 'date',
+        'final_deadline' => 'date',
     ];
 
     // ────────────────────────────────────────────────

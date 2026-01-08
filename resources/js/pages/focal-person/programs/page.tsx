@@ -20,6 +20,9 @@ export default function programs() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <h1 className="text-center text-2xl font-semibold">
+                    All Programs
+                </h1>
                 <Activity mode={programs.length <= 0 ? 'visible' : 'hidden'}>
                     <h1>No programs yet</h1>
                 </Activity>
@@ -43,10 +46,10 @@ export default function programs() {
                                             <p className="text-sm text-muted-foreground">
                                                 {program.description}
                                             </p>
-                                            <p className="text-sm text-muted-foreground">
+                                            {/* <p className="text-sm text-muted-foreground">
                                                 Coordinator:{' '}
                                                 {program.coordinator.name}
-                                            </p>
+                                            </p> */}
                                         </div>
                                         <div>
                                             <EllipsisVertical className="transition-colors hover:text-muted-foreground" />

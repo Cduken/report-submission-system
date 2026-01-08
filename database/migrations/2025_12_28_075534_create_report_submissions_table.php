@@ -16,6 +16,8 @@ return new class extends Migration
             $table->uuid('report_id');
             $table->unsignedBigInteger('field_officer_id');
             $table->string('status')->default('draft'); // draft | submitted
+            $table->text('remarks')->nullable();
+            $table->json('data')->nullable();
             $table->timestamps();
 
             $table->foreign('report_id')

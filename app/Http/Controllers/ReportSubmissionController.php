@@ -8,26 +8,58 @@ use Illuminate\Support\Facades\Auth;
 
 class ReportSubmissionController extends Controller
 {
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         $request->validate([
             'report_id' => ['required', 'uuid', 'exists:reports,id'],
             'description' => ['nullable', 'string'],
-            'proofs' => ['nullable', 'array'],
-            'proofs.*' => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:10240'],
+            'submission_data' => ['nullable', 'array'],
         ]);
+
 
         $submission = ReportSubmission::create([
             'report_id' => $request->report_id,
             'field_officer_id' => Auth::id(),
-            'status' => 'submitted'
+            'description' => $request->description,
+            'status' => 'submitted',
+            'data' => [],
         ]);
 
-        if($request->hasFile('proofs')){
-            foreach($request->file('proofs') as $file){
-                $submission->addMedia($file)->toMediaCollection('proofs');
+
+        $finalData = [];
+        $inputs = $request->input('submission_data', []);
+        $files = $request->file('submission_data', []);
+
+        // dd($files);
+
+        $allKeys = array_unique(array_merge(array_keys($inputs), array_keys($files)));
+
+        foreach ($allKeys as $fieldId) {
+
+
+            if ($request->hasFile("submission_data.{$fieldId}")) {
+                $file = $request->file("submission_data.{$fieldId}");
+
+
+                $media = $submission->addMedia($file)
+                                    ->toMediaCollection('submission_attachments');
+
+
+                $finalData[$fieldId] = $media->getUrl();
+
+            }
+
+            else {
+                $finalData[$fieldId] = $request->input("submission_data.{$fieldId}");
             }
         }
+
+
+
+        $submission->update([
+            'data' => $finalData
+        ]);
 
         return redirect()->back()->with('success', 'Report submitted successfully.');
     }

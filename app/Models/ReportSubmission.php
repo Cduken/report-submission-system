@@ -27,6 +27,11 @@ class ReportSubmission extends Model implements HasMedia
         'report_id',
         'field_officer_id',
         'status',
+        'data'
+    ];
+
+    protected $casts = [
+        'data' => 'array',
     ];
 
     public function report()
