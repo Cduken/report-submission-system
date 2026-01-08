@@ -11,19 +11,18 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Program } from '@/types';
-import { Form } from '@inertiajs/react'; // Assuming this is your Wayfinder wrapper
-import { Folder, GripVertical, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Form } from '@inertiajs/react';
+import {
+    Download,
+    FileText,
+    Folder,
+    Plus,
+    Trash2,
+    UploadCloud,
+} from 'lucide-react';
+import { useRef, useState } from 'react';
 
 interface ReportDialogProps {
     open: boolean;
@@ -31,8 +30,8 @@ interface ReportDialogProps {
     program: Program;
 }
 
-// Simple type for our local UI state
-type FieldType = 'text' | 'number' | 'date' | 'textarea' | 'file';
+// Fixed type to 'file' only
+type FieldType = 'file';
 
 interface DynamicField {
     id: string;
@@ -46,27 +45,28 @@ export default function ReportDialog({
     open,
     program,
 }: ReportDialogProps) {
-    // 1. Local State to manage the UI of dynamic fields
     const [fields, setFields] = useState<DynamicField[]>([]);
+    const [templateFiles, setTemplateFiles] = useState<FileList | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Helper: Add a blank field
+    // Helper: Add a blank field (Always file, Always required)
     const addField = () => {
         setFields([
             ...fields,
             {
                 id: crypto.randomUUID(),
                 label: '',
-                type: 'text',
-                required: false,
+                type: 'file', // Hardcoded
+                required: true, // Hardcoded
             },
         ]);
     };
 
-    // Helper: Update a specific field
-    const updateField = (id: string, key: keyof DynamicField, value: any) => {
+    // Helper: Update label only
+    const updateLabel = (id: string, value: string) => {
         setFields((prev) =>
             prev.map((field) =>
-                field.id === id ? { ...field, [key]: value } : field,
+                field.id === id ? { ...field, label: value } : field,
             ),
         );
     };
@@ -86,12 +86,12 @@ export default function ReportDialog({
                     </Button>
                 </div>
             </DialogTrigger>
-            <DialogContent className="max-h-[85vh] max-w-3xl overflow-y-auto">
+            <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Create New Report</DialogTitle>
                     <DialogDescription>
-                        Define the report details and build the form for field
-                        officers.
+                        Define the report details and upload any templates for
+                        the officers.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -100,20 +100,20 @@ export default function ReportDialog({
                     onSuccess={() => {
                         setOpen(false);
                         setFields([]); // Reset UI on success
+                        setTemplateFiles(null);
                     }}
-                    // OPTIONAL: If your Wayfinder supports passing extra data, you'd merge 'fields' here.
-                    // data={{ ...defaultData, form_schema: fields }}
                 >
                     {({ processing, errors }) => (
                         <div className="space-y-6">
                             {/* --- SECTION 1: STATIC DETAILS --- */}
-                            <div className="space-y-3 p-1">
+                            <div className="space-y-4 rounded-lg border bg-slate-50 p-4">
                                 <div>
                                     <Label htmlFor="title">Report Title</Label>
                                     <Input
                                         id="title"
                                         name="title"
                                         placeholder="e.g. Q1 Compliance Report"
+                                        className="bg-white"
                                     />
                                     <InputError message={errors.title} />
                                 </div>
@@ -125,6 +125,7 @@ export default function ReportDialog({
                                         id="description"
                                         name="description"
                                         placeholder="Instructions for the officers..."
+                                        className="bg-white"
                                     />
                                     <InputError message={errors.description} />
                                 </div>
@@ -146,6 +147,7 @@ export default function ReportDialog({
                                             type="date"
                                             name="deadline"
                                             id="deadline"
+                                            className="bg-white"
                                         />
                                     </div>
                                     <div>
@@ -156,21 +158,86 @@ export default function ReportDialog({
                                             type="date"
                                             name="final_deadline"
                                             id="final_deadline"
+                                            className="bg-white"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* --- SECTION 2: DYNAMIC FIELD BUILDER UI --- */}
-                            <div className="border-t pt-4">
-                                <div className="mb-4 flex items-center justify-between">
+                            {/* --- SECTION 2: TEMPLATE UPLOAD --- */}
+                            <div className="rounded-lg border border-dashed border-blue-200 bg-blue-50/50 p-4">
+                                <div className="mb-2 flex items-center justify-between">
+                                    <Label className="flex items-center gap-2 text-blue-900">
+                                        <Download className="h-4 w-4" />
+                                        Upload Templates (Optional)
+                                    </Label>
+                                    <span className="text-xs text-blue-600">
+                                        Visible to officers
+                                    </span>
+                                </div>
+
+                                <div
+                                    className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-blue-300 bg-white p-4 transition-colors hover:bg-blue-50"
+                                    onClick={() =>
+                                        fileInputRef.current?.click()
+                                    }
+                                >
+                                    <Input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        multiple
+                                        name="template_files[]" // Array name for Laravel
+                                        className="hidden"
+                                        onChange={(e) =>
+                                            setTemplateFiles(e.target.files)
+                                        }
+                                    />
+
+                                    <UploadCloud className="mb-2 h-8 w-8 text-blue-400" />
+
+                                    {templateFiles &&
+                                    templateFiles.length > 0 ? (
+                                        <div className="text-center">
+                                            <p className="text-sm font-medium text-blue-700">
+                                                {templateFiles.length} file(s)
+                                                selected
+                                            </p>
+                                            <ul className="mt-1 text-xs text-gray-500">
+                                                {Array.from(templateFiles).map(
+                                                    (file, i) => (
+                                                        <li
+                                                            key={i}
+                                                            className="mx-auto max-w-[200px] truncate"
+                                                        >
+                                                            {file.name}
+                                                        </li>
+                                                    ),
+                                                )}
+                                            </ul>
+                                        </div>
+                                    ) : (
+                                        <div className="text-center">
+                                            <p className="text-sm font-medium text-gray-600">
+                                                Click to upload files
+                                            </p>
+                                            <p className="text-xs text-gray-400">
+                                                PDF, DOCX, XLSX supported
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* --- SECTION 3: REQUIRED ATTACHMENTS UI --- */}
+                            <div className="pt-2">
+                                <div className="mb-4 flex items-end justify-between border-b pb-2">
                                     <div>
                                         <h3 className="text-sm font-semibold text-gray-900">
-                                            Form Builder
+                                            Required Attachments
                                         </h3>
                                         <p className="text-xs text-gray-500">
-                                            Add the questions that field
-                                            officers need to answer.
+                                            List the files officers must upload
+                                            back to you.
                                         </p>
                                     </div>
                                     <Button
@@ -178,125 +245,52 @@ export default function ReportDialog({
                                         onClick={addField}
                                         variant="outline"
                                         size="sm"
+                                        className="h-8 text-xs"
                                     >
-                                        <Plus className="mr-2 h-4 w-4" /> Add
-                                        Field
+                                        <Plus className="mr-2 h-3.5 w-3.5" />
+                                        Add File Slot
                                     </Button>
                                 </div>
 
                                 {/* Visual List of Fields */}
-                                <div className="min-h-[100px] space-y-3 rounded-md border bg-gray-50/50 p-2">
+                                <div className="space-y-3">
                                     {fields.length === 0 && (
-                                        <div className="flex h-24 flex-col items-center justify-center text-sm text-gray-400 italic">
-                                            No fields added yet. Click "Add
-                                            Field" to start.
+                                        <div className="flex h-20 flex-col items-center justify-center rounded-md border border-dashed bg-gray-50 text-sm text-gray-400 italic">
+                                            No attachments requested yet.
                                         </div>
                                     )}
 
                                     {fields.map((field, index) => (
                                         <div
                                             key={field.id}
-                                            className="group flex items-start gap-3 rounded border bg-white p-3 shadow-sm transition-colors hover:border-gray-300"
+                                            className="group flex items-center gap-3 rounded-md border bg-white p-2 px-3 shadow-sm transition-all hover:border-gray-300"
                                         >
-                                            {/* Drag Handle Icon (Visual only) */}
-                                            <div className="mt-3 cursor-move text-gray-300">
-                                                <GripVertical className="h-4 w-4" />
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-gray-100 text-gray-600">
+                                                <FileText className="h-4 w-4" />
                                             </div>
 
-                                            <div className="grid flex-1 gap-3">
-                                                <div className="grid grid-cols-12 gap-3">
-                                                    {/* Field Label */}
-                                                    <div className="col-span-6">
-                                                        <Label className="text-xs text-gray-500">
-                                                            Label / Question
-                                                        </Label>
-                                                        <Input
-                                                            value={field.label}
-                                                            onChange={(e) =>
-                                                                updateField(
-                                                                    field.id,
-                                                                    'label',
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            placeholder="e.g. Total Beneficiaries"
-                                                            className="h-8 text-sm"
-                                                        />
-                                                    </div>
-
-                                                    {/* Field Type */}
-                                                    <div className="col-span-4">
-                                                        <Label className="text-xs text-gray-500">
-                                                            Answer Type
-                                                        </Label>
-                                                        <Select
-                                                            value={field.type}
-                                                            onValueChange={(
-                                                                val,
-                                                            ) =>
-                                                                updateField(
-                                                                    field.id,
-                                                                    'type',
-                                                                    val,
-                                                                )
-                                                            }
-                                                        >
-                                                            <SelectTrigger className="h-8 text-sm">
-                                                                <SelectValue />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                <SelectItem value="text">
-                                                                    Short Text
-                                                                </SelectItem>
-                                                                <SelectItem value="textarea">
-                                                                    Long Text
-                                                                </SelectItem>
-                                                                <SelectItem value="number">
-                                                                    Number
-                                                                </SelectItem>
-                                                                <SelectItem value="date">
-                                                                    Date
-                                                                </SelectItem>
-                                                                <SelectItem value="file">
-                                                                    File Upload
-                                                                </SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </div>
-
-                                                    {/* Required Toggle */}
-                                                    <div className="col-span-2 flex flex-col items-center justify-center pt-4">
-                                                        <div className="flex items-center gap-2">
-                                                            <Label className="text-[10px] font-bold text-gray-500 uppercase">
-                                                                Req?
-                                                            </Label>
-                                                            <Switch
-                                                                checked={
-                                                                    field.required
-                                                                }
-                                                                onCheckedChange={(
-                                                                    checked,
-                                                                ) =>
-                                                                    updateField(
-                                                                        field.id,
-                                                                        'required',
-                                                                        checked,
-                                                                    )
-                                                                }
-                                                                className="origin-left scale-75"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div className="flex-1 space-y-1">
+                                                <Label className="text-[10px] font-medium tracking-wider text-gray-400 uppercase">
+                                                    Attachment Name #{index + 1}
+                                                </Label>
+                                                <Input
+                                                    value={field.label}
+                                                    onChange={(e) =>
+                                                        updateLabel(
+                                                            field.id,
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    placeholder="e.g. Scanned Attendance Sheet"
+                                                    className="h-8 border-none bg-transparent p-0 text-sm font-medium shadow-none placeholder:text-gray-300 focus-visible:ring-0"
+                                                />
                                             </div>
 
-                                            {/* Delete Button */}
                                             <Button
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon"
-                                                className="mt-4 h-8 w-8 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                                                className="h-8 w-8 text-gray-400 hover:bg-red-50 hover:text-red-600"
                                                 onClick={() =>
                                                     removeField(field.id)
                                                 }
@@ -308,15 +302,21 @@ export default function ReportDialog({
                                 </div>
                             </div>
 
-                            {/* IMPORTANT: Hidden Input to actually submit the JSON data
-                                This bridges your UI state to the Form submission */}
+                            {/* IMPORTANT: Hidden Input to actually submit the JSON data */}
                             <input
                                 type="hidden"
                                 name="form_schema"
                                 value={JSON.stringify(fields)}
                             />
 
-                            <div className="mt-4 flex justify-end">
+                            <div className="mt-4 flex justify-end gap-2">
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    onClick={() => setOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
                                 <Button type="submit" disabled={processing}>
                                     {processing
                                         ? 'Creating...'

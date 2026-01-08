@@ -15,8 +15,12 @@ class ReportController extends Controller
             'program_id' => 'required|exists:programs,id',
             'deadline' => 'required|date',
             'final_deadline' => 'nullable|date|after_or_equal:deadline',
-            'form_schema' => 'nullable|json'
+            'form_schema' => 'nullable|json',
+
+            'template_files' => 'nullable|array',
+            'template_files.*' => 'file|max:10240',
         ]);
+
 
         if (isset($validated['form_schema'])) {
 
@@ -24,6 +28,13 @@ class ReportController extends Controller
         }
 
         $report = auth()->user()->createdReports()->create($validated);
+
+        if($request->hasFile('template_files')){
+            foreach($request->file('template_files') as $file){
+                $report->addMedia($file)->toMediaCollection('templates');
+            }
+        }
+
 
         return redirect()->back()->with('success', 'Report created successfully.');
     }
