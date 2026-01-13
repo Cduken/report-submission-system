@@ -19,8 +19,6 @@ export default function page() {
         hasSubmitted: boolean;
     }>().props;
 
-    console.log({ report });
-
     return (
         <AppLayout>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
