@@ -26,35 +26,28 @@ class ReportSubmissionController extends Controller
             'data' => [],
         ]);
 
-
         $finalData = [];
-        $inputs = $request->input('submission_data', []);
-        $files = $request->file('submission_data', []);
 
-        // dd($files);
-
-        $allKeys = array_unique(array_merge(array_keys($inputs), array_keys($files)));
-
-        foreach ($allKeys as $fieldId) {
+        if($request->file('submission_data')){
 
 
-            if ($request->hasFile("submission_data.{$fieldId}")) {
-                $file = $request->file("submission_data.{$fieldId}");
+            foreach($request->file('submission_data') as $fieldId => $files){
 
 
-                $media = $submission->addMedia($file)
-                                    ->toMediaCollection('submission_attachments');
 
+                $files = is_array($files) ? $files : [$files];
+                $urls = [];
 
-                $finalData[$fieldId] = $media->getUrl();
+                foreach ($files as $file){
+                    $media = $submission->addMedia($file)->toMediaCollection('submission_attachments');
 
+                    $urls[] = $media->getUrl();
+                }
+
+                $finalData[$fieldId] = $urls;
             }
 
-            else {
-                $finalData[$fieldId] = $request->input("submission_data.{$fieldId}");
-            }
         }
-
 
 
         $submission->update([

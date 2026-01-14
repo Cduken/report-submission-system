@@ -114,7 +114,6 @@ export default function ReportSubmissionDialog({
                                 </div>
                             </div>
 
-                            {/* --- DYNAMIC FIELDS --- */}
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between border-b pb-2">
                                     <h4 className="text-sm font-semibold text-gray-900">
@@ -144,76 +143,50 @@ export default function ReportSubmissionDialog({
                                                         </span>
                                                     )}
                                                 </Label>
-
-                                                {field.type === 'textarea' ? (
-                                                    <Textarea
-                                                        id={field.id}
-                                                        name={`submission_data[${field.id}]`}
-                                                        required={
-                                                            field.required
-                                                        }
-                                                        value={
-                                                            answers[field.id] ||
-                                                            ''
-                                                        }
-                                                        onChange={(e) =>
-                                                            handleFieldChange(
-                                                                field.id,
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                    />
-                                                ) : field.type === 'file' ? (
-                                                    <div className="rounded-lg border-2 border-dashed border-gray-200 p-4 hover:bg-gray-50">
-                                                        <div className="flex items-center gap-3">
-                                                            <UploadCloud className="h-5 w-5 text-gray-400" />
-                                                            {/* File inputs are Uncontrolled (no value prop) */}
-                                                            <Input
-                                                                id={field.id}
-                                                                type="file"
-                                                                name={`submission_data[${field.id}]`}
-                                                                required={
-                                                                    field.required
-                                                                }
-                                                                className="border-0 p-0 shadow-none"
-                                                                onChange={(
-                                                                    e,
-                                                                ) => {
-                                                                    if (
-                                                                        e.target
-                                                                            .files?.[0]
-                                                                    ) {
-                                                                        handleFieldChange(
-                                                                            field.id,
+                                                <div className="rounded-lg border-2 border-dashed border-gray-200 p-4 hover:bg-gray-50">
+                                                    <div className="flex items-center gap-3">
+                                                        <UploadCloud className="h-5 w-5 text-gray-400" />
+                                                        {/* File inputs are Uncontrolled (no value prop) */}
+                                                        <Input
+                                                            id={field.id}
+                                                            type="file"
+                                                            multiple
+                                                            name={`submission_data[${field.id}][]`}
+                                                            required={
+                                                                field.required
+                                                            }
+                                                            className="border-0 p-0 shadow-none"
+                                                            onChange={(e) => {
+                                                                if (
+                                                                    e.target
+                                                                        .files &&
+                                                                    e.target
+                                                                        .files
+                                                                        .length >
+                                                                        0
+                                                                ) {
+                                                                    handleFieldChange(
+                                                                        field.id,
+                                                                        Array.from(
                                                                             e
                                                                                 .target
-                                                                                .files[0],
-                                                                        );
-                                                                    }
-                                                                }}
-                                                            />
+                                                                                .files,
+                                                                        ),
+                                                                    );
+                                                                }
+                                                            }}
+                                                        />
+                                                        <div className="text-sm font-medium text-gray-700">
+                                                            Click to upload
+                                                            files
                                                         </div>
+                                                        <p className="text-xs text-gray-400">
+                                                            Supports multiple
+                                                            files (PDF, IMG,
+                                                            DOCX)
+                                                        </p>
                                                     </div>
-                                                ) : (
-                                                    <Input
-                                                        id={field.id}
-                                                        type={field.type}
-                                                        name={`submission_data[${field.id}]`}
-                                                        required={
-                                                            field.required
-                                                        }
-                                                        value={
-                                                            answers[field.id] ||
-                                                            ''
-                                                        }
-                                                        onChange={(e) =>
-                                                            handleFieldChange(
-                                                                field.id,
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                    />
-                                                )}
+                                                </div>
 
                                                 <InputError
                                                     message={

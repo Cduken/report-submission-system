@@ -55,7 +55,8 @@ class HandleInertiaRequests extends Middleware
                 'role' => $request->user()->getRoleNames()->first(),
             ] : null,
         ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true'
+
         ];
     }
 }

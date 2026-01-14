@@ -82,14 +82,15 @@ export interface Media {
     file_name: string;
     mime_type: string;
     size: number;
-    url: string;
+    original_url: string;
 }
 
 export interface ReportSubmission {
     id: string;
     report_id: string;
-    field_officer_id: number;
+    field_officer: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
     status: 'draft' | 'submitted';
+    media: Media[];
     created_at: string;
     updated_at: string;
 
