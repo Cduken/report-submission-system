@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            RolesAndPermissionsSeeder::class,       
+            RolesAndPermissionsSeeder::class,
         ]);
 
           // 2. Seed users WITH roles (via factory states)
@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
 
         Program::factory(100)->create();
         Report::factory(10)->create();
-        ReportSubmission::factory(1000)->create();
+        ReportSubmission::factory(50)->create();
 
     }
 }
