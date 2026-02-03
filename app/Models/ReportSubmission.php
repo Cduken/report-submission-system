@@ -28,6 +28,7 @@ class ReportSubmission extends Model implements HasMedia
         'report_id',
         'field_officer_id',
         'status',
+        'timeliness',
         'data'
     ];
 

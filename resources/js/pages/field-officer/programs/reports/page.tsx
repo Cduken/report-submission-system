@@ -1,6 +1,7 @@
 import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
+import { dateFormatter } from '@/lib/utils';
 import { Program, Report } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
@@ -47,9 +48,7 @@ export default function Reports() {
                                         </h2>
                                         <p className="text-sm text-muted-foreground">
                                             Deadline:{' '}
-                                            {new Date(
-                                                report.created_at,
-                                            ).toLocaleDateString()}
+                                            {dateFormatter(report.deadline)}
                                         </p>
                                     </div>
                                     <div>

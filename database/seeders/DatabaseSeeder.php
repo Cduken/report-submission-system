@@ -22,12 +22,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
           // 2. Seed users WITH roles (via factory states)
-        User::factory()->count(50)->focalPerson()->create();
-        User::factory()->count(50)->fieldOfficer()->create();
+        // User::factory()->count(50)->focalPerson()->create();
+        // User::factory()->count(50)->fieldOfficer()->create();
 
-        Program::factory(100)->create();
-        Report::factory(10)->create();
-        ReportSubmission::factory(1000)->create();
+        // Program::factory(100)->create();
+        // Report::factory(10)->create();
+        // ReportSubmission::factory(1000)->create();
 
     }
 }

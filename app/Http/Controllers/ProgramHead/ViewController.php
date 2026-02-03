@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Program;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ViewController extends Controller
 {
@@ -42,8 +43,8 @@ class ViewController extends Controller
 
 
 
-        return inertia('program-head/programs/page', [
-            'programs' => $programs,
+        return Inertia::render('program-head/programs/page', [
+            'programs' => Inertia::defer(fn () => $programs),
             'coordinators' => $coordinators,
         ]);
     }
@@ -52,9 +53,9 @@ class ViewController extends Controller
     {
         $reports = $program->load("reports");
 
-        return inertia('program-head/programs/reports/page', [
+        return Inertia::render('program-head/programs/reports/page', [
             'program' => $program,
-            'reports' => $reports->reports,
+            'reports' => Inertia::defer(fn () => $reports->reports)
         ]);
     }
 
@@ -103,6 +104,10 @@ class ViewController extends Controller
     return inertia('program-head/manage-users/page', [
         'users' => $users,
     ]);
+    }
+
+    public function notifications(){
+        return inertia('program-head/notifications/page');
     }
 
 }

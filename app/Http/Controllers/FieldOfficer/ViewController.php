@@ -83,7 +83,7 @@ class ViewController extends Controller
         ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
         ->whereBelongsTo(auth()->user(), 'fieldOfficer')
         ->with([
-            'fieldOfficer:id,name,email,avatar', 'media'
+            'fieldOfficer:id,name,email', 'media'
         ])
         ->first();
 
@@ -102,7 +102,7 @@ class ViewController extends Controller
         ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
         ->whereBelongsTo(auth()->user(), 'fieldOfficer')
         ->with([
-            'fieldOfficer:id,name,email,avatar', 'media'
+            'fieldOfficer:id,name,email', 'media'
         ])
         ->get();
 
@@ -112,4 +112,10 @@ class ViewController extends Controller
             'mySubmissions' => $submissions 
         ]);
     }
+
+    public function notifications()
+    {
+        return inertia('field-officer/notifications/page');
+    }
+   
 }

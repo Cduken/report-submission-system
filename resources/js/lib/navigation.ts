@@ -3,7 +3,7 @@ import FocalPersonNavigationPath from '@/actions/App/Http/Controllers/FocalPerso
 import ProgramHeadNavigationPath from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import ProvincialDirectorNavigationPath from '@/actions/App/Http/Controllers/ProvincialDirector/ViewController';
 import { NavItem } from '@/types';
-import { File, Folder, Layers, LayoutGrid, Users } from 'lucide-react';
+import { Bell, File, FileCheck, Layers, LayoutGrid, Users } from 'lucide-react';
 
 export function mainNavigationPath(role: string): NavItem[] {
     switch (role) {
@@ -19,12 +19,20 @@ export function mainNavigationPath(role: string): NavItem[] {
                     href: FieldOfficerNavigationPath.programs().url,
                     icon: Layers,
                 },
+
                 {
                     title: 'My Report Submissions',
                     href: FieldOfficerNavigationPath.myReportSubmissions().url,
-                    icon: Folder,
+                    icon: FileCheck,
+                },
+
+                {
+                    title: 'Notifications',
+                    href: FieldOfficerNavigationPath.notifications().url,
+                    icon: Bell,
                 },
             ];
+
         case 'focal_person':
             return [
                 {
@@ -36,6 +44,11 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: FocalPersonNavigationPath.programs().url,
                     icon: File,
+                },
+                {
+                    title: 'Notifications',
+                    href: FocalPersonNavigationPath.notifications().url,
+                    icon: Bell,
                 },
             ];
         case 'program_head':
@@ -55,6 +68,11 @@ export function mainNavigationPath(role: string): NavItem[] {
                     href: ProgramHeadNavigationPath.manageUsers().url,
                     icon: Users,
                 },
+                {
+                    title: 'Notifications',
+                    href: ProgramHeadNavigationPath.notifications().url,
+                    icon: Bell,
+                },
             ];
 
         case 'provincial_director':
@@ -63,6 +81,11 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Dashboard',
                     href: ProvincialDirectorNavigationPath.dashboard().url,
                     icon: LayoutGrid,
+                },
+                {
+                    title: 'Programs',
+                    href: ProvincialDirectorNavigationPath.programs().url,
+                    icon: Layers,
                 },
             ];
         default:
