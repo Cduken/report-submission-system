@@ -57,7 +57,7 @@ export interface Program {
     id: number;
     name: string;
     description: string;
-    coordinator: User;
+    coordinator: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
     created_at: string;
     updated_at: string;
 }
@@ -90,6 +90,7 @@ export interface ReportSubmission {
     report_id: string;
     field_officer: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
     status: 'draft' | 'submitted';
+    timeliness: string | null;
     media: Media[];
     created_at: string;
     updated_at: string;

@@ -3,7 +3,7 @@ import { Program } from '@/types';
 import { Link } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 
-export default function ListView({ programs }: { programs: Program[] }) {
+export default function GridView({ programs }: { programs: Program[] }) {
     return (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {programs.map((program) => (

@@ -27,16 +27,21 @@ export default function page() {
         hasSubmitted: boolean;
     }>().props;
 
-    const isOverdue = new Date(report.deadline) < new Date();
+    // -----------------------
+    // Date-only comparison
+    // -----------------------
+    const deadlineDate = new Date(report.deadline);
+    const today = new Date();
 
-    const deadline = new Date(report.deadline).getTime();
-    const now = Date.now();
+    deadlineDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const isOverdue = deadlineDate < today;
+    const isToday = deadlineDate.getTime() === today.getTime();
 
     const daysUntilDeadline = Math.ceil(
-        (deadline - now) / (1000 * 60 * 60 * 24),
+        (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
-
-    console.log({ report });
 
     return (
         <AppLayout>
@@ -108,17 +113,22 @@ export default function page() {
                                 {/* Text */}
                                 <div className="flex flex-col leading-tight">
                                     <span className="text-xs font-medium opacity-80">
-                                        {isOverdue ? 'Overdue' : 'Deadline'}
+                                        {isOverdue
+                                            ? 'Overdue'
+                                            : isToday
+                                              ? 'Today'
+                                              : 'Deadline'}
                                     </span>
 
                                     <span className="text-sm font-bold">
-                                        {new Date(
-                                            report.deadline,
-                                        ).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric',
-                                        })}
+                                        {deadlineDate.toLocaleDateString(
+                                            'en-US',
+                                            {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric',
+                                            },
+                                        )}
 
                                         {!isOverdue &&
                                             daysUntilDeadline <= 3 && (

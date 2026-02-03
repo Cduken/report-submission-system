@@ -1,17 +1,21 @@
+import FilterBtn from '@/components/filter';
 import { FlashToaster } from '@/components/flash-toaster';
 import ProgramGridSkeleton from '@/components/skeleton-loader';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { Program, User, type BreadcrumbItem } from '@/types';
-import { Head, usePage, useRemember, WhenVisible } from '@inertiajs/react';
+import { Deferred, Head, usePage, useRemember } from '@inertiajs/react';
 import { Eye, EyeClosed } from 'lucide-react';
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import ToggleGridList from '../../../components/toggle-list-grid';
+import EmptyProgram from './components/empty-programs';
+import GridView from './components/grid';
+import ListView from './components/list';
 import ProgramDialog from './components/program-dialog';
 import ReviewProgram from './components/review';
-import Programs from './programs';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,15 +27,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function ProgramsPage() {
     const [open, setOpen] = useState<boolean>(false);
     const [isList, setIsList] = useRemember<boolean>(false);
+    const [selectedYear, setSelectedYear] = useState<number | null>(null);
+
     const [selectReviewProgram, setSelecReviewProgram] =
         useState<Program | null>();
     const [reviewOpen, setReviewOpen] = useState<boolean>(true);
+
+    const { programs } = usePage<{ programs: Program[] }>().props;
 
     const { coordinators } = usePage<{
         coordinators: Pick<User, 'id' | 'name' | 'email' | 'avatar'>[];
     }>().props;
 
-    console.log({ isList });
+    const filteredPrograms = selectedYear
+        ? programs.filter(
+              (p) => new Date(p.created_at).getFullYear() === selectedYear,
+          )
+        : programs;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -61,6 +73,7 @@ export default function ProgramsPage() {
                         {reviewOpen ? <EyeClosed /> : <Eye />}
                         {reviewOpen ? 'Hide' : 'Show'} Preview
                     </Button>
+                    <FilterBtn onSelect={setSelectedYear} />
                     <ToggleGridList isList={isList} setIsList={setIsList} />
                 </div>
 
@@ -71,18 +84,66 @@ export default function ProgramsPage() {
                             setSelecReviewProgram(null);
                     }}
                 >
-                    <WhenVisible
-                        data="programs"
+                    <Deferred
+                        data={'programs'}
                         fallback={<ProgramGridSkeleton />}
                     >
-                        <Programs
-                            isList={isList}
-                            reviewOpen={reviewOpen}
-                            selectReviewProgram={selectReviewProgram}
-                            setOpen={setOpen}
-                            setSelecReviewProgram={setSelecReviewProgram}
-                        />
-                    </WhenVisible>
+                        <ScrollArea className="relative h-[600px] w-full">
+                            <div
+                                className={cn(
+                                    'space-x-3 transition-all duration-300 ease-in-out',
+                                    reviewOpen ? 'mr-[350px]' : 'mr-0',
+                                )}
+                            >
+                                <div className="">
+                                    <h1 className="mb-3 font-semibold">
+                                        All Programs
+                                    </h1>
+                                </div>
+                                <div>
+                                    <Activity
+                                        mode={
+                                            programs?.length === 0
+                                                ? 'visible'
+                                                : 'hidden'
+                                        }
+                                    >
+                                        <EmptyProgram setIsOpen={setOpen} />
+                                    </Activity>
+
+                                    <Activity
+                                        mode={
+                                            programs?.length > 0
+                                                ? 'visible'
+                                                : 'hidden'
+                                        }
+                                    >
+                                        {isList ? (
+                                            <ListView
+                                                programs={filteredPrograms}
+                                                selectReviewProgram={
+                                                    selectReviewProgram
+                                                }
+                                                setSelecReviewProgram={
+                                                    setSelecReviewProgram
+                                                }
+                                            />
+                                        ) : (
+                                            <GridView
+                                                programs={filteredPrograms}
+                                                selectReviewProgram={
+                                                    selectReviewProgram
+                                                }
+                                                setSelecReviewProgram={
+                                                    setSelecReviewProgram
+                                                }
+                                            />
+                                        )}
+                                    </Activity>
+                                </div>
+                            </div>
+                        </ScrollArea>
+                    </Deferred>
 
                     {/* Review Panel with Slide Transition */}
                     <div

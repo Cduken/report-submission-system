@@ -112,4 +112,10 @@ class ViewController extends Controller
             'mySubmissions' => $submissions 
         ]);
     }
+
+    public function notifications()
+    {
+        return inertia('field-officer/notifications/page');
+    }
+   
 }

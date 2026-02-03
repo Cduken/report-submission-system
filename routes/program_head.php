@@ -10,6 +10,7 @@ Route::middleware(['auth', 'verified', 'role:program_head'])->group(function () 
     Route::get('/program-head/programs', [ViewController::class, 'programs'])->name('program-head.programs');
     Route::get('/program-head/programs/{program}/reports', [ViewController::class, 'reports'])->name('program-head.programs.reports');
     Route::get('/program-head/manage-users',[ViewController::class, 'manageUsers'])->name('prgram-head.manage-users');
+    Route::get('/program-head/notifications', [ViewController::class, 'notifications'])->name('program-head.notifications');
 
     // POST
     Route::post('/program-head/manage-users', [UserController::class, 'store'])->name('program-head.store');

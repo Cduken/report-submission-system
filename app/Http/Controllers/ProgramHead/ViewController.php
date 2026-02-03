@@ -53,9 +53,9 @@ class ViewController extends Controller
     {
         $reports = $program->load("reports");
 
-        return inertia('program-head/programs/reports/page', [
+        return Inertia::render('program-head/programs/reports/page', [
             'program' => $program,
-            'reports' => $reports->reports,
+            'reports' => Inertia::defer(fn () => $reports->reports)
         ]);
     }
 
@@ -104,6 +104,10 @@ class ViewController extends Controller
     return inertia('program-head/manage-users/page', [
         'users' => $users,
     ]);
+    }
+
+    public function notifications(){
+        return inertia('program-head/notifications/page');
     }
 
 }

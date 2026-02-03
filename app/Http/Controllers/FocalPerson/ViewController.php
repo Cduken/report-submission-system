@@ -104,4 +104,8 @@ class ViewController extends Controller
         ]);
 
     }
+
+    public function notifications(){
+        return inertia('focal-person/notifications/page');
+    }
 }
