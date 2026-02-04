@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            RolesAndPermissionsSeeder::class,       
+            RolesAndPermissionsSeeder::class,
         ]);
 
           // 2. Seed users WITH roles (via factory states)

@@ -10,7 +10,7 @@ export default function Header() {
             <div className="flex gap-3 border-b pb-3 text-sm">
                 <p>Pending</p>
                 <p>Rejected</p>
-                <p>Acccepted</p>
+                <p>Accepted</p>
             </div>
         </>
     );

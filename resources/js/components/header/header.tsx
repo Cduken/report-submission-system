@@ -18,7 +18,7 @@ const header = () => {
                 <DarkModeToggle />
             </header>
         </>
-    );  
+    );
 };
 
 export default header;
