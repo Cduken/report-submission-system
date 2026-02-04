@@ -15,7 +15,6 @@ class ReportSubmissionFactory extends Factory
             'report_id' => Report::inRandomOrder()->value('id'),
             'field_officer_id' => 1, 
             'status' => $this->faker->randomElement(['draft', 'submitted']),
-            'focal_preview_status' => $this->faker->randomElement(['accepted', 'rejected']),
             'remarks' => $this->faker->optional()->sentence(),
             'data' => $this->faker->randomElement([
                 null,

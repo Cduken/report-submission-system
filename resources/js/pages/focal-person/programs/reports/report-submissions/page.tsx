@@ -20,7 +20,7 @@ export default function page() {
 
     const { mode: viewMode, updateMode: setViewMode } = useViewMode();
 
-    console.log({ reportSubmissions });
+    // console.log({ reportSubmissions });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

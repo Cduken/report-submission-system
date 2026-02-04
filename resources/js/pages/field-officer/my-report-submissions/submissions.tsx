@@ -1,173 +1,198 @@
-// submissions.tsx
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ReportSubmission } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { SubmissionCard } from './components/submission-card';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
-import { Search, Filter, ListFilter, Grid3x3, FileText, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { Calendar, User, FileText, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+
+type GroupedSubmissions = Record<string, ReportSubmission[]>;
 
 export default function Submissions() {
     const { mySubmissions } = usePage<{ mySubmissions: ReportSubmission[] }>()
         .props;
 
-    const [search, setSearch] = useState('');
-    const [statusFilter, setStatusFilter] = useState('all');
-    const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+    // Group submissions by date
+    const groupedSubmissions: GroupedSubmissions =
+        mySubmissions.reduce<GroupedSubmissions>((acc, submission) => {
+            const dateKey = new Date(submission.created_at).toLocaleDateString(
+                'en-US',
+                {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                },
+            );
 
-    // Filter submissions
-    const filteredSubmissions = mySubmissions.filter(submission => {
-        const matchesSearch = !search ||
-            submission.id.toLowerCase().includes(search.toLowerCase()) ||
-            (submission.report?.title && submission.report.title.toLowerCase().includes(search.toLowerCase())) ||
-            (submission.report?.program?.name && submission.report.program.name.toLowerCase().includes(search.toLowerCase()));
+            if (!acc[dateKey]) {
+                acc[dateKey] = [];
+            }
+            acc[dateKey].push(submission);
+            return acc;
+        }, {});
 
-        const matchesStatus = statusFilter === 'all' || submission.status === statusFilter;
+    // Get status details
+    const getStatusDetails = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'submitted':
+                return {
+                    icon: CheckCircle,
+                    color: 'text-chart-2',
+                    bgColor: 'bg-chart-2/10',
+                    borderColor: 'border-chart-2/20',
+                    label: 'Submitted'
+                };
+            case 'pending':
+                return {
+                    icon: Clock,
+                    color: 'text-amber-500',
+                    bgColor: 'bg-amber-500/10',
+                    borderColor: 'border-amber-500/20',
+                    label: 'Pending'
+                };
+            case 'approved':
+                return {
+                    icon: CheckCircle,
+                    color: 'text-green-500',
+                    bgColor: 'bg-green-500/10',
+                    borderColor: 'border-green-500/20',
+                    label: 'Approved'
+                };
+            default:
+                return {
+                    icon: AlertCircle,
+                    color: 'text-chart-4',
+                    bgColor: 'bg-chart-4/10',
+                    borderColor: 'border-chart-4/20',
+                    label: status.charAt(0).toUpperCase() + status.slice(1)
+                };
+        }
+    };
 
-        return matchesSearch && matchesStatus;
-    });
-
-    // Get status counts based on actual data
-    const getStatusCount = (status: string) => {
-        return mySubmissions.filter(s => status === 'all' ? true : s.status === status).length;
+    // Format time
+    const formatTime = (dateString: string) => {
+        return new Date(dateString).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
     };
 
     return (
-        <div className="space-y-6">
-            {/* Filters and Controls */}
-            <Card>
-                <CardHeader className="pb-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                            <CardTitle>My Submissions</CardTitle>
-                            <CardDescription>
-                                {filteredSubmissions.length} of {mySubmissions.length} submissions
-                            </CardDescription>
-                        </div>
+        <div className="space-y-8 p-6">
+            <div className="mb-6">
+                <h1 className="text-2xl font-semibold text-foreground">My Submissions</h1>
+                <p className="text-muted-foreground mt-1">
+                    {mySubmissions.length} report{mySubmissions.length !== 1 ? 's' : ''} submitted
+                </p>
+            </div>
 
-                        <div className="flex items-center gap-2">
-                            <div className="flex border rounded-md">
-                                <Button
-                                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                                    size="sm"
-                                    className="rounded-r-none"
-                                    onClick={() => setViewMode('grid')}
-                                >
-                                    <Grid3x3 className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                    variant={viewMode === 'list' ? 'default' : 'ghost'}
-                                    size="sm"
-                                    className="rounded-l-none"
-                                    onClick={() => setViewMode('list')}
-                                >
-                                    <ListFilter className="h-4 w-4" />
-                                </Button>
+            {Object.entries(groupedSubmissions).length > 0 ? (
+                Object.entries(groupedSubmissions).map(
+                    ([date, submissions]: [string, ReportSubmission[]]) => (
+                        <div key={date} className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-primary/5 rounded-lg">
+                                    <Calendar className="h-5 w-5 text-primary" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-muted-foreground">
+                                        Submitted on
+                                    </p>
+                                    <p className="text-lg font-semibold text-foreground">
+                                        {date}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                {submissions.map((submission: ReportSubmission) => {
+                                    const statusDetails = getStatusDetails(submission.status);
+                                    const StatusIcon = statusDetails.icon;
+
+                                    return (
+                                        <Card
+                                            key={submission.id}
+                                            className="group hover:shadow-lg transition-all duration-200 border-border/50 hover:border-primary/20"
+                                        >
+                                            <CardHeader className="pb-3">
+                                                <div className="flex items-start justify-between">
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <div className="p-1.5 bg-primary/5 rounded-md">
+                                                                <FileText className="h-4 w-4 text-primary" />
+                                                            </div>
+                                                            <CardTitle className="text-base font-semibold">
+                                                                Report #{submission.id}
+                                                            </CardTitle>
+                                                        </div>
+                                                        <p className="text-xs text-muted-foreground">
+                                                            Submitted at {formatTime(submission.created_at)}
+                                                        </p>
+                                                    </div>
+                                                    <div className={`px-3 py-1.5 rounded-full ${statusDetails.bgColor} ${statusDetails.borderColor} border`}>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <StatusIcon className={`h-3.5 w-3.5 ${statusDetails.color}`} />
+                                                            <span className={`text-xs font-medium ${statusDetails.color}`}>
+                                                                {statusDetails.label}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </CardHeader>
+                                            <CardContent className="pt-0">
+                                                <div className="space-y-3">
+                                                    <div className="flex items-center gap-2 pt-3 border-t border-border/50">
+                                                        <User className="h-4 w-4 text-muted-foreground" />
+                                                        <div>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Field Officer
+                                                            </p>
+                                                            <p className="text-sm font-medium text-foreground">
+                                                                {submission.field_officer.name}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* {submission.description && (
+                                                        <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+                                                            <p className="text-xs text-muted-foreground mb-1">
+                                                                Description
+                                                            </p>
+                                                            <p className="text-sm text-foreground line-clamp-2">
+                                                                {submission.description}
+                                                            </p>
+                                                        </div>
+                                                    )} */}
+
+                                                    <div className="flex justify-between items-center mt-4 pt-3 border-t border-border/50">
+                                                        <button className="text-xs text-primary hover:text-primary/80 font-medium transition-colors">
+                                                            View Details
+                                                        </button>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {new Date(submission.updated_at).toLocaleDateString('en-US', {
+                                                                month: 'short',
+                                                                day: 'numeric'
+                                                            })}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    );
+                                })}
                             </div>
                         </div>
-                    </div>
-                </CardHeader>
-
-                <CardContent>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search by ID, report title, or program..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="pl-9"
-                            />
-                        </div>
-
-                        <div className="flex gap-2">
-                            <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                <SelectTrigger className="w-[180px]">
-                                    <Filter className="h-4 w-4 mr-2" />
-                                    <SelectValue placeholder="Filter by status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">
-                                        All Status ({getStatusCount('all')})
-                                    </SelectItem>
-                                    <SelectItem value="draft">
-                                        Draft ({getStatusCount('draft')})
-                                    </SelectItem>
-                                    <SelectItem value="submitted">
-                                        Submitted ({getStatusCount('submitted')})
-                                    </SelectItem>
-                                    <SelectItem value="pending">
-                                        Pending Review ({getStatusCount('pending')})
-                                    </SelectItem>
-                                    <SelectItem value="approved">
-                                        Approved ({getStatusCount('approved')})
-                                    </SelectItem>
-                                    <SelectItem value="rejected">
-                                        Rejected ({getStatusCount('rejected')})
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                            <Button asChild>
-                                <a href="/field-officer/programs">
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    New Submission
-                                </a>
-                            </Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Submissions List */}
-            {filteredSubmissions.length === 0 ? (
-                <Card>
-                    <CardContent className="py-12">
-                        <div className="text-center">
-                            <div className="mx-auto h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                                <FileText className="h-6 w-6 text-muted-foreground" />
-                            </div>
-                            <h3 className="text-lg font-medium text-foreground mb-2">
-                                {mySubmissions.length === 0 ? 'No submissions yet' : 'No matching submissions'}
-                            </h3>
-                            <p className="text-muted-foreground mb-6">
-                                {mySubmissions.length === 0
-                                    ? 'Start by browsing programs and submitting your first report.'
-                                    : 'Try adjusting your search or filter criteria.'}
-                            </p>
-                            <Button asChild>
-                                <a href="/field-officer/programs">
-                                    Browse Programs
-                                </a>
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                    ),
+                )
             ) : (
-                <div className={viewMode === 'grid'
-                    ? 'grid grid-cols-1 md:grid-cols-2 gap-4'
-                    : 'space-y-4'
-                }>
-                    {filteredSubmissions.map((submission) => (
-                        <SubmissionCard
-                            key={submission.id}
-                            submission={submission}
-                        />
-                    ))}
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="p-4 bg-muted/30 rounded-full mb-4">
+                        <FileText className="h-12 w-12 text-muted-foreground/50" />
+                    </div>
+                    <h3 className="text-lg font-medium text-foreground mb-2">
+                        No submissions yet
+                    </h3>
+                    <p className="text-muted-foreground max-w-md">
+                        You haven't submitted any reports yet. Your submissions will appear here once you start submitting reports.
+                    </p>
                 </div>
             )}
         </div>

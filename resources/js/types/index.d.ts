@@ -57,7 +57,7 @@ export interface Program {
     id: number;
     name: string;
     description: string;
-    coordinator: User;
+    coordinator: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
     created_at: string;
     updated_at: string;
 }
@@ -89,8 +89,10 @@ export interface Media {
 export interface ReportSubmission {
     id: string;
     report_id: string;
-    field_officer_id: number;
-    status: 'draft' | 'submitted' | 'pending' | 'approved' | 'rejected';
+    field_officer: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
+    status: 'draft' | 'submitted';
+    timeliness: string | null;
+    media: Media[];
     created_at: string;
     updated_at: string;
 

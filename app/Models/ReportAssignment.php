@@ -39,8 +39,8 @@ class ReportAssignment extends Model
         return $this->belongsTo(User::class, 'field_officer_id');
     }
 
-    public function cluster()
-    {
-        return $this->belongsTo(Cluster::class, 'cluster_id');
-    }
+    // public function cluster()
+    // {
+    //     return $this->belongsTo(Cluster::class, 'cluster_id');
+    // }
 }
