@@ -122,6 +122,7 @@ export interface LaravelPaginator<T> {
     prev_page_url: string | null;
     to: number | null;
     total: number;
+
 }
 
 export type FilterType = 'all' | 'pending' | 'rejected' | 'accepted';

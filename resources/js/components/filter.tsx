@@ -9,13 +9,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Filter } from 'lucide-react';
+import { Check, Filter } from 'lucide-react';
+import { cn } from '@/lib/utils'; // You may need to add this utility
 
-export default function FilterBtn({
-    onSelect,
-}: {
+interface FilterBtnProps {
     onSelect: (year: number | null) => void;
-}) {
+    selectedYear?: number | null;
+}
+
+export default function FilterBtn({ onSelect, selectedYear }: FilterBtnProps) {
     const startYear = 2024;
     const currentYear = new Date().getFullYear();
 
@@ -24,12 +26,15 @@ export default function FilterBtn({
         (_, i) => startYear + i,
     );
 
+    // Button text based on selected year
+    const buttonText = selectedYear ? `Filter: ${selectedYear}` : 'Filter';
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex items-center gap-2">
                     <Filter className="h-4 w-4" />
-                    Filter
+                    {buttonText}
                 </Button>
             </DropdownMenuTrigger>
 
@@ -37,13 +42,29 @@ export default function FilterBtn({
                 <DropdownMenuLabel>Filter by Year</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => onSelect(null)}>
-                    All
+                {/* All option */}
+                <DropdownMenuItem
+                    onClick={() => onSelect(null)}
+                    className={cn(
+                        "flex items-center justify-between",
+                        !selectedYear && "bg-accent"
+                    )}
+                >
+                    <span>All</span>
+                    {!selectedYear && <Check className="h-4 w-4" />}
                 </DropdownMenuItem>
 
                 {years.map((year) => (
-                    <DropdownMenuItem key={year} onClick={() => onSelect(year)}>
-                        {year}
+                    <DropdownMenuItem
+                        key={year}
+                        onClick={() => onSelect(year)}
+                        className={cn(
+                            "flex items-center justify-between",
+                            selectedYear === year && "bg-accent"
+                        )}
+                    >
+                        <span>{year}</span>
+                        {selectedYear === year && <Check className="h-4 w-4" />}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>

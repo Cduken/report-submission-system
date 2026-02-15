@@ -25,7 +25,7 @@ interface SubmissionsProps {
 
 export default function Submissions({
     submissions,
-    filter = 'all',
+    // filter = 'all',
 }: SubmissionsProps) {
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
 

@@ -14,12 +14,19 @@ class ViewController extends Controller
         return inertia('focal-person/dashboard/page');
     }
 
-    public function programs(){
-         $programs = auth()->user()
+public function programs(Request $request)
+{
+    $query = auth()->user()
         ->programsAsCoordinator()
-        ->with('coordinator')
-        ->get()
-        ->map(fn ($program) => [
+        ->with('coordinator');
+
+    // Add year filter if provided
+    if ($request->has('year') && $request->year) {
+        $query->whereYear('created_at', $request->year);
+    }
+
+    $programs = $query->paginate(15)
+        ->through(fn ($program) => [
             'id' => $program->id,
             'name' => $program->name,
             'description' => $program->description,
@@ -37,10 +44,12 @@ class ViewController extends Controller
                 'role' => $program->coordinator->role,
             ],
         ]);
-        return inertia('focal-person/programs/page', [
-            'programs' => $programs,
-        ]);
-    }
+
+    return inertia('focal-person/programs/page', [
+        'programs' => $programs,
+        'filters' => $request->only(['year']), // Pass filters back to frontend
+    ]);
+}
 
     public function reports(Program $program)
 {

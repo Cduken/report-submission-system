@@ -98,7 +98,7 @@ class ViewController extends Controller
 
     public function myReportSubmissions(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 12);
         $filter = $request->get('filter', 'all');
 
         $query = ReportSubmission::query()
