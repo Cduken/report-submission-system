@@ -99,7 +99,6 @@ export default function page() {
                     )}
                 </Activity>
             </div>
-
             {/* Single drawer instance shared by both views */}
             <ReportSubmissionDrawer
                 submission={selectedSubmission}

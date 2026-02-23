@@ -104,4 +104,110 @@ class ReportSubmissionController extends Controller
         return redirect()->back()->with('success', 'Report Submission Updated Successfully');
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'description' => ['nullable', 'string'],
+            'submission_data' => ['nullable', 'array'],
+            'files_to_delete' => ['nullable', 'json'],
+        ]);
+
+        $submission = ReportSubmission::with('report')->findOrFail($id);
+        $report = $submission->report;
+
+        // Check if user is authorized
+        if ($submission->field_officer_id !== Auth::id()) {
+            abort(403, 'You are not authorized to update this submission.');
+        }
+
+        // Check if deadline has passed (optional - you may want to restrict edits after deadline)
+        $deadlinePassed = $report->deadline && now()->gt($report->deadline);
+
+        // Handle file deletions
+        $filesToDelete = $request->input('files_to_delete')
+            ? json_decode($request->input('files_to_delete'), true)
+            : [];
+
+        $currentData = $submission->data ?? [];
+
+        if (!empty($filesToDelete)) {
+            $mediaToDelete = $submission->getMedia('submission_attachments')
+                ->whereIn('id', $filesToDelete);
+
+            foreach ($mediaToDelete as $media) {
+                $media->delete();
+            }
+
+            // Clean up data array
+            foreach ($filesToDelete as $fileId) {
+                $media = $submission->getMedia('submission_attachments')
+                    ->where('id', $fileId)
+                    ->first();
+
+                if ($media) {
+                    $fileUrl = $media->getUrl();
+
+                    foreach ($currentData as $fieldId => $urls) {
+                        if (is_array($urls)) {
+                            $currentData[$fieldId] = array_filter($urls, function($url) use ($fileUrl) {
+                                return $url !== $fileUrl;
+                            });
+
+                            if (empty($currentData[$fieldId])) {
+                                unset($currentData[$fieldId]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Process new file uploads
+        $finalData = $currentData;
+
+        if ($request->file('submission_data')) {
+            foreach ($request->file('submission_data') as $fieldId => $files) {
+                $files = is_array($files) ? $files : [$files];
+                $urls = $finalData[$fieldId] ?? [];
+
+                foreach ($files as $file) {
+                    $media = $submission
+                        ->addMedia($file)
+                        ->toMediaCollection('submission_attachments');
+
+                    $urls[] = $media->getUrl();
+                }
+
+                $finalData[$fieldId] = $urls;
+            }
+        }
+
+        // Determine if content actually changed
+        $hasChanges = $request->description !== $submission->description
+            || json_encode($finalData) !== json_encode($submission->data);
+
+        if (!$hasChanges) {
+            return redirect()->back()->with('info', 'No changes were made to the submission.');
+        }
+
+        // Update the submission
+        $submission->update([
+            'description' => $request->description,
+            'data' => $finalData,
+            'updated_at' => now(),
+        ]);
+
+        // Optionally add a note about the update
+        activity()
+            ->performedOn($submission)
+            ->causedBy(Auth::user())
+            ->withProperties(['changes' => [
+                'description_changed' => $request->description !== $submission->description,
+                'files_updated' => !empty($filesToDelete) || !empty($request->file('submission_data')),
+            ]])
+            ->log('submission_updated');
+
+        return redirect()->back()->with('success', 'Report submission updated successfully.');
+    }
+
 }

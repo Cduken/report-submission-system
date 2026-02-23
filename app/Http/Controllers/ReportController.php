@@ -19,6 +19,8 @@ class ReportController extends Controller
 
             'template_files' => 'nullable|array',
             'template_files.*' => 'file|max:10240',
+            'reference_files' => 'nullable|array',
+            'reference_files.*' => 'file|max:10240',
         ]);
 
 
@@ -33,6 +35,14 @@ class ReportController extends Controller
 
             foreach($request->file('template_files') as $file){
                 $report->addMedia($file)->toMediaCollection('templates');
+            }
+
+        }
+
+        if($request->hasFile('reference_files')){
+
+            foreach($request->file('reference_files') as $file){
+                $report->addMedia($file)->toMediaCollection('references');
             }
 
         }

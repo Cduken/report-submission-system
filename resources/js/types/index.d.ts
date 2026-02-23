@@ -72,6 +72,7 @@ export interface Report {
     final_deadline: Date;
     form_schema: Array;
     templates: Media[];
+    references: Media[];
     created_at: string;
     updated_at: string;
 }
