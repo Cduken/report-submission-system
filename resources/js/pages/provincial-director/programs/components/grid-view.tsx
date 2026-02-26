@@ -1,4 +1,3 @@
-import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
 import { Program } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Calendar, EllipsisVertical, Folder } from 'lucide-react';
@@ -40,7 +39,7 @@ export default function GridView({ programs }: { programs: Program[] }) {
                     className="group relative rounded-xl border bg-card transition-all hover:border-primary/50 hover:shadow-lg"
                 >
                     <Link
-                        href={ViewController.reports(program)}
+                        // href={ViewController.reports(program)}
                         className="block"
                     >
                         {/* Header Section with Gradient Background */}
