@@ -1,6 +1,6 @@
 // components/header.tsx (Simple & Elegant)
-import { router } from '@inertiajs/react';
 import { FilterType } from '@/types';
+import { router } from '@inertiajs/react';
 
 interface HeaderProps {
     activeFilter?: FilterType;
@@ -39,18 +39,15 @@ export default function Header({ activeFilter = 'all' }: HeaderProps) {
                             <button
                                 key={filter.key}
                                 onClick={() => handleFilterClick(filter.key)}
-                                className={`
-                                    relative px-4 py-3 text-sm font-medium transition-colors
-                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-                                    ${isActive
+                                className={`relative px-4 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none ${
+                                    isActive
                                         ? 'text-foreground'
                                         : 'text-muted-foreground hover:text-foreground'
-                                    }
-                                `}
+                                } `}
                             >
                                 {filter.label}
                                 {isActive && (
-                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />
+                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-t-full bg-primary" />
                                 )}
                             </button>
                         );

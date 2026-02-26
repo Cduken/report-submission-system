@@ -18,13 +18,24 @@ export default function Reports() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between gap-3">
-                    <Back link={ViewController.programs()} />
+                    <Back />
 
                     <h1 className="text-2xl font-semibold">All Reports </h1>
                     <div></div>
                 </div>
                 <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
-                    No reports yet
+                    <div className="flex h-[60vh] items-center justify-center">
+                        <div>
+                            <img
+                                src="/Images/no-report.svg"
+                                alt="No report"
+                                className="mb-2 h-30"
+                            />
+                            <p className="text-center text-gray-500">
+                                No reports yet
+                            </p>
+                        </div>
+                    </div>
                 </Activity>
 
                 <Activity mode={reports.length > 0 ? 'visible' : 'hidden'}>

@@ -19,8 +19,6 @@ import { Form } from '@inertiajs/react';
 import {
     AlertCircle,
     Calendar,
-    CheckCircle2,
-    Clock,
     Download,
     Eye,
     FileText,
@@ -43,27 +41,26 @@ interface MediaFile {
     id: string;
     name: string;
     size: number;
-    original_url: string;
+    download_url: string;
+    url: string;
     field_id?: string;
+    model_id?: string;
 }
 
-interface ReportSubmissionDialogProps {
+interface EditReportSubmissionDialogProps {
     open: boolean;
     setOpen: (open: boolean) => void;
     report: Report;
-    submission?: ReportSubmission & { media?: MediaFile[] }; // Optional for editing
-    mode: 'submit' | 'edit';
+    submission: ReportSubmission & { media?: MediaFile[] };
 }
 
-export default function ReportSubmissionDialog({
+export default function EditReportSubmissionDialog({
     open,
     setOpen,
     report,
     submission,
-    mode = 'submit',
-}: ReportSubmissionDialogProps) {
+}: EditReportSubmissionDialogProps) {
     const schema = (report.form_schema || []) as DynamicFieldDefinition[];
-    const [answers, setAnswers] = useState<Record<string, any>>({});
     const [uploadedFiles, setUploadedFiles] = useState<Record<string, File[]>>(
         {},
     );
@@ -72,62 +69,34 @@ export default function ReportSubmissionDialog({
         Record<string, MediaFile[]>
     >({});
 
-    const isEditMode = mode === 'edit' && submission;
-    const hasSubmitted = !!submission;
-
-    // Load existing submission data when in edit mode
+    // Load existing submission data on mount / when submission changes
     useEffect(() => {
-        if (isEditMode && submission) {
-            // Set description
-            if (submission.description) {
-                setAnswers((prev) => ({
-                    ...prev,
-                    description: submission.description,
-                }));
-            }
+        if (submission?.media && submission.media.length > 0) {
+            const filesByField: Record<string, MediaFile[]> = {};
 
-            // Organize existing files by field_id from media collection
-            if (submission.media && submission.media.length > 0) {
-                const filesByField: Record<string, MediaFile[]> = {};
+            submission.media.forEach((file: MediaFile) => {
+                const fieldId = file.field_id || 'unknown';
 
-                // You'll need to determine how files are associated with field_ids
-                // This assumes media items have a field_id property or you can derive it from the data structure
-                submission.media.forEach((file: MediaFile) => {
-                    // If field_id is not directly on the media, you might need to look it up from submission.data
-                    const fieldId = file.field_id || 'unknown';
+                console.log('Field ID: ', fieldId);
+                if (!filesByField[fieldId]) {
+                    filesByField[fieldId] = [];
+                }
+                filesByField[fieldId].push(file);
+            });
 
-                    if (!filesByField[fieldId]) {
-                        filesByField[fieldId] = [];
-                    }
-                    filesByField[fieldId].push(file);
-                });
-
-                setExistingFiles(filesByField);
-            }
+            setExistingFiles(filesByField);
         }
-    }, [isEditMode, submission]);
+    }, [submission]);
 
     const handleFieldChange = (fieldId: string, files: FileList | null) => {
         if (files) {
             const fileArray = Array.from(files);
-            setUploadedFiles((prev) => ({
-                ...prev,
-                [fieldId]: fileArray,
-            }));
-            setAnswers((prev) => ({
-                ...prev,
-                [fieldId]: fileArray,
-            }));
+            setUploadedFiles((prev) => ({ ...prev, [fieldId]: fileArray }));
         }
     };
 
     const clearFiles = (fieldId: string) => {
         setUploadedFiles((prev) => {
-            const newState = { ...prev };
-            delete newState[fieldId];
-            return newState;
-        });
-        setAnswers((prev) => {
             const newState = { ...prev };
             delete newState[fieldId];
             return newState;
@@ -151,62 +120,29 @@ export default function ReportSubmissionDialog({
         });
     };
 
-    const isDeadlinePassed =
-        report.deadline && new Date(report.deadline) < new Date();
-
-    const getDialogTitle = () => {
-        if (isEditMode) return `Edit Submission: ${report.title}`;
-        return `Submit Report: ${report.title}`;
+    const handleClose = () => {
+        setOpen(false);
+        setUploadedFiles({});
+        setFilesToDelete([]);
     };
 
-    const getDialogDescription = () => {
-        if (isEditMode)
-            return 'Update your submission details and files below.';
-        return 'Please fill out the required information below.';
-    };
-
-    const getSubmitButtonText = () => {
-        if (processing) return isEditMode ? 'Updating...' : 'Submitting...';
-        return isEditMode ? 'Update Submission' : 'Submit Report';
-    };
+    // console.log('Report: ', report);
+    console.log('Report Submissiona: ', submission);
+    // console.log('Submission Data: ', submission);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            {!isEditMode && !hasSubmitted ? (
-                <DialogTrigger asChild>
-                    <Button
-                        type="button"
-                        variant="default"
-                        className="shadow-sm"
-                        disabled={isDeadlinePassed}
-                    >
-                        <Folder className="mr-2 h-4 w-4" />
-                        Submit Report
-                    </Button>
-                </DialogTrigger>
-            ) : isEditMode ? (
-                <DialogTrigger asChild>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                    >
-                        <Pencil className="mr-1 h-3.5 w-3.5" />
-                        Edit
-                    </Button>
-                </DialogTrigger>
-            ) : (
+            <DialogTrigger asChild>
                 <Button
                     type="button"
                     variant="outline"
-                    disabled
-                    className="cursor-not-allowed opacity-75"
+                    size="sm"
+                    className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                 >
-                    <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                    Already Submitted
+                    <Pencil className="mr-1 h-3.5 w-3.5" />
+                    Edit
                 </Button>
-            )}
+            </DialogTrigger>
 
             <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
@@ -214,39 +150,25 @@ export default function ReportSubmissionDialog({
                         <div className="flex items-start justify-between">
                             <div>
                                 <DialogTitle className="text-xl">
-                                    {getDialogTitle()}
+                                    Edit Submission: {report.title}
                                 </DialogTitle>
                                 <DialogDescription className="mt-1 text-sm text-gray-500">
-                                    {getDialogDescription()}
+                                    Update your submission details and files
+                                    below.
                                 </DialogDescription>
                             </div>
-                            {isDeadlinePassed && !isEditMode && (
-                                <div className="flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
-                                    <Clock className="h-3.5 w-3.5" />
-                                    Deadline Passed
-                                </div>
-                            )}
-                            {isEditMode && (
-                                <div className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-                                    <Pencil className="h-3.5 w-3.5" />
-                                    Editing Mode
-                                </div>
-                            )}
+                            <div className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+                                <Pencil className="h-3.5 w-3.5" />
+                                Editing Mode
+                            </div>
                         </div>
                     </DialogHeader>
                 </div>
 
                 <Form
-                    {...(isEditMode
-                        ? ReportSubmissionController.update.form(submission?.id)
-                        : ReportSubmissionController.store.form())}
+                    {...ReportSubmissionController.update.form(submission?.id)}
                     encType="multipart/form-data"
-                    onSuccess={() => {
-                        setOpen(false);
-                        setAnswers({});
-                        setUploadedFiles({});
-                        setFilesToDelete([]);
-                    }}
+                    onSuccess={handleClose}
                 >
                     {({ processing, errors }) => (
                         <div className="space-y-8 px-6 pb-6">
@@ -290,13 +212,7 @@ export default function ReportSubmissionDialog({
                                 name="report_id"
                                 value={report.id}
                             />
-                            {isEditMode && submission && (
-                                <input
-                                    type="hidden"
-                                    name="_method"
-                                    value="PUT"
-                                />
-                            )}
+                            <input type="hidden" name="_method" value="PUT" />
                             {filesToDelete.length > 0 && (
                                 <input
                                     type="hidden"
@@ -328,9 +244,7 @@ export default function ReportSubmissionDialog({
                                             id="description"
                                             name="description"
                                             defaultValue={
-                                                isEditMode
-                                                    ? submission?.description
-                                                    : ''
+                                                submission?.description ?? ''
                                             }
                                             placeholder="Add any additional notes or context about your submission..."
                                             className="min-h-[100px] border-gray-200 bg-white focus:border-purple-500 focus:ring-purple-500"
@@ -348,37 +262,42 @@ export default function ReportSubmissionDialog({
 
                             {/* Required Attachments Section */}
                             <div className="space-y-5">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100">
-                                            <FileUp className="h-3.5 w-3.5 text-amber-600" />
-                                        </div>
-                                        <h3 className="text-sm font-semibold text-gray-900">
-                                            Required Attachments
-                                        </h3>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100">
+                                        <FileUp className="h-3.5 w-3.5 text-amber-600" />
                                     </div>
+                                    <h3 className="text-sm font-semibold text-gray-900">
+                                        Attachments
+                                    </h3>
                                 </div>
 
                                 {schema.length === 0 ? (
                                     <div className="rounded-xl border border-dashed bg-gray-50 p-8 text-center">
-                                        <div className="flex flex-col items-center">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                                                <CheckCircle2 className="h-6 w-6 text-gray-400" />
-                                            </div>
-                                            <p className="mt-2 text-sm font-medium text-gray-700">
-                                                No attachments required
-                                            </p>
-                                            <p className="text-xs text-gray-400">
-                                                This report doesn't require any
-                                                file attachments
-                                            </p>
-                                        </div>
+                                        <p className="text-sm font-medium text-gray-700">
+                                            No attachments required
+                                        </p>
+                                        <p className="text-xs text-gray-400">
+                                            This report doesn't require any file
+                                            attachments
+                                        </p>
                                     </div>
                                 ) : (
                                     <div className="space-y-4">
                                         {schema.map((field, index) => {
-                                            const fieldExistingFiles = existingFiles[field.id] || [];
-                                            const hasExistingFiles = fieldExistingFiles.length > 0;
+                                            const fieldExistingFiles =
+                                                existingFiles[field.id] || [];
+                                            const hasExistingFiles =
+                                                fieldExistingFiles.length > 0;
+
+                                            console.log(
+                                                'Existing files: ',
+                                                existingFiles,
+                                            );
+
+                                            console.log(
+                                                'Field Existing files: ',
+                                                fieldExistingFiles,
+                                            );
 
                                             return (
                                                 <div
@@ -394,7 +313,9 @@ export default function ReportSubmissionDialog({
                                                                     }
                                                                     className="text-sm font-medium text-gray-700"
                                                                 >
-                                                                    {field.label}
+                                                                    {
+                                                                        field.label
+                                                                    }
                                                                     {field.required && (
                                                                         <span className="ml-1 text-red-500">
                                                                             *
@@ -403,8 +324,11 @@ export default function ReportSubmissionDialog({
                                                                 </Label>
                                                                 <p className="mt-1 text-xs text-gray-400">
                                                                     Attachment #
-                                                                    {index + 1} of{' '}
-                                                                    {schema.length}
+                                                                    {index + 1}{' '}
+                                                                    of{' '}
+                                                                    {
+                                                                        schema.length
+                                                                    }
                                                                 </p>
                                                             </div>
                                                             <div className="flex gap-2">
@@ -416,7 +340,8 @@ export default function ReportSubmissionDialog({
                                                                             uploadedFiles[
                                                                                 field
                                                                                     .id
-                                                                            ].length
+                                                                            ]
+                                                                                .length
                                                                         }{' '}
                                                                         new
                                                                     </span>
@@ -426,23 +351,28 @@ export default function ReportSubmissionDialog({
                                                                         field.id
                                                                     ] && (
                                                                         <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
-                                                                            {fieldExistingFiles.length}{' '}
+                                                                            {
+                                                                                fieldExistingFiles.length
+                                                                            }{' '}
                                                                             existing
                                                                         </span>
                                                                     )}
                                                             </div>
                                                         </div>
 
-                                                        {/* Existing Files - Updated to match the submitted files style */}
-                                                        {isEditMode &&
-                                                            hasExistingFiles && (
-                                                                <div className="space-y-2">
-                                                                    <p className="text-xs font-medium text-blue-700">
-                                                                        Current Files:
-                                                                    </p>
-                                                                    {fieldExistingFiles.map((file) => (
+                                                        {/* Existing Files */}
+                                                        {hasExistingFiles && (
+                                                            <div className="space-y-2">
+                                                                <p className="text-xs font-medium text-blue-700">
+                                                                    Current
+                                                                    Files:
+                                                                </p>
+                                                                {fieldExistingFiles.map(
+                                                                    (file) => (
                                                                         <div
-                                                                            key={file.id}
+                                                                            key={
+                                                                                file.id
+                                                                            }
                                                                             className="flex items-center justify-between rounded-lg border border-border bg-background p-3 transition hover:bg-muted/40"
                                                                         >
                                                                             <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -451,7 +381,9 @@ export default function ReportSubmissionDialog({
                                                                                 </div>
                                                                                 <div className="min-w-0 flex-1">
                                                                                     <p className="truncate text-sm font-medium">
-                                                                                        {file.name}
+                                                                                        {
+                                                                                            file.name
+                                                                                        }
                                                                                     </p>
                                                                                     <p className="text-xs text-muted-foreground">
                                                                                         {file.size
@@ -462,13 +394,13 @@ export default function ReportSubmissionDialog({
                                                                             </div>
 
                                                                             <div className="flex gap-2">
-                                                                                {/* View Button */}
                                                                                 <Button
                                                                                     variant="outline"
                                                                                     size="sm"
+                                                                                    type="button"
                                                                                     onClick={() =>
                                                                                         window.open(
-                                                                                            file.original_url,
+                                                                                            file.url,
                                                                                             '_blank',
                                                                                             'noopener,noreferrer',
                                                                                         )
@@ -478,7 +410,6 @@ export default function ReportSubmissionDialog({
                                                                                     View
                                                                                 </Button>
 
-                                                                                {/* Download Button */}
                                                                                 <Button
                                                                                     variant="outline"
                                                                                     size="sm"
@@ -486,16 +417,14 @@ export default function ReportSubmissionDialog({
                                                                                 >
                                                                                     <a
                                                                                         href={
-                                                                                            file.original_url
+                                                                                            file.download_url
                                                                                         }
-                                                                                        download
                                                                                     >
                                                                                         <Download className="mr-2 h-4 w-4" />
                                                                                         Download
                                                                                     </a>
                                                                                 </Button>
 
-                                                                                {/* Delete Button */}
                                                                                 <Button
                                                                                     type="button"
                                                                                     variant="ghost"
@@ -512,11 +441,12 @@ export default function ReportSubmissionDialog({
                                                                                 </Button>
                                                                             </div>
                                                                         </div>
-                                                                    ))}
-                                                                </div>
-                                                            )}
+                                                                    ),
+                                                                )}
+                                                            </div>
+                                                        )}
 
-                                                        {/* Upload New Files */}
+                                                        {/* Upload New / Replacement Files */}
                                                         <div
                                                             className={cn(
                                                                 'relative cursor-pointer rounded-lg border-2 border-dashed transition-all',
@@ -550,10 +480,9 @@ export default function ReportSubmissionDialog({
                                                                     !uploadedFiles[
                                                                         field.id
                                                                     ] &&
-                                                                    (!isEditMode ||
-                                                                        !hasExistingFiles)
+                                                                    !hasExistingFiles
                                                                 }
-                                                                className="hidden"
+                                                                className="absolute inset-0 cursor-pointer opacity-0"
                                                                 onChange={(e) =>
                                                                     handleFieldChange(
                                                                         field.id,
@@ -593,7 +522,8 @@ export default function ReportSubmissionDialog({
                                                                     </div>
                                                                     <ul className="space-y-2">
                                                                         {uploadedFiles[
-                                                                            field.id
+                                                                            field
+                                                                                .id
                                                                         ].map(
                                                                             (
                                                                                 file,
@@ -635,15 +565,17 @@ export default function ReportSubmissionDialog({
                                                                         <UploadCloud className="h-5 w-5 text-amber-500" />
                                                                     </div>
                                                                     <p className="mt-2 text-sm font-medium text-gray-700">
-                                                                        {isEditMode &&
-                                                                        hasExistingFiles
+                                                                        {hasExistingFiles
                                                                             ? 'Click to upload additional files'
                                                                             : 'Click to upload files'}
                                                                     </p>
                                                                     <p className="text-xs text-gray-400">
-                                                                        PDF, Images,
-                                                                        DOCX (Max
-                                                                        10MB each)
+                                                                        PDF,
+                                                                        Images,
+                                                                        DOCX
+                                                                        (Max
+                                                                        10MB
+                                                                        each)
                                                                     </p>
                                                                 </div>
                                                             )}
@@ -663,74 +595,6 @@ export default function ReportSubmissionDialog({
                                     </div>
                                 )}
                             </div>
-
-                            {/* Reference Materials Section (if available) */}
-                            {(report.references?.length > 0 ||
-                                report.templates?.length > 0) && (
-                                <div className="space-y-5">
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100">
-                                            <Download className="h-3.5 w-3.5 text-emerald-600" />
-                                        </div>
-                                        <h3 className="text-sm font-semibold text-gray-900">
-                                            Reference Materials
-                                        </h3>
-                                    </div>
-
-                                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/30 p-5">
-                                        <div className="grid gap-4 sm:grid-cols-2">
-                                            {report.references?.length > 0 && (
-                                                <div>
-                                                    <Label className="text-xs font-medium text-emerald-700">
-                                                        Reference Files
-                                                    </Label>
-                                                    <ul className="mt-2 space-y-2">
-                                                        {report.references.map(
-                                                            (file, i) => (
-                                                                <li
-                                                                    key={i}
-                                                                    className="flex items-center gap-2 text-sm"
-                                                                >
-                                                                    <FileText className="h-4 w-4 text-emerald-500" />
-                                                                    <span className="flex-1 truncate text-gray-600">
-                                                                        {
-                                                                            file.name
-                                                                        }
-                                                                    </span>
-                                                                </li>
-                                                            ),
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                            {report.templates?.length > 0 && (
-                                                <div>
-                                                    <Label className="text-xs font-medium text-amber-700">
-                                                        Template Files
-                                                    </Label>
-                                                    <ul className="mt-2 space-y-2">
-                                                        {report.templates.map(
-                                                            (file, i) => (
-                                                                <li
-                                                                    key={i}
-                                                                    className="flex items-center gap-2 text-sm"
-                                                                >
-                                                                    <FileText className="h-4 w-4 text-amber-500" />
-                                                                    <span className="flex-1 truncate text-gray-600">
-                                                                        {
-                                                                            file.name
-                                                                        }
-                                                                    </span>
-                                                                </li>
-                                                            ),
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
 
                             {/* Error Summary */}
                             {Object.keys(errors).length > 0 && (
@@ -761,35 +625,23 @@ export default function ReportSubmissionDialog({
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        onClick={() => setOpen(false)}
+                                        onClick={handleClose}
                                         className="px-6"
                                     >
                                         Cancel
                                     </Button>
                                     <Button
                                         type="submit"
-                                        disabled={
-                                            processing ||
-                                            (!isEditMode && isDeadlinePassed)
-                                        }
-                                        className={cn(
-                                            'min-w-[140px] px-6',
-                                            !isEditMode && isDeadlinePassed
-                                                ? 'cursor-not-allowed bg-gray-400 hover:bg-gray-400'
-                                                : 'bg-blue-600 hover:bg-blue-700',
-                                        )}
+                                        disabled={processing}
+                                        className="min-w-[140px] bg-blue-600 px-6 hover:bg-blue-700"
                                     >
                                         {processing ? (
                                             <div className="flex items-center gap-2">
                                                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                                {isEditMode
-                                                    ? 'Updating...'
-                                                    : 'Submitting...'}
+                                                Updating...
                                             </div>
-                                        ) : !isEditMode && isDeadlinePassed ? (
-                                            'Deadline Passed'
                                         ) : (
-                                            getSubmitButtonText()
+                                            'Update Submission'
                                         )}
                                     </Button>
                                 </div>

@@ -35,7 +35,7 @@ const Developers = () => {
 
                 <div className="py-3">
                     {/* Tree Structure Visualization */}
-                    <div className="mb-4">
+                    <div className="mb-4 overflow-y-auto h-96 lg:overflow-y-hidden lg:h-auto">
                         {/* Adviser Section - Centered */}
                         <div className="mb-4 flex flex-col items-center">
                             <div className="flex w-full max-w-sm flex-col items-center gap-1.5 rounded-lg border border-primary/10 bg-gradient-to-b from-primary/3 to-transparent p-3">

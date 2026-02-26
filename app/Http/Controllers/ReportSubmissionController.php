@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use App\Models\ReportSubmission;
+use App\Notifications\ReportSubmissionAccepted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -19,7 +20,12 @@ class ReportSubmissionController extends Controller
             'submission_data' => ['nullable', 'array'],
         ]);
 
+
+
         $report = Report::findOrFail($request->report_id);
+
+        // dd($report->form_schema);
+        // dd($request->submission_data);
 
         // Determine timeliness
         $submittedAt = now();
@@ -53,12 +59,14 @@ class ReportSubmissionController extends Controller
 
                 foreach ($request->file('submission_data') as $fieldId => $files) {
 
+
                     $files = is_array($files) ? $files : [$files];
                     $urls = [];
 
                     foreach ($files as $file) {
                         $media = $submission
                             ->addMedia($file)
+                            ->withCustomProperties(['field_id' => $fieldId])
                             ->toMediaCollection('submission_attachments');
 
                         $urls[] = $media->getUrl();
@@ -91,6 +99,13 @@ class ReportSubmissionController extends Controller
             ],
         ]);
 
+        $reportSubmission->load(['report.program', 'fieldOfficer']);
+
+        if($request->status === 'accepted'){
+
+            $reportSubmission->fieldOfficer->notify(new ReportSubmissionAccepted($reportSubmission));
+        }
+
         $data = [
             'status' => $request->status,
         ];
@@ -100,6 +115,10 @@ class ReportSubmissionController extends Controller
         }
 
         $reportSubmission->update($data);
+
+
+
+
 
         return redirect()->back()->with('success', 'Report Submission Updated Successfully');
     }
@@ -173,6 +192,7 @@ class ReportSubmissionController extends Controller
                 foreach ($files as $file) {
                     $media = $submission
                         ->addMedia($file)
+                        ->withCustomProperties(['field_id' => $fieldId])
                         ->toMediaCollection('submission_attachments');
 
                     $urls[] = $media->getUrl();
@@ -199,13 +219,14 @@ class ReportSubmissionController extends Controller
 
         // Optionally add a note about the update
         activity()
-            ->performedOn($submission)
-            ->causedBy(Auth::user())
-            ->withProperties(['changes' => [
-                'description_changed' => $request->description !== $submission->description,
-                'files_updated' => !empty($filesToDelete) || !empty($request->file('submission_data')),
-            ]])
-            ->log('submission_updated');
+        ->causedBy(Auth::user())
+        ->withProperties([
+            'changes' => [
+                'description_changed' => true,
+                'files_updated' => true,
+            ]
+        ])
+        ->log('submission_updated');
 
         return redirect()->back()->with('success', 'Report submission updated successfully.');
     }

@@ -24,11 +24,13 @@ export default function EllipsisVerticalCard({
                 </button>
             </HoverCardTrigger>
             <HoverCardContent>
-                <data value="">
-                    <div>
+                <data
+                    className='flex flex-col gap-2'
+                    value="">
+                    <div className='action p-2 hover:bg-accent hover:text-accent-foreground rounded transition-all duration-300 hover:cursor-pointer'>
                         <Link>Open</Link>
                     </div>
-                    <div>
+                    <div className='action p-2 hover:bg-accent hover:text-accent-foreground rounded transition-all duration-300 hover:cursor-pointer'>
                         <Link>Edit</Link>
                     </div>
                     <div>
@@ -38,7 +40,11 @@ export default function EllipsisVerticalCard({
                                 setOpen(false);
                             }}
                         >
-                            <Button type="submit" variant={'destructive'}>
+                            <Button
+                                type="submit"
+                                variant={'destructive'}
+                                className='transition-all duration-300 hover:cursor-pointer'
+                            >
                                 Delete
                             </Button>
                         </Form>

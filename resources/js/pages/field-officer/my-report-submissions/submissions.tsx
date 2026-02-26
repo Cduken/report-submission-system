@@ -1,8 +1,10 @@
 // submissions.tsx
+import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Pagination } from '@/components/ui/pagination';
 import { FilterType, LaravelPaginator, ReportSubmission } from '@/types';
 // import { router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import {
     AlertCircle,
     Calendar,
@@ -25,7 +27,7 @@ interface SubmissionsProps {
 
 export default function Submissions({
     submissions,
-    filter = 'all',
+    // filter = 'all',
 }: SubmissionsProps) {
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
@@ -212,87 +214,100 @@ export default function Submissions({
                                                 statusDetails.icon;
 
                                             return (
-                                                <Card
-                                                    key={submission.id}
-                                                    className="group border-border/50 transition-all duration-200 hover:border-primary/20 hover:shadow-lg"
+                                                <Link
+                                                    href={ViewController.reportSubmissions(
+                                                        [
+                                                            submission.report!
+                                                                .program,
+                                                            submission.report!,
+                                                        ],
+                                                    )}
                                                 >
-                                                    <CardHeader className="pb-3">
-                                                        <div className="flex items-start justify-between">
-                                                            <div>
-                                                                <div className="mb-2 flex items-center gap-2">
-                                                                    <div className="rounded-md bg-primary/5 p-1.5">
-                                                                        <FileText className="h-4 w-4 text-primary" />
+                                                    <Card
+                                                        key={submission.id}
+                                                        className="group border-border/50 transition-all duration-200 hover:border-primary/20 hover:shadow-lg"
+                                                    >
+                                                        <CardHeader className="pb-3">
+                                                            <div className="flex items-start justify-between">
+                                                                <div>
+                                                                    <div className="mb-2 flex items-center gap-2">
+                                                                        <div className="rounded-md bg-primary/5 p-1.5">
+                                                                            <FileText className="h-4 w-4 text-primary" />
+                                                                        </div>
+                                                                        <CardTitle className="text-base font-semibold">
+                                                                            Report
+                                                                            #
+                                                                            {
+                                                                                submission.id
+                                                                            }
+                                                                        </CardTitle>
                                                                     </div>
-                                                                    <CardTitle className="text-base font-semibold">
-                                                                        Report #
-                                                                        {
-                                                                            submission.id
-                                                                        }
-                                                                    </CardTitle>
+                                                                    <p className="text-xs text-muted-foreground">
+                                                                        Submitted
+                                                                        at{' '}
+                                                                        {formatTime(
+                                                                            submission.created_at,
+                                                                        )}
+                                                                    </p>
                                                                 </div>
-                                                                <p className="text-xs text-muted-foreground">
-                                                                    Submitted at{' '}
-                                                                    {formatTime(
-                                                                        submission.created_at,
-                                                                    )}
-                                                                </p>
+                                                                <div
+                                                                    className={`rounded-full px-3 py-1.5 ${statusDetails.bgColor} ${statusDetails.borderColor} border`}
+                                                                >
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <StatusIcon
+                                                                            className={`h-3.5 w-3.5 ${statusDetails.color}`}
+                                                                        />
+                                                                        <span
+                                                                            className={`text-xs font-medium ${statusDetails.color}`}
+                                                                        >
+                                                                            {
+                                                                                statusDetails.label
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div
-                                                                className={`rounded-full px-3 py-1.5 ${statusDetails.bgColor} ${statusDetails.borderColor} border`}
-                                                            >
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <StatusIcon
-                                                                        className={`h-3.5 w-3.5 ${statusDetails.color}`}
-                                                                    />
-                                                                    <span
-                                                                        className={`text-xs font-medium ${statusDetails.color}`}
-                                                                    >
-                                                                        {
-                                                                            statusDetails.label
-                                                                        }
+                                                        </CardHeader>
+                                                        <CardContent className="pt-0">
+                                                            <div className="space-y-3">
+                                                                <div className="flex items-center gap-2 border-t border-border/50 pt-3">
+                                                                    <User className="h-4 w-4 text-muted-foreground" />
+                                                                    <div>
+                                                                        <p className="text-xs text-muted-foreground">
+                                                                            Field
+                                                                            Officer
+                                                                        </p>
+                                                                        <p className="text-sm font-medium text-foreground">
+                                                                            {
+                                                                                submission
+                                                                                    .field_officer
+                                                                                    .name
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
+                                                                    <button className="text-xs font-medium text-primary transition-colors hover:text-primary/80">
+                                                                        View
+                                                                        Details
+                                                                    </button>
+                                                                    <span className="text-xs text-muted-foreground">
+                                                                        {new Date(
+                                                                            submission.updated_at,
+                                                                        ).toLocaleDateString(
+                                                                            'en-US',
+                                                                            {
+                                                                                month: 'short',
+                                                                                day: 'numeric',
+                                                                            },
+                                                                        )}
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </CardHeader>
-                                                    <CardContent className="pt-0">
-                                                        <div className="space-y-3">
-                                                            <div className="flex items-center gap-2 border-t border-border/50 pt-3">
-                                                                <User className="h-4 w-4 text-muted-foreground" />
-                                                                <div>
-                                                                    <p className="text-xs text-muted-foreground">
-                                                                        Field
-                                                                        Officer
-                                                                    </p>
-                                                                    <p className="text-sm font-medium text-foreground">
-                                                                        {
-                                                                            submission
-                                                                                .field_officer
-                                                                                .name
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
-                                                                <button className="text-xs font-medium text-primary transition-colors hover:text-primary/80">
-                                                                    View Details
-                                                                </button>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    {new Date(
-                                                                        submission.updated_at,
-                                                                    ).toLocaleDateString(
-                                                                        'en-US',
-                                                                        {
-                                                                            month: 'short',
-                                                                            day: 'numeric',
-                                                                        },
-                                                                    )}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Link>
                                             );
                                         })}
                                     </div>
@@ -308,83 +323,94 @@ export default function Submissions({
                                                 statusDetails.icon;
 
                                             return (
-                                                <Card
-                                                    key={submission.id}
-                                                    className="group border-border/50 transition-all duration-200 hover:border-primary/20 hover:shadow"
+                                                <Link
+                                                    href={ViewController.reportSubmissions(
+                                                        [
+                                                            submission.report!
+                                                                .program,
+                                                            submission.report!,
+                                                        ],
+                                                    )}
                                                 >
-                                                    <CardContent className="p-4">
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-4">
-                                                                <div className="rounded-lg bg-primary/5 p-2">
-                                                                    <FileText className="h-5 w-5 text-primary" />
-                                                                </div>
-                                                                <div>
-                                                                    <div className="mb-1 flex items-center gap-2">
-                                                                        <h3 className="text-base font-semibold text-foreground">
-                                                                            Report
-                                                                            #
-                                                                            {
-                                                                                submission.id
-                                                                            }
-                                                                        </h3>
-                                                                        <div
-                                                                            className={`rounded-full px-2 py-1 ${statusDetails.bgColor} ${statusDetails.borderColor} border`}
-                                                                        >
-                                                                            <div className="flex items-center gap-1.5">
-                                                                                <StatusIcon
-                                                                                    className={`h-3 w-3 ${statusDetails.color}`}
-                                                                                />
-                                                                                <span
-                                                                                    className={`text-xs font-medium ${statusDetails.color}`}
-                                                                                >
+                                                    <Card
+                                                        key={submission.id}
+                                                        className="group border-border/50 transition-all duration-200 hover:border-primary/20 hover:shadow"
+                                                    >
+                                                        <CardContent className="p-4">
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="rounded-lg bg-primary/5 p-2">
+                                                                        <FileText className="h-5 w-5 text-primary" />
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="mb-1 flex items-center gap-2">
+                                                                            <h3 className="text-base font-semibold text-foreground">
+                                                                                Report
+                                                                                #
+                                                                                {
+                                                                                    submission.id
+                                                                                }
+                                                                            </h3>
+                                                                            <div
+                                                                                className={`rounded-full px-2 py-1 ${statusDetails.bgColor} ${statusDetails.borderColor} border`}
+                                                                            >
+                                                                                <div className="flex items-center gap-1.5">
+                                                                                    <StatusIcon
+                                                                                        className={`h-3 w-3 ${statusDetails.color}`}
+                                                                                    />
+                                                                                    <span
+                                                                                        className={`text-xs font-medium ${statusDetails.color}`}
+                                                                                    >
+                                                                                        {
+                                                                                            statusDetails.label
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-4 text-sm">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <User className="h-4 w-4 text-muted-foreground" />
+                                                                                <span className="text-muted-foreground">
                                                                                     {
-                                                                                        statusDetails.label
+                                                                                        submission
+                                                                                            .field_officer
+                                                                                            .name
                                                                                     }
                                                                                 </span>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="flex items-center gap-4 text-sm">
-                                                                        <div className="flex items-center gap-2">
-                                                                            <User className="h-4 w-4 text-muted-foreground" />
                                                                             <span className="text-muted-foreground">
-                                                                                {
-                                                                                    submission
-                                                                                        .field_officer
-                                                                                        .name
-                                                                                }
+                                                                                •
+                                                                            </span>
+                                                                            <span className="text-muted-foreground">
+                                                                                {formatTime(
+                                                                                    submission.created_at,
+                                                                                )}
                                                                             </span>
                                                                         </div>
-                                                                        <span className="text-muted-foreground">
-                                                                            •
-                                                                        </span>
-                                                                        <span className="text-muted-foreground">
-                                                                            {formatTime(
-                                                                                submission.created_at,
-                                                                            )}
-                                                                        </span>
                                                                     </div>
                                                                 </div>
+                                                                <div className="flex items-center gap-4">
+                                                                    <span className="text-sm text-muted-foreground">
+                                                                        {new Date(
+                                                                            submission.updated_at,
+                                                                        ).toLocaleDateString(
+                                                                            'en-US',
+                                                                            {
+                                                                                month: 'short',
+                                                                                day: 'numeric',
+                                                                            },
+                                                                        )}
+                                                                    </span>
+                                                                    <button className="text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                                                                        View
+                                                                        Details
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                            <div className="flex items-center gap-4">
-                                                                <span className="text-sm text-muted-foreground">
-                                                                    {new Date(
-                                                                        submission.updated_at,
-                                                                    ).toLocaleDateString(
-                                                                        'en-US',
-                                                                        {
-                                                                            month: 'short',
-                                                                            day: 'numeric',
-                                                                        },
-                                                                    )}
-                                                                </span>
-                                                                <button className="text-sm font-medium text-primary transition-colors hover:text-primary/80">
-                                                                    View Details
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Link>
                                             );
                                         })}
                                     </div>

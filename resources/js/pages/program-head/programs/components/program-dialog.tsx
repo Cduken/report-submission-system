@@ -39,7 +39,11 @@ export default function ProgramDialog({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <div className="flex justify-end">
-                    <Button type="button" variant={'secondary'}>
+                    <Button
+                        type="button"
+                        variant={'secondary'}
+                        className='py-5 hover:cursor-pointer'
+                    >
                         <Folder className="mr-2 h-4 w-4" />
                         <span>Create new Program</span>
                     </Button>

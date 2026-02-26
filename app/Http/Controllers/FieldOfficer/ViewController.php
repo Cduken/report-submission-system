@@ -16,7 +16,7 @@ class ViewController extends Controller
         return inertia('field-officer/dashboard/page');
     }
 
-     public function programs(Request $request)
+    public function programs(Request $request)
     {
         $perPage = $request->get('per_page', 12);
 
@@ -80,13 +80,29 @@ class ViewController extends Controller
         ];
 
         $submission = $report->submissions()
-            ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
+            ->select('id', 'report_id', 'field_officer_id', 'description', 'data', 'status', 'created_at', 'updated_at')
             ->whereBelongsTo(auth()->user(), 'fieldOfficer')
             ->with([
                 'fieldOfficer:id,name,email',
                 'media'
             ])
             ->first();
+
+        if ($submission) {
+            $submission->media->transform(function ($media) {
+                return [
+                    'id' => $media->id,
+                    'uuid' => $media->uuid,
+                    'file_name' => $media->file_name,
+                    'size' => $media->size,
+                    'url' => $media->getUrl(),
+                    'field_id' => $media->getCustomProperty('field_id') ?? null, // ✅ THIS IS WHAT YOU NEED
+                    'collection_name' => $media->collection_name,
+                    'created_at' => $media->created_at,
+                    'download_url' => route('media.download', $media),
+                ];
+            });
+        }
 
         return inertia('field-officer/programs/reports/report-submissions/page', [
             'program' => $program,
@@ -98,7 +114,7 @@ class ViewController extends Controller
 
     public function myReportSubmissions(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 12);
         $filter = $request->get('filter', 'all');
 
         $query = ReportSubmission::query()
@@ -107,7 +123,8 @@ class ViewController extends Controller
             ->with([
                 'fieldOfficer:id,name,email',
                 'media',
-                'report' // Eager load the report relationship
+                'report.program', // Eager load the report relationship
+
             ])
             ->orderBy('created_at', 'desc');
 

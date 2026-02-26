@@ -13,6 +13,7 @@ import {
     User,
 } from 'lucide-react';
 import { Activity, useState } from 'react';
+import EditReportSubmissionDialog from './components/edit-report-submission-dialog';
 import EmptyReportSubmission from './components/empty-submission';
 import ReportSubmissionDialog from './components/report-submission-dialog';
 import SampleTemplate from './components/sample-template';
@@ -37,12 +38,13 @@ const STATUS_MAP = {
 };
 
 export default function page() {
-    const [open, setOpen] = useState<boolean>(false);
+    const [submitOpen, setSubmitOpen] = useState<boolean>(false);
+    const [editOpen, setEditOpen] = useState<boolean>(false);
 
     const { program, report, reportSubmission, hasSubmitted } = usePage<{
         program: Program;
         report: Report;
-        reportSubmission: ReportSubmission;
+        reportSubmission: ReportSubmission & { media?: any[] };
         hasSubmitted: boolean;
     }>().props;
 
@@ -74,12 +76,22 @@ export default function page() {
                 <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between">
                         <Back link={ViewController.reports(program)} />
-                        <ReportSubmissionDialog
-                            open={open}
-                            hasSubmitted={hasSubmitted}
-                            setOpen={setOpen}
-                            report={report}
-                        />
+                        {/* Show submit dialog if not yet submitted, edit dialog if already submitted */}
+                        {hasSubmitted && reportSubmission ? (
+                            <EditReportSubmissionDialog
+                                open={editOpen}
+                                setOpen={setEditOpen}
+                                report={report}
+                                submission={reportSubmission}
+                            />
+                        ) : (
+                            <ReportSubmissionDialog
+                                open={submitOpen}
+                                hasSubmitted={hasSubmitted}
+                                setOpen={setSubmitOpen}
+                                report={report}
+                            />
+                        )}
                     </div>
 
                     {/* Title and Deadline Card */}
@@ -117,7 +129,6 @@ export default function page() {
                                           : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
                                 }`}
                             >
-                                {/* Icon */}
                                 <div
                                     className={`rounded-full p-2 ${
                                         isOverdue
@@ -134,7 +145,6 @@ export default function page() {
                                     )}
                                 </div>
 
-                                {/* Text */}
                                 <div className="flex flex-col leading-tight">
                                     <span className="text-xs font-medium opacity-80">
                                         {isOverdue
@@ -172,7 +182,7 @@ export default function page() {
 
                 {/* Empty State */}
                 <Activity mode={!reportSubmission ? 'visible' : 'hidden'}>
-                    <EmptyReportSubmission setIsOpen={setOpen} />
+                    <EmptyReportSubmission setIsOpen={setSubmitOpen} />
                 </Activity>
 
                 {/* Single Submission Card */}
@@ -284,6 +294,16 @@ export default function page() {
                                                 : ''}
                                         </span>
                                     </div>
+
+                                    {/* Edit button inside the card as a secondary entry point */}
+                                    {/* {reportSubmission && (
+                                        <EditReportSubmissionDialog
+                                            open={editOpen}
+                                            setOpen={setEditOpen}
+                                            report={report}
+                                            submission={reportSubmission}
+                                        />
+                                    )} */}
                                 </div>
                             </div>
                         </div>

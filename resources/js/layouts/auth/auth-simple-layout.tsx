@@ -270,7 +270,6 @@ export default function AuthSimpleLayout({
                         </div>
                     </div>
                 </motion.div>
-
                 <Developers />
             </motion.div>
         </>

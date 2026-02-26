@@ -98,11 +98,13 @@ export interface ReportSubmission {
     updated_at: string;
     remarks: string;
     description: string
+    data: Object
 
     // Relationships
     fieldOfficer?: Pick<User, 'id' | 'name' | 'email' | 'avatar'>;
     media?: Media[];
     report?: Report; // Added report relationship
+    program?: Program;
 }
 
 export interface LaravelPaginator<T> {
@@ -123,6 +125,7 @@ export interface LaravelPaginator<T> {
     prev_page_url: string | null;
     to: number | null;
     total: number;
+
 }
 
 export type FilterType = 'all' | 'pending' | 'rejected' | 'accepted';
