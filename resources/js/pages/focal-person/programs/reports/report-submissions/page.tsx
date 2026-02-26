@@ -80,7 +80,12 @@ export default function page() {
                 <Activity
                     mode={reportSubmissions.length === 0 ? 'visible' : 'hidden'}
                 >
-                    No Submissions yet
+                    <div className='h-[60vh] flex justify-center items-center'>
+                        <div>
+                            <img src='/Images/no-report.svg' alt="No report" className='h-30 mb-2' />
+                            <p className='text-center text-gray-500'>No reports yet</p>
+                        </div>
+                    </div>
                 </Activity>
 
                 <Activity
