@@ -2,17 +2,22 @@ import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewCont
 import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
 import { dateFormatter } from '@/lib/utils';
-import { Program, Report } from '@/types';
+import { BreadcrumbItem, Program, Report } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 import { Activity } from 'react';
-import { breadcrumbs } from '../../dashboard/page';
 
 export default function Reports() {
     const { reports, program } = usePage<{
         reports: Report[];
         program: Program;
     }>().props;
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Programs/${program.name}/Reports`,
+            href: ViewController.reports(program).url,
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -24,13 +29,18 @@ export default function Reports() {
                     <div></div>
                 </div>
                 <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
-                    <div className='h-[60vh] flex justify-center items-center'>
+                    <div className="flex h-[60vh] items-center justify-center">
                         <div>
-                            <img src='/Images/no-report.svg' alt="No report" className='h-30 mb-2' />
-                            <p className='text-center text-gray-500'>No reports yet</p>
+                            <img
+                                src="/Images/no-report.svg"
+                                alt="No report"
+                                className="mb-2 h-30"
+                            />
+                            <p className="text-center text-gray-500">
+                                No reports yet
+                            </p>
                         </div>
                     </div>
-
                 </Activity>
 
                 <Activity mode={reports.length > 0 ? 'visible' : 'hidden'}>

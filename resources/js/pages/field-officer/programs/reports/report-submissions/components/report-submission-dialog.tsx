@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ReportSubmissionController from '@/actions/App/Http/Controllers/ReportSubmissionController';
 import InputError from '@/components/input-error';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -13,9 +16,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Report } from '@/types';
-
 import { Form } from '@inertiajs/react';
-import { Folder, UploadCloud } from 'lucide-react';
+import { AlertCircle, FileText, Folder, UploadCloud } from 'lucide-react';
 import { useState } from 'react';
 
 interface DynamicFieldDefinition {
@@ -41,43 +43,69 @@ export default function ReportSubmissionDialog({
     const schema = (report.form_schema || []) as DynamicFieldDefinition[];
 
     const [answers, setAnswers] = useState<Record<string, any>>({});
+    const [selectedFiles, setSelectedFiles] = useState<Record<string, File[]>>(
+        {},
+    );
 
-    const handleFieldChange = (fieldId: string, value: any) => {
-        setAnswers((prev) => ({
-            ...prev,
-            [fieldId]: value,
-        }));
+    const handleFieldChange = (fieldId: string, files: FileList | null) => {
+        if (files && files.length > 0) {
+            const fileArray = Array.from(files);
+            setSelectedFiles((prev) => ({
+                ...prev,
+                [fieldId]: fileArray,
+            }));
+            setAnswers((prev) => ({
+                ...prev,
+                [fieldId]: fileArray.map((f) => f.name).join(', '),
+            }));
+        }
     };
 
-    console.log(report);
+    const getFileTypeIcon = (fileName: string) => {
+        const ext = fileName.split('.').pop()?.toLowerCase();
+        if (ext === 'pdf') return '📄';
+        if (['jpg', 'jpeg', 'png', 'gif'].includes(ext || '')) return '🖼️';
+        if (['doc', 'docx'].includes(ext || '')) return '📝';
+        if (['xls', 'xlsx'].includes(ext || '')) return '📊';
+        return '📎';
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             {!hasSubmitted ? (
                 <DialogTrigger asChild>
-                    <div className="flex justify-end">
-                        <Button type="button" variant="secondary">
-                            <Folder className="mr-2 h-4 w-4" />
-                            Submit Report
-                        </Button>
-                    </div>
+                    <Button type="button" variant="default" className="gap-2">
+                        <Folder className="h-4 w-4" />
+                        Submit Report
+                    </Button>
                 </DialogTrigger>
             ) : (
-                <div className="flex justify-end">
-                    <Button type="button" variant="secondary" disabled>
-                        <Folder className="mr-2 h-4 w-4" />
-                        You already Submitted
-                    </Button>
-                </div>
+                <Button
+                    type="button"
+                    variant="outline"
+                    disabled
+                    className="gap-2 opacity-60"
+                >
+                    <FileText className="h-4 w-4" />
+                    Already Submitted
+                </Button>
             )}
 
-            <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle>Submit Report: {report.title}</DialogTitle>
-                    <DialogDescription>
-                        Please fill out the required information below.
-                    </DialogDescription>
-                </DialogHeader>
+            <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto p-0">
+                <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl text-foreground">
+                            Submit Report:{' '}
+                            <span className="text-primary">{report.title}</span>
+                        </DialogTitle>
+                        <DialogDescription className="text-muted-foreground">
+                            Please fill out the required information below.
+                            Fields marked with{' '}
+                            <span className="text-destructive">*</span> are
+                            required.
+                        </DialogDescription>
+                    </DialogHeader>
+                </div>
 
                 <Form
                     {...ReportSubmissionController.store.form()}
@@ -85,14 +113,20 @@ export default function ReportSubmissionDialog({
                     onSuccess={() => {
                         setOpen(false);
                         setAnswers({});
+                        setSelectedFiles({});
                     }}
+                    className="px-6 pb-6"
                 >
                     {({ processing, errors }) => (
                         <div className="mt-4 space-y-6">
-                            <div className="space-y-4 rounded-md border bg-gray-50/50 p-4">
-                                <h4 className="text-sm font-semibold text-gray-900">
-                                    General Information
-                                </h4>
+                            {/* General Information Section */}
+                            <div className="space-y-4 rounded-lg border border-border bg-card/50 p-5">
+                                <div className="flex items-center gap-2 border-b border-border pb-2">
+                                    <FileText className="h-5 w-5 text-muted-foreground" />
+                                    <h4 className="font-semibold text-foreground">
+                                        General Information
+                                    </h4>
+                                </div>
 
                                 <input
                                     type="hidden"
@@ -100,33 +134,47 @@ export default function ReportSubmissionDialog({
                                     value={report.id}
                                 />
 
-                                <div>
-                                    <Label htmlFor="description">
+                                <div className="space-y-2">
+                                    <Label
+                                        htmlFor="description"
+                                        className="text-foreground"
+                                    >
                                         Description / Notes
                                     </Label>
                                     <Textarea
                                         id="description"
                                         name="description"
-                                        placeholder="General remarks about this report..."
-                                        className="bg-white"
+                                        placeholder="Add any general remarks or notes about this submission..."
+                                        className="min-h-[100px] border-input bg-background focus:border-ring focus:ring-ring"
                                     />
                                     <InputError message={errors.description} />
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between border-b pb-2">
-                                    <h4 className="text-sm font-semibold text-gray-900">
-                                        Required Data
-                                    </h4>
-                                    <span className="text-xs text-gray-500">
-                                        {schema.length} field(s) required
-                                    </span>
+                            {/* Required Data Section */}
+                            <div className="space-y-4 rounded-lg border border-border bg-card/50 p-5">
+                                <div className="flex items-center justify-between border-b border-border pb-2">
+                                    <div className="flex items-center gap-2">
+                                        <UploadCloud className="h-5 w-5 text-muted-foreground" />
+                                        <h4 className="font-semibold text-foreground">
+                                            Required Documents
+                                        </h4>
+                                    </div>
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-background"
+                                    >
+                                        {schema.length} field(s)
+                                    </Badge>
                                 </div>
 
                                 {schema.length === 0 ? (
-                                    <div className="py-4 text-center text-sm text-gray-500 italic">
-                                        No additional data fields required.
+                                    <div className="flex items-center justify-center gap-2 py-8 text-center">
+                                        <AlertCircle className="h-5 w-5 text-muted-foreground" />
+                                        <p className="text-sm text-muted-foreground italic">
+                                            No additional documents required for
+                                            this report.
+                                        </p>
                                     </div>
                                 ) : (
                                     <div className="space-y-5">
@@ -135,56 +183,103 @@ export default function ReportSubmissionDialog({
                                                 key={field.id}
                                                 className="space-y-2"
                                             >
-                                                <Label htmlFor={field.id}>
+                                                <Label
+                                                    htmlFor={field.id}
+                                                    className="flex items-center gap-1 text-foreground"
+                                                >
                                                     {field.label}
                                                     {field.required && (
-                                                        <span className="ml-1 text-red-500">
+                                                        <span className="text-destructive">
                                                             *
                                                         </span>
                                                     )}
                                                 </Label>
-                                                <div className="rounded-lg border-2 border-dashed border-gray-200 p-4 hover:bg-gray-50">
-                                                    <div className="flex items-center gap-3">
-                                                        <UploadCloud className="h-5 w-5 text-gray-400" />
-                                                        {/* File inputs are Uncontrolled (no value prop) */}
-                                                        <Input
-                                                            id={field.id}
-                                                            type="file"
-                                                            multiple
-                                                            name={`submission_data[${field.id}][]`}
-                                                            required={
-                                                                field.required
-                                                            }
-                                                            className="border-0 p-0 shadow-none"
-                                                            onChange={(e) => {
-                                                                if (
-                                                                    e.target
-                                                                        .files &&
-                                                                    e.target
-                                                                        .files
-                                                                        .length >
-                                                                        0
-                                                                ) {
-                                                                    handleFieldChange(
-                                                                        field.id,
-                                                                        Array.from(
-                                                                            e
-                                                                                .target
-                                                                                .files,
-                                                                        ),
-                                                                    );
-                                                                }
-                                                            }}
-                                                        />
-                                                        <div className="text-sm font-medium text-gray-700">
-                                                            Click to upload
-                                                            files
+
+                                                <div className="relative rounded-lg border-2 border-dashed border-input bg-background transition-colors hover:border-primary/50 hover:bg-accent/5">
+                                                    <Input
+                                                        id={field.id}
+                                                        type="file"
+                                                        multiple
+                                                        name={`submission_data[${field.id}][]`}
+                                                        required={
+                                                            field.required
+                                                        }
+                                                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                        onChange={(e) => {
+                                                            handleFieldChange(
+                                                                field.id,
+                                                                e.target.files,
+                                                            );
+                                                        }}
+                                                    />
+
+                                                    <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 p-4">
+                                                        <UploadCloud className="h-8 w-8 text-muted-foreground" />
+                                                        <div className="text-center">
+                                                            <p className="text-sm font-medium text-foreground">
+                                                                Click to upload
+                                                                or drag and drop
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Supports: PDF,
+                                                                Images, DOCX
+                                                                (Max 10MB each)
+                                                            </p>
                                                         </div>
-                                                        <p className="text-xs text-gray-400">
-                                                            Supports multiple
-                                                            files (PDF, IMG,
-                                                            DOCX)
-                                                        </p>
+
+                                                        {/* Show selected files */}
+                                                        {selectedFiles[
+                                                            field.id
+                                                        ] &&
+                                                            selectedFiles[
+                                                                field.id
+                                                            ].length > 0 && (
+                                                                <div className="mt-2 w-full max-w-sm rounded-md border border-border bg-background/50 p-2">
+                                                                    <p className="mb-1 text-xs font-medium text-muted-foreground">
+                                                                        Selected
+                                                                        files:
+                                                                    </p>
+                                                                    <div className="space-y-1">
+                                                                        {selectedFiles[
+                                                                            field
+                                                                                .id
+                                                                        ].map(
+                                                                            (
+                                                                                file,
+                                                                                idx,
+                                                                            ) => (
+                                                                                <div
+                                                                                    key={
+                                                                                        idx
+                                                                                    }
+                                                                                    className="flex items-center gap-2 rounded bg-accent/30 px-2 py-1 text-xs"
+                                                                                >
+                                                                                    <span className="text-base">
+                                                                                        {getFileTypeIcon(
+                                                                                            file.name,
+                                                                                        )}
+                                                                                    </span>
+                                                                                    <span className="flex-1 truncate text-foreground">
+                                                                                        {
+                                                                                            file.name
+                                                                                        }
+                                                                                    </span>
+                                                                                    <span className="text-muted-foreground">
+                                                                                        (
+                                                                                        {(
+                                                                                            file.size /
+                                                                                            1024
+                                                                                        ).toFixed(
+                                                                                            0,
+                                                                                        )}{' '}
+                                                                                        KB)
+                                                                                    </span>
+                                                                                </div>
+                                                                            ),
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            )}
                                                     </div>
                                                 </div>
 
@@ -201,18 +296,36 @@ export default function ReportSubmissionDialog({
                                 )}
                             </div>
 
-                            <div className="flex justify-end gap-2 pt-4">
+                            {/* Form Actions */}
+                            <div className="sticky bottom-0 flex justify-end gap-3 border-t border-border bg-card py-4">
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => setOpen(false)}
+                                    onClick={() => {
+                                        setOpen(false);
+                                        setAnswers({});
+                                        setSelectedFiles({});
+                                    }}
+                                    className="gap-2"
                                 >
                                     Cancel
                                 </Button>
-                                <Button type="submit" disabled={processing}>
-                                    {processing
-                                        ? 'Submitting...'
-                                        : 'Submit Report'}
+                                <Button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                                >
+                                    {processing ? (
+                                        <>
+                                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                                            Submitting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <UploadCloud className="h-4 w-4" />
+                                            Submit Report
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                         </div>

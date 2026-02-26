@@ -88,7 +88,6 @@ const backButtonVariants = {
             damping: 10,
         },
     },
-
 };
 
 export default function AuthSimpleLayout({
@@ -272,6 +271,10 @@ export default function AuthSimpleLayout({
                 </motion.div>
                 <Developers />
             </motion.div>
+
+            {/* <div className="bg"></div>
+            <div className="bg bg2"></div>
+            <div className="bg bg3"></div> */}
         </>
     );
 }

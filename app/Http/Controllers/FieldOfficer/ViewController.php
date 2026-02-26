@@ -112,19 +112,19 @@ class ViewController extends Controller
             ->orderBy('created_at', 'desc');
 
         // Apply filter - We'll implement this later
-        // if ($filter !== 'all') {
-        //     switch ($filter) {
-        //         case 'pending':
-        //             $query->whereIn('status', ['pending', 'submitted']);
-        //             break;
-        //         case 'accepted':
-        //             $query->whereIn('status', ['accepted', 'approved']);
-        //             break;
-        //         case 'rejected':
-        //             $query->where('status', 'rejected');
-        //             break;
-        //     }
-        // }
+        if ($filter !== 'all') {
+            switch ($filter) {
+                case 'pending':
+                    $query->whereIn('status', ['pending', 'submitted']);
+                    break;
+                case 'accepted':
+                    $query->whereIn('status', ['accepted', 'approved']);
+                    break;
+                case 'rejected':
+                    $query->where('status', 'rejected');
+                    break;
+            }
+        }
 
         // Get paginated results using Laravel's built-in paginator
         $submissions = $query->paginate($perPage);

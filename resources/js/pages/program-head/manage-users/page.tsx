@@ -1,15 +1,9 @@
 import { manageUsers } from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import { FlashToaster } from '@/components/flash-toaster';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, LaravelPaginator, User } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import {
-    ChevronLeft,
-    ChevronRight,
-    ChevronsLeft,
-    ChevronsRight,
-} from 'lucide-react';
+import { Head,  usePage } from '@inertiajs/react';
+import { Pagination } from '@/components/ui/pagination';
 import { useState } from 'react';
 import Header from './components/header';
 import UsersTable from './components/users-table';
@@ -40,55 +34,7 @@ export default function ManageUsers() {
                         selectedUsers={selectedUsers}
                         setSelectedUsers={setSelectedUsers}
                     />
-
-                    <div className='pt-2'>
-                        {/* First Page */}
-                        {users.first_page_url && (
-                            <Link href={users.first_page_url}>
-                                <Button variant="outline" size="sm">
-                                    <ChevronsLeft size={16} />
-                                </Button>
-                            </Link>
-                        )}
-
-                        {/* Previous Page */}
-                        {users.prev_page_url ? (
-                            <Link href={users.prev_page_url}>
-                                <Button variant="outline" size="sm">
-                                    <ChevronLeft size={16} />
-                                </Button>
-                            </Link>
-                        ) : (
-                            <Button variant="outline" size="sm" disabled>
-                                <ChevronLeft size={16} />
-                            </Button>
-                        )}
-
-                        {/* Current Page */}
-                        <span className="px-2">{users.current_page}</span>
-
-                        {/* Next Page */}
-                        {users.next_page_url ? (
-                            <Link href={users.next_page_url}>
-                                <Button variant="outline" size="sm">
-                                    <ChevronRight size={16} />
-                                </Button>
-                            </Link>
-                        ) : (
-                            <Button variant="outline" size="sm" disabled>
-                                <ChevronRight size={16} />
-                            </Button>
-                        )}
-
-                        {/* Last Page */}
-                        {users.last_page_url && (
-                            <Link href={users.last_page_url}>
-                                <Button variant="outline" size="sm">
-                                    <ChevronsRight size={16} />
-                                </Button>
-                            </Link>
-                        )}
-                    </div>
+                    <Pagination paginator={users} />
                 </div>
             </div>
         </AppLayout>

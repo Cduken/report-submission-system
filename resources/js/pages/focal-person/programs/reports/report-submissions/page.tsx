@@ -3,8 +3,7 @@ import Back from '@/components/back';
 import { Button } from '@/components/ui/button';
 import { useViewMode } from '@/hooks/use-view-mode';
 import AppLayout from '@/layouts/app-layout';
-import { breadcrumbs } from '@/pages/focal-person/dashboard/page';
-import { Program, Report, ReportSubmission } from '@/types';
+import { BreadcrumbItem, Program, Report, ReportSubmission } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { Download, Grid2x2, List } from 'lucide-react';
 import { Activity, useState } from 'react';
@@ -30,6 +29,13 @@ export default function page() {
         setSelectedSubmission(submission);
         setIsDrawerOpen(true);
     };
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Programs/${program.name}/Reports/${report.title}/Report Submissions`,
+            href: ViewController.reportSubmissions([program, report]).url,
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -80,10 +86,16 @@ export default function page() {
                 <Activity
                     mode={reportSubmissions.length === 0 ? 'visible' : 'hidden'}
                 >
-                    <div className='h-[60vh] flex justify-center items-center'>
+                    <div className="flex h-[60vh] items-center justify-center">
                         <div>
-                            <img src='/Images/no-report.svg' alt="No report" className='h-30 mb-2' />
-                            <p className='text-center text-gray-500'>No reports yet</p>
+                            <img
+                                src="/Images/no-report.svg"
+                                alt="No report"
+                                className="mb-2 h-30"
+                            />
+                            <p className="text-center text-gray-500">
+                                No reports yet
+                            </p>
                         </div>
                     </div>
                 </Activity>

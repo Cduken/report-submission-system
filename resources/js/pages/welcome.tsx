@@ -1,8 +1,9 @@
 import Developers from '@/components/developers/developers';
 import Header from '@/components/header/header';
 import { login } from '@/routes';
+import TestHeader from '@/components/header/test-header';
 // import { type SharedData } from '@/types';
-import { Head, Link} from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 // Animation variants
@@ -58,7 +59,6 @@ const pulseDotVariants = {
 };
 
 export default function Welcome({
-
     department = 'DILG Region VII - Bohol',
     headline = 'Report Submission System',
     description = 'A centralized system that enables efficient submission, tracking, and management of DTRs and official reports for DILG field operations.',
@@ -73,9 +73,7 @@ export default function Welcome({
 
     return (
         <>
-            <Head title="Welcome">
-
-            </Head>
+            <Head title="Welcome"></Head>
             <motion.main
                 className="landing-page relative min-h-screen"
                 initial="hidden"
@@ -136,10 +134,7 @@ export default function Welcome({
                                         {description}
                                     </motion.p>
 
-                                    <motion.div
-                                        className="mt-2"
-
-                                    >
+                                    <motion.div className="mt-2">
                                         <Link
                                             href={login()}
                                             className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-blue-500 px-6 py-3 text-sm text-white transition duration-200 ease-in-out hover:bg-blue-700 md:w-auto md:px-8 md:py-3 md:text-base"
@@ -155,6 +150,10 @@ export default function Welcome({
                                     </motion.div>
                                 </motion.div>
                             </div>
+
+                            {/* <div className="bg"></div>
+                            <div className="bg bg2"></div>
+                            <div className="bg bg3"></div> */}
 
                             {/* Logo - RIGHT SIDE */}
                             <motion.div
@@ -175,3 +174,4 @@ export default function Welcome({
         </>
     );
 }
+

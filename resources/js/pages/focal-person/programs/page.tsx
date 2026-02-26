@@ -1,27 +1,32 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/rules-of-hooks */
+import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
 import ToggleGridList from '@/components/toggle-list-grid';
+import { Pagination } from '@/components/ui/pagination';
 import AppLayout from '@/layouts/app-layout';
-import { Program, LaravelPaginator } from '@/types';
-import { usePage, router } from '@inertiajs/react';
-import { Activity, useState } from 'react';
-import { breadcrumbs } from '../dashboard/page';
+import { BreadcrumbItem, LaravelPaginator, Program } from '@/types';
+import { router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import FilterBtn from '../../../components/filter';
 import GriddView from './components/grid-view';
 import ListView from './components/list-view';
-import { Pagination } from '@/components/ui/pagination';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Programs',
+        href: ViewController.programs().url,
+    },
+];
 
 export default function Programs() {
     const [isList, setIsList] = useState<boolean>(false);
     const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
     const { programs, filters } = usePage<{
-        programs: LaravelPaginator<Program>,
-        filters?: { year?: number }
+        programs: LaravelPaginator<Program>;
+        filters?: { year?: number };
     }>().props;
 
     const [selectedYear, setSelectedYear] = useState<number | null>(
-        filters?.year || null
+        filters?.year || null,
     );
 
     // Handle year filter
@@ -38,7 +43,7 @@ export default function Programs() {
         router.get(route('programs.index'), params, {
             preserveScroll: true,
             preserveState: true,
-            onFinish: () => setIsFiltering(false)
+            onFinish: () => setIsFiltering(false),
         });
     };
 
@@ -64,18 +69,17 @@ export default function Programs() {
                 {/* Loading State */}
                 {isLoading && (
                     <div className="flex justify-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
                     </div>
                 )}
 
                 {/* No Results */}
                 {!isLoading && programs.data.length === 0 && (
-                    <div className="text-center py-12">
-                        <h1 className="text-muted-foreground text-lg">
+                    <div className="py-12 text-center">
+                        <h1 className="text-lg text-muted-foreground">
                             {selectedYear
                                 ? `No programs found for ${selectedYear}`
-                                : 'No programs yet'
-                            }
+                                : 'No programs yet'}
                         </h1>
                         {selectedYear && (
                             <button
@@ -92,9 +96,15 @@ export default function Programs() {
                 {!isLoading && programs.data.length > 0 && (
                     <>
                         <div className="text-sm text-muted-foreground">
-                            Showing <span className="font-medium">{programs.from}</span> to{' '}
-                            <span className="font-medium">{programs.to}</span> of{' '}
-                            <span className="font-medium">{programs.total}</span> results
+                            Showing{' '}
+                            <span className="font-medium">{programs.from}</span>{' '}
+                            to{' '}
+                            <span className="font-medium">{programs.to}</span>{' '}
+                            of{' '}
+                            <span className="font-medium">
+                                {programs.total}
+                            </span>{' '}
+                            results
                             {selectedYear && ` from ${selectedYear}`}
                         </div>
 
@@ -107,12 +117,14 @@ export default function Programs() {
                 )}
 
                 {/* Pagination Component - It handles its own navigation */}
-                {!isLoading && programs.data.length > 0 && programs.last_page > 1 && (
-                    <Pagination
-                        paginator={programs}
-                        filters={selectedYear ? { year: selectedYear } : {}}
-                    />
-                )}
+                {!isLoading &&
+                    programs.data.length > 0 &&
+                    programs.last_page > 1 && (
+                        <Pagination
+                            paginator={programs}
+                            filters={selectedYear ? { year: selectedYear } : {}}
+                        />
+                    )}
             </div>
         </AppLayout>
     );

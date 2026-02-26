@@ -1,5 +1,5 @@
+import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { Bell, BellRing, CheckCheck, Clock3, Filter } from 'lucide-react';
@@ -7,8 +7,8 @@ import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
-        href: dashboard().url,
+        title: 'Notifications',
+        href: ViewController.notifications().url,
     },
 ];
 

@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Notifications',
         href: dashboard().url,
     },
 ];

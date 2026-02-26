@@ -1,9 +1,16 @@
+import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import AppLayout from '@/layouts/app-layout';
-import { breadcrumbs } from '@/pages/field-officer/dashboard/page';
-import { ReportSubmission } from '@/types';
+import { BreadcrumbItem, ReportSubmission } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import SubmissionCard from './components/submission-card';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: `Submissions`,
+        href: ViewController.programs().url,
+    },
+];
 
 export default function Submission() {
     const { submissions = [] } = usePage<{ submissions: ReportSubmission[] }>()

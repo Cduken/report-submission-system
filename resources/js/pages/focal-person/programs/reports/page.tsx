@@ -1,11 +1,10 @@
 import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
 import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
-import { Program, Report } from '@/types';
+import { BreadcrumbItem, Program, Report } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 import { Activity, useState } from 'react';
-import { breadcrumbs } from '../../dashboard/page';
 import EmptyReport from '../components/empty-report';
 import ReportDialog from './components/report-dialog';
 
@@ -16,7 +15,12 @@ export default function CreateReport() {
         reports: Report[];
     }>().props;
 
-    console.log({ reports });
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Programs/${program.name}/Reports`,
+            href: ViewController.reports(program).url,
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

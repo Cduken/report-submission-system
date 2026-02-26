@@ -1,7 +1,7 @@
 import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
-import { Program, Report, ReportSubmission } from '@/types';
+import { BreadcrumbItem, Program, Report, ReportSubmission } from '@/types';
 import { usePage } from '@inertiajs/react';
 import {
     AlertCircle,
@@ -43,8 +43,15 @@ export default function page() {
         (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Programs/${program.name}/Reports/${report.title}/Report Submissions`,
+            href: ViewController.reportSubmissions([program, report]).url,
+        },
+    ];
+
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto p-6">
                 {/* Header Section */}
                 <div className="flex flex-col gap-6">

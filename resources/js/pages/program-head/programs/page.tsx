@@ -1,3 +1,4 @@
+import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import FilterBtn from '@/components/filter';
 import { FlashToaster } from '@/components/flash-toaster';
 import ProgramGridSkeleton from '@/components/skeleton-loader';
@@ -5,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
-import { dashboard } from '@/routes';
 import { Program, User, type BreadcrumbItem } from '@/types';
 import { Deferred, Head, usePage, useRemember } from '@inertiajs/react';
 import { Eye, EyeClosed } from 'lucide-react';
@@ -20,7 +20,7 @@ import ReviewProgram from './components/review';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Programs',
-        href: dashboard().url,
+        href: ViewController.programs().url,
     },
 ];
 

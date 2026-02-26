@@ -45,7 +45,7 @@ export default function ProgramDialog({
                         className='py-5 hover:cursor-pointer'
                     >
                         <Folder className="mr-2 h-4 w-4" />
-                        <span>Create new Program</span>
+                        <span>Create New Program</span>
                     </Button>
                 </div>
             </DialogTrigger>

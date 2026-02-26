@@ -1,8 +1,7 @@
 import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
-import { breadcrumbs } from '@/pages/field-officer/dashboard/page';
-import { Report } from '@/types';
+import { BreadcrumbItem, Report } from '@/types';
 import { Deferred, Link, usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 import { Activity } from 'react';
@@ -11,6 +10,13 @@ export default function Reports() {
     const { reports } = usePage<{
         reports: Report[];
     }>().props;
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `Reports`,
+            href: ViewController.programs().url,
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

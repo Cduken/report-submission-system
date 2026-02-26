@@ -1,3 +1,4 @@
+//report-dialog.tsx component modal
 import ReportController from '@/actions/App/Http/Controllers/ReportController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -83,7 +84,7 @@ export default function ReportDialog({
                     </Button>
                 </div>
             </DialogTrigger>
-            <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
+            <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto bg-background text-foreground">
                 <DialogHeader>
                     <DialogTitle>Create New Report</DialogTitle>
                     <DialogDescription>
@@ -102,14 +103,14 @@ export default function ReportDialog({
                 >
                     {({ processing, errors }) => (
                         <div className="space-y-6">
-                            <div className="space-y-4 rounded-lg border bg-slate-50 p-4">
+                            <div className="space-y-4 rounded-lg border bg-card p-4">
                                 <div>
                                     <Label htmlFor="title">Report Title</Label>
                                     <Input
                                         id="title"
                                         name="title"
                                         placeholder="e.g. Q1 Compliance Report"
-                                        className="bg-white"
+                                        className="bg-background"
                                     />
                                     <InputError message={errors.title} />
                                 </div>
@@ -121,7 +122,7 @@ export default function ReportDialog({
                                         id="description"
                                         name="description"
                                         placeholder="Instructions for the officers..."
-                                        className="bg-white"
+                                        className="bg-background"
                                     />
                                     <InputError message={errors.description} />
                                 </div>
@@ -143,7 +144,7 @@ export default function ReportDialog({
                                             type="date"
                                             name="deadline"
                                             id="deadline"
-                                            className="bg-white"
+                                            className="bg-background"
                                         />
                                     </div>
                                     <div>
@@ -154,25 +155,25 @@ export default function ReportDialog({
                                             type="date"
                                             name="final_deadline"
                                             id="final_deadline"
-                                            className="bg-white"
+                                            className="bg-background"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="rounded-lg border border-dashed border-blue-200 bg-blue-50/50 p-4">
+                            <div className="rounded-lg border border-dashed border-primary/20 bg-accent/50 p-4">
                                 <div className="mb-2 flex items-center justify-between">
-                                    <Label className="flex items-center gap-2 text-blue-900">
+                                    <Label className="flex items-center gap-2 text-foreground">
                                         <Download className="h-4 w-4" />
                                         Upload Templates (Optional)
                                     </Label>
-                                    <span className="text-xs text-blue-600">
+                                    <span className="text-xs text-muted-foreground">
                                         Visible to officers
                                     </span>
                                 </div>
 
                                 <div
-                                    className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-blue-300 bg-white p-4 transition-colors hover:bg-blue-50"
+                                    className="relative flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-primary/30 bg-background p-4 transition-colors hover:bg-accent"
                                     onClick={() =>
                                         fileInputRef.current?.click()
                                     }
@@ -188,16 +189,16 @@ export default function ReportDialog({
                                         }
                                     />
 
-                                    <UploadCloud className="mb-2 h-8 w-8 text-blue-400" />
+                                    <UploadCloud className="mb-2 h-8 w-8 text-primary/60" />
 
                                     {templateFiles &&
                                     templateFiles.length > 0 ? (
                                         <div className="text-center">
-                                            <p className="text-sm font-medium text-blue-700">
+                                            <p className="text-sm font-medium text-foreground">
                                                 {templateFiles.length} file(s)
                                                 selected
                                             </p>
-                                            <ul className="mt-1 text-xs text-gray-500">
+                                            <ul className="mt-1 text-xs text-muted-foreground">
                                                 {Array.from(templateFiles).map(
                                                     (file, i) => (
                                                         <li
@@ -212,10 +213,10 @@ export default function ReportDialog({
                                         </div>
                                     ) : (
                                         <div className="text-center">
-                                            <p className="text-sm font-medium text-gray-600">
+                                            <p className="text-sm font-medium text-foreground">
                                                 Click to upload files
                                             </p>
-                                            <p className="text-xs text-gray-400">
+                                            <p className="text-xs text-muted-foreground">
                                                 PDF, DOCX, XLSX supported
                                             </p>
                                         </div>
@@ -226,10 +227,10 @@ export default function ReportDialog({
                             <div className="pt-2">
                                 <div className="mb-4 flex items-end justify-between border-b pb-2">
                                     <div>
-                                        <h3 className="text-sm font-semibold text-gray-900">
+                                        <h3 className="text-sm font-semibold text-foreground">
                                             Required Attachments
                                         </h3>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-xs text-muted-foreground">
                                             List the files officers must upload
                                             back to you.
                                         </p>
@@ -249,7 +250,7 @@ export default function ReportDialog({
                                 {/* Visual List of Fields */}
                                 <div className="space-y-3">
                                     {fields.length === 0 && (
-                                        <div className="flex h-20 flex-col items-center justify-center rounded-md border border-dashed bg-gray-50 text-sm text-gray-400 italic">
+                                        <div className="flex h-20 flex-col items-center justify-center rounded-md border border-dashed bg-muted/30 text-sm text-muted-foreground italic">
                                             No attachments requested yet.
                                         </div>
                                     )}
@@ -257,14 +258,14 @@ export default function ReportDialog({
                                     {fields.map((field, index) => (
                                         <div
                                             key={field.id}
-                                            className="group flex items-center gap-3 rounded-md border bg-white p-2 px-3 shadow-sm transition-all hover:border-gray-300"
+                                            className="group flex items-center gap-3 rounded-md border bg-card p-2 px-3 shadow-sm transition-all hover:border-border"
                                         >
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-gray-100 text-gray-600">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-muted text-muted-foreground">
                                                 <FileText className="h-4 w-4" />
                                             </div>
 
                                             <div className="flex-1 space-y-1">
-                                                <Label className="text-[10px] font-medium tracking-wider text-gray-400 uppercase">
+                                                <Label className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
                                                     Attachment Name #{index + 1}
                                                 </Label>
                                                 <Input
@@ -276,7 +277,7 @@ export default function ReportDialog({
                                                         )
                                                     }
                                                     placeholder="e.g. Scanned Attendance Sheet"
-                                                    className="h-8 border-none bg-transparent p-0 text-sm font-medium shadow-none placeholder:text-gray-300 focus-visible:ring-0"
+                                                    className="h-8 border-none bg-transparent p-0 text-sm font-medium shadow-none placeholder:text-muted-foreground/30 focus-visible:ring-0"
                                                 />
                                             </div>
 
@@ -284,7 +285,7 @@ export default function ReportDialog({
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-8 w-8 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                                                className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                                                 onClick={() =>
                                                     removeField(field.id)
                                                 }

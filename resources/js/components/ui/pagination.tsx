@@ -70,7 +70,7 @@ export function Pagination({ paginator, filters = {} }: PaginationProps) {
                                     onClick={() => handlePageChange(pageNumber)}
                                     className={`relative inline-flex items-center border border-border px-4 py-2 text-sm font-medium ring-1 ring-inset ring-border focus:z-20 focus:outline-offset-0 ${
                                         link.active
-                                            ? 'z-10 bg-primary text-primary-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+                                            ? 'z-10 bg-primary text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
                                             : 'bg-background text-foreground hover:bg-accent hover:text-accent-foreground'
                                     }`}
                                 >

@@ -1,17 +1,22 @@
+import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import AppLayout from '@/layouts/app-layout';
+import {
+    BreadcrumbItem,
+    FilterType,
+    LaravelPaginator,
+    ReportSubmission,
+} from '@/types';
 import { WhenVisible } from '@inertiajs/react';
-import { breadcrumbs } from '../dashboard/page';
 import Header from './components/header';
 import Submissions from './submissions';
-import { LaravelPaginator, ReportSubmission, FilterType } from '@/types';
 
 const SkeletonLoading = () => (
     <div className="animate-pulse space-y-3">
         {[...Array(5)].map((_, i) => (
-            <div key={i} className="p-4 border rounded-lg">
-                <div className="h-5 bg-gray-200 rounded w-1/3 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-full mb-1"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div key={i} className="rounded-lg border p-4">
+                <div className="mb-2 h-5 w-1/3 rounded bg-gray-200"></div>
+                <div className="mb-1 h-4 w-full rounded bg-gray-200"></div>
+                <div className="h-4 w-2/3 rounded bg-gray-200"></div>
             </div>
         ))}
     </div>
@@ -22,7 +27,17 @@ interface MyReportsProps {
     filter?: FilterType;
 }
 
-export default function MyReports({ mySubmissions, filter = 'all' }: MyReportsProps) {
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'My Report Submissions',
+        href: ViewController.myReportSubmissions().url,
+    },
+];
+
+export default function MyReports({
+    mySubmissions,
+    filter = 'all',
+}: MyReportsProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
@@ -31,10 +46,7 @@ export default function MyReports({ mySubmissions, filter = 'all' }: MyReportsPr
                     data={'mySubmissions'}
                     fallback={<SkeletonLoading />}
                 >
-                    <Submissions
-                        submissions={mySubmissions}
-                        filter={filter}
-                    />
+                    <Submissions submissions={mySubmissions} filter={filter} />
                 </WhenVisible>
             </div>
         </AppLayout>

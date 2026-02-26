@@ -18,7 +18,7 @@ interface Props {
 }
 
 const headers = [
-    'User name',
+    'Username',
     'Emp Code',
     'Cluster',
     'Position',
