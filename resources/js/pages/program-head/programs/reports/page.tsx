@@ -17,12 +17,16 @@ export default function Reports() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between gap-3">
                     <Back link={ViewController.programs()} />
-
-                    <h1 className="text-2xl font-semibold">All Reports </h1>
+                    <h1 className="lg:text-2xl font-semibold">All Reports </h1>
                     <div></div>
                 </div>
                 <Activity mode={reports?.length === 0 ? 'visible' : 'hidden'}>
-                    No reports yet
+                    <div className='h-[60vh] flex justify-center items-center'>
+                        <div>
+                            <img src='/Images/no-report.svg' alt="No report" className='h-30 mb-2 dark:opacity-45' />
+                            <p className='text-center text-gray-500'>No reports yet</p>
+                        </div>
+                    </div>
                 </Activity>
 
                 <Deferred
@@ -30,7 +34,7 @@ export default function Reports() {
                     fallback={() => <div>Loading...</div>}
                 >
                     <Activity mode={reports?.length > 0 ? 'visible' : 'hidden'}>
-                        <div className="grid grid-cols-3 gap-5">
+                        <div className="grid grid-rows-1 lg:grid-cols-3 gap-5">
                             {reports?.map((report, index) => (
                                 <Link
                                     href={ViewController.submissions(report)}
@@ -42,17 +46,17 @@ export default function Reports() {
                                     </div>
                                     <div className="flex w-full items-center justify-between">
                                         <div>
-                                            <h2 className="truncate text-lg font-semibold">
+                                            <h2 className="truncate lg:text-lg font-semibold">
                                                 {report.title} with bipop
                                             </h2>
-                                            <p className="text-sm text-muted-foreground">
+                                            <p className="text-xs lg:text-sm text-muted-foreground">
                                                 Deadline:{' '}
                                                 {new Date(
                                                     report.created_at,
                                                 ).toLocaleDateString()}
                                             </p>
                                         </div>
-                                        <div>
+                                        <div className=''>
                                             <EllipsisVertical className="transition-colors hover:text-muted-foreground" />
                                         </div>
                                     </div>

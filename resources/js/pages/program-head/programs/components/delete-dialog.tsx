@@ -23,13 +23,13 @@ export default function DeleteProgramDialog({ program, setOpenPop }: Props) {
     const [open, setOpen] = useState<boolean>(false);
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild >
                 <button
                     type="button"
-                    className="flex items-center gap-3 text-destructive"
+                    className="flex justify-between items-center w-full text-destructive "
                 >
-                    <Trash2 className="h-4 w-4" />
                     Delete
+                    <Trash2 className="h-4 w-4" />
                 </button>
             </DialogTrigger>
             <DialogContent>

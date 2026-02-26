@@ -78,10 +78,10 @@ export default function NotificationsPage() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifications" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:bg-[#171717] dark:border-0">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <h1 className="flex items-center gap-2 text-xl font-semibold text-gray-900">
+                            <h1 className="flex items-center gap-2 text-xl font-semibold text-gray-900 dark:text-foreground">
                                 <BellRing className="h-5 w-5 text-indigo-500" />
                                 Notifications
                             </h1>
@@ -101,24 +101,24 @@ export default function NotificationsPage() {
                     </div>
 
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3">
-                            <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                        <div className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-500 dark:bg-[#171717]">
+                            <p className="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-foreground">
                                 Total
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-gray-900">
+                            <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-indigo-500">
                                 {normalized.length}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-3">
-                            <p className="text-xs font-medium tracking-wide text-blue-600 uppercase">
+                        <div className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 dark:border-gray-500 dark:bg-[#171717]">
+                            <p className="text-xs font-medium tracking-wide text-blue-600 uppercase dark:text-foreground">
                                 Unread
                             </p>
                             <p className="mt-1 text-lg font-semibold text-blue-700">
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3">
-                            <p className="text-xs font-medium tracking-wide text-emerald-600 uppercase">
+                        <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 dark:border-gray-500 dark:bg-[#171717]">
+                            <p className="text-xs font-medium tracking-wide text-emerald-600 uppercase dark:text-foreground">
                                 Read
                             </p>
                             <p className="mt-1 text-lg font-semibold text-emerald-700">
@@ -128,10 +128,10 @@ export default function NotificationsPage() {
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:bg-[#171717] dark:border-0">
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-gray-500" />
-                        <p className="text-sm font-medium text-gray-700">
+                        <p className="text-sm font-medium text-gray-700 dark:text-foreground">
                             Filter
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
@@ -144,8 +144,8 @@ export default function NotificationsPage() {
                                             onClick={() => setFilter(value)}
                                             className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
                                                 active
-                                                    ? 'bg-indigo-100 text-indigo-700'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500 dark:text-foreground'
+                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#171717] dark:text-foreground dark:border dark:border-gray-500'
                                             }`}
                                         >
                                             {value}

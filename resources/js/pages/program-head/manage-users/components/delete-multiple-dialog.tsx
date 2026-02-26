@@ -49,7 +49,7 @@ export default function DeleteMultipleDialog({ users_id }: Props) {
                     }}
                 >
                     <div>
-                        <p>
+                        <p className='text-sm text-center mb-1 lg:text-left'>
                             Are you sure you want to delete {users_id.length}{' '}
                             {users_id.length === 1 ? 'user' : 'users'}?
                         </p>

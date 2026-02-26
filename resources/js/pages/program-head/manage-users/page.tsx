@@ -30,7 +30,7 @@ export default function ManageUsers() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="User Management" />
             <FlashToaster />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-2 overflow-x-auto rounded-xl p-4">
                 <h1 className="text-xl font-semibold">User Management</h1>
                 <Header selectedUsers={selectedUsers} />
 
@@ -41,7 +41,7 @@ export default function ManageUsers() {
                         setSelectedUsers={setSelectedUsers}
                     />
 
-                    <div>
+                    <div className='pt-2'>
                         {/* First Page */}
                         {users.first_page_url && (
                             <Link href={users.first_page_url}>

@@ -27,7 +27,7 @@ export default function EditUserDialog({user, openDialog, closeDialog}:pageProps
                     </DialogDescription>
                 </DialogHeader>
 
-                <ScrollArea className="max-h-[calc(90vh-6rem)] flex-1 pr-4">
+                <ScrollArea className="max-h-[calc(90vh-6rem)] flex-1 pr-0 lg:pr-4">
                     <EditProfileForm
                         user={user}
                         closeDialog={closeDialog}
