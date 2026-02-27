@@ -1,15 +1,13 @@
+import { useNotifications } from '@/hooks/use-notifications';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, InfiniteScroll, usePage } from '@inertiajs/react';
 import { Bell, BellRing, CheckCheck, Clock3, Filter } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
+    { title: 'Dashboard', href: dashboard().url },
 ];
 
 interface NotificationItem {
@@ -18,7 +16,6 @@ interface NotificationItem {
     message: string;
     created_at: string;
     read_at: string | null;
-    type?: string;
 }
 
 type NotificationFilter = 'all' | 'unread' | 'read';
@@ -34,9 +31,12 @@ function formatDateTime(value: string) {
 }
 
 export default function NotificationsPage() {
-    const { notifications = [] } = usePage<{
-        notifications?: NotificationItem[];
+    const { notifications } = usePage<{
+        notifications: { data: NotificationItem[] };
     }>().props;
+
+    const notificationList = notifications?.data ?? [];
+    const { markAsRead, markAllAsRead, remove, removeAll } = useNotifications();
 
     const [filter, setFilter] = useState<NotificationFilter>('all');
     const [localReadMap, setLocalReadMap] = useState<Record<string, boolean>>(
@@ -45,32 +45,31 @@ export default function NotificationsPage() {
 
     const normalized = useMemo(
         () =>
-            notifications.map((item) => ({
+            notificationList.map((item) => ({
                 ...item,
                 isRead: item.read_at !== null || localReadMap[item.id] === true,
             })),
-        [notifications, localReadMap],
+        [notificationList, localReadMap],
     );
 
     const filtered = useMemo(() => {
-        if (filter === 'unread')
-            return normalized.filter((item) => !item.isRead);
-        if (filter === 'read') return normalized.filter((item) => item.isRead);
+        if (filter === 'unread') return normalized.filter((n) => !n.isRead);
+        if (filter === 'read') return normalized.filter((n) => n.isRead);
         return normalized;
     }, [filter, normalized]);
 
-    const unreadCount = normalized.filter((item) => !item.isRead).length;
+    const unreadCount = normalized.filter((n) => !n.isRead).length;
     const readCount = normalized.length - unreadCount;
 
-    const markAsRead = (id: string) => {
+    const markNotificaionAsRead = (id: string) => {
+        markAsRead(id);
         setLocalReadMap((prev) => ({ ...prev, [id]: true }));
     };
 
-    const markAllAsRead = () => {
+    const markAllNotificationAsRead = () => {
+        markAllAsRead();
         const next: Record<string, boolean> = {};
-        normalized.forEach((item) => {
-            next[item.id] = true;
-        });
+        normalized.forEach((n) => (next[n.id] = true));
         setLocalReadMap(next);
     };
 
@@ -78,6 +77,7 @@ export default function NotificationsPage() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifications" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                {/* Header Card */}
                 <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
@@ -91,7 +91,7 @@ export default function NotificationsPage() {
                             </p>
                         </div>
                         <button
-                            onClick={markAllAsRead}
+                            onClick={markAllNotificationAsRead}
                             disabled={unreadCount === 0}
                             className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
                         >
@@ -128,6 +128,7 @@ export default function NotificationsPage() {
                     </div>
                 </div>
 
+                {/* List Card */}
                 <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-gray-500" />
@@ -136,85 +137,88 @@ export default function NotificationsPage() {
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
                             {(['all', 'unread', 'read'] as const).map(
-                                (value) => {
-                                    const active = filter === value;
-                                    return (
-                                        <button
-                                            key={value}
-                                            onClick={() => setFilter(value)}
-                                            className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
-                                                active
-                                                    ? 'bg-indigo-100 text-indigo-700'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                            }`}
-                                        >
-                                            {value}
-                                        </button>
-                                    );
-                                },
+                                (value) => (
+                                    <button
+                                        key={value}
+                                        onClick={() => setFilter(value)}
+                                        className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
+                                            filter === value
+                                                ? 'bg-indigo-100 text-indigo-700'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        }`}
+                                    >
+                                        {value}
+                                    </button>
+                                ),
                             )}
                         </div>
                     </div>
 
-                    {filtered.length === 0 ? (
-                        <div className="rounded-lg border border-dashed border-gray-200 px-4 py-12 text-center">
-                            <Bell className="mx-auto h-9 w-9 text-gray-300" />
-                            <p className="mt-3 text-sm font-medium text-gray-700">
-                                No notifications found
-                            </p>
-                            <p className="mt-1 text-xs text-gray-500">
-                                New updates will appear here once available.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {filtered.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className={`rounded-lg border px-4 py-3 transition-colors ${
-                                        item.isRead
-                                            ? 'border-gray-200 bg-white'
-                                            : 'border-indigo-100 bg-indigo-50'
-                                    }`}
-                                >
-                                    <div className="flex flex-wrap items-start justify-between gap-2">
-                                        <div className="min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-sm font-semibold text-gray-900">
-                                                    {item.title}
+                    {/* 👇 InfiniteScroll wraps the list — data="notifications" matches the prop key */}
+                    <InfiniteScroll data="notifications">
+                        {filtered.length === 0 ? (
+                            <div className="rounded-lg border border-dashed border-gray-200 px-4 py-12 text-center">
+                                <Bell className="mx-auto h-9 w-9 text-gray-300" />
+                                <p className="mt-3 text-sm font-medium text-gray-700">
+                                    No notifications found
+                                </p>
+                                <p className="mt-1 text-xs text-gray-500">
+                                    New updates will appear here once available.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {filtered.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className={`rounded-lg border px-4 py-3 transition-colors ${
+                                            item.isRead
+                                                ? 'border-gray-200 bg-white'
+                                                : 'border-indigo-100 bg-indigo-50'
+                                        }`}
+                                    >
+                                        <div className="flex flex-wrap items-start justify-between gap-2">
+                                            <div className="min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-sm font-semibold text-gray-900">
+                                                        {item.title}
+                                                    </p>
+                                                    {!item.isRead && (
+                                                        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-indigo-700 uppercase">
+                                                            New
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="mt-1 text-sm text-gray-600">
+                                                    {item.message}
                                                 </p>
-                                                {!item.isRead && (
-                                                    <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-indigo-700 uppercase">
-                                                        New
-                                                    </span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                                <Clock3 className="h-3.5 w-3.5" />
+                                                {formatDateTime(
+                                                    item.created_at,
                                                 )}
                                             </div>
-                                            <p className="mt-1 text-sm text-gray-600">
-                                                {item.message}
-                                            </p>
                                         </div>
-                                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                                            <Clock3 className="h-3.5 w-3.5" />
-                                            {formatDateTime(item.created_at)}
-                                        </div>
+                                        {!item.isRead && (
+                                            <div className="mt-3">
+                                                <button
+                                                    onClick={() =>
+                                                        markNotificaionAsRead(
+                                                            item.id,
+                                                        )
+                                                    }
+                                                    className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-indigo-200 bg-white px-2.5 py-1.5 text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
+                                                >
+                                                    Mark as read
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {!item.isRead && (
-                                        <div className="mt-3">
-                                            <button
-                                                onClick={() =>
-                                                    markAsRead(item.id)
-                                                }
-                                                className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-indigo-200 bg-white px-2.5 py-1.5 text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
-                                            >
-                                                Mark as read
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
+                    </InfiniteScroll>
                 </div>
             </div>
         </AppLayout>

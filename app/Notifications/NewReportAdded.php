@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ReportSubmissionAccepted extends Notification
+class NewReportAdded extends Notification
 {
     use Queueable;
 
@@ -17,7 +17,7 @@ class ReportSubmissionAccepted extends Notification
      */
     public function __construct(public ReportSubmission $report_submission)
     {
-
+        //
     }
 
     /**
@@ -27,7 +27,6 @@ class ReportSubmissionAccepted extends Notification
      */
     public function via(object $notifiable): array
     {
-
         $channels = ['database'];
 
         // if ($notifiable->wantsEmailFor('report_submitted')) {
@@ -55,9 +54,9 @@ class ReportSubmissionAccepted extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'       => 'report_submission_accepted',
-            'title'      => 'Your Report Submission Has Accepted',
-            'message'    => "{$this->report_submission->fieldOfficer->name} you report submission for \"{$this->report_submission->report->title}\" has been accepted",
+            'type'       => 'new_report_submission_required',
+            'title'      => 'New report submission required',
+            'message'    => "A new report \"{$this->report_submission->report->title}\" has been assigned to you. Please submit it before the deadline.",
             'report_submission_id'  => $this->report_submission->id,
             'report_title' => $this->report_submission->report->title,
             'action_url' => route('field-officer.programs.reports.report-submissions', [

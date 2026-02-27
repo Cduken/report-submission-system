@@ -8,6 +8,7 @@ use App\Models\Report;
 use App\Models\ReportSubmission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ViewController extends Controller
 {
@@ -154,6 +155,22 @@ class ViewController extends Controller
 
     public function notifications()
     {
-        return inertia('field-officer/notifications/page');
+        $notifications = auth()->user()
+            ->notifications()
+            ->latest()
+            ->paginate(20)
+            ->through(function ($notification){
+                return [
+                    'id' => $notification->id,
+                    'title' => $notification->data['title'] ?? '',
+                    'message' => $notification->data['message'] ?? '',
+                    'created_at' => $notification->created_at,
+                    'read_at' => $notification->read_at,
+                ];
+            });
+
+        return inertia('field-officer/notifications/page', [
+            'notifications' => Inertia::scroll($notifications)
+        ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Report;
 use App\Models\ReportSubmission;
 use App\Notifications\ReportSubmissionAccepted;
+use App\Notifications\ReportSubmissionReturned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -104,6 +105,11 @@ class ReportSubmissionController extends Controller
         if($request->status === 'accepted'){
 
             $reportSubmission->fieldOfficer->notify(new ReportSubmissionAccepted($reportSubmission));
+        }
+
+        if($request->status === 'returned'){
+
+            $reportSubmission->fieldOfficer->notify(new ReportSubmissionReturned($reportSubmission));
         }
 
         $data = [
