@@ -92,12 +92,12 @@ export default function page() {
 
                             {/* Enhanced Deadline Badge */}
                             <div
-                                className={`mt-5 lg:mt-0 inline-flex items-center gap-3 rounded-xl px-5 py-3 shadow-sm transition-all ${
+                                className={`mt-5 lg:mt-0 inline-flex items-center gap-3 rounded-xl px-3 py-2 lg:px-5 lg:py-3 shadow-sm transition-all ${
                                     isOverdue
                                         ? 'border-2 border-destructive/30 bg-destructive/10 text-destructive shadow-destructive/10'
                                         : daysUntilDeadline <= 3
-                                          ? 'border-2 border-amber-500/30 bg-amber-500/10 text-amber-700 shadow-amber-500/10 dark:text-amber-400'
-                                          : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
+                                            ? 'border-2 border-amber-500/30 bg-amber-500/10 text-amber-700 shadow-amber-500/10 dark:text-amber-400'
+                                            : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
                                 }`}
                             >
                                 {/* Icon */}
@@ -106,8 +106,8 @@ export default function page() {
                                         isOverdue
                                             ? 'bg-destructive/20'
                                             : daysUntilDeadline <= 3
-                                              ? 'bg-amber-500/20'
-                                              : 'bg-emerald-500/20'
+                                                ? 'bg-amber-500/20'
+                                                : 'bg-emerald-500/20'
                                     }`}
                                 >
                                     {isOverdue ? (
@@ -208,7 +208,7 @@ export default function page() {
                                                     <span className="text-xs font-medium text-muted-foreground">
                                                         Submitted By
                                                     </span>
-                                                    <span className="font-semibold text-foreground">
+                                                    <span className="text-sm lg:text-base font-semibold text-foreground">
                                                         {reportSubmission
                                                             ?.field_officer
                                                             ?.name || 'N/A'}
@@ -225,7 +225,7 @@ export default function page() {
                                                     <span className="text-xs font-medium text-muted-foreground">
                                                         Submission Date
                                                     </span>
-                                                    <span className="font-semibold text-foreground">
+                                                    <span className="text-sm lg:text-base font-semibold text-foreground">
                                                         {reportSubmission?.created_at
                                                             ? new Date(
                                                                     reportSubmission.created_at,
@@ -247,7 +247,7 @@ export default function page() {
 
                                 {/* Footer Actions */}
                                 <div className="mt-6 flex items-center justify-between border-t pt-4">
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
                                         <Upload className="h-4 w-4" />
                                         <span>
                                             Uploaded{' '}

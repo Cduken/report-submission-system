@@ -21,11 +21,9 @@ export default function Reports() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="flex items-center justify-between gap-3">
-                    <Back link={ViewController.programs()} />
-                    <h1 className="lg:text-2xl font-semibold">All Reports </h1>
-                    <div></div>
-                </div>
+                <Back link={ViewController.programs()} />
+                <h1 className="lg:text-2xl font-semibold">All Reports </h1>
+
                 <Activity mode={reports?.length === 0 ? 'visible' : 'hidden'}>
                     <div className='h-[60vh] flex justify-center items-center'>
                         <div>

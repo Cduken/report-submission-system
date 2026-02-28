@@ -10,7 +10,7 @@ export default function GridView({
     onCardClick: (submission: ReportSubmission) => void;
 }) {
     return (
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-rows-1 lg:grid-cols-3 gap-5">
             {reportSubmissions.map((submission) => (
                 <button
                     key={submission.id}

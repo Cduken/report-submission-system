@@ -91,14 +91,14 @@ export default function ReportSubmissionDialog({
                 </Button>
             )}
 
-            <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto p-0">
+            <DialogContent className="max-h-[85vh] overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
-                        <DialogTitle className="text-xl text-foreground">
+                        <DialogTitle className="text-sm lg:text-xl text-foreground">
                             Submit Report:{' '}
                             <span className="text-primary">{report.title}</span>
                         </DialogTitle>
-                        <DialogDescription className="text-muted-foreground">
+                        <DialogDescription className="text-xs lg:text-base text-muted-foreground">
                             Please fill out the required information below.
                             Fields marked with{' '}
                             <span className="text-destructive">*</span> are
@@ -123,7 +123,7 @@ export default function ReportSubmissionDialog({
                             <div className="space-y-4 rounded-lg border border-border bg-card/50 p-5">
                                 <div className="flex items-center gap-2 border-b border-border pb-2">
                                     <FileText className="h-5 w-5 text-muted-foreground" />
-                                    <h4 className="font-semibold text-foreground">
+                                    <h4 className="text-sm lg:text-base font-semibold text-foreground">
                                         General Information
                                     </h4>
                                 </div>
@@ -137,7 +137,7 @@ export default function ReportSubmissionDialog({
                                 <div className="space-y-2">
                                     <Label
                                         htmlFor="description"
-                                        className="text-foreground"
+                                        className="text-sm lg:text-base text-foreground"
                                     >
                                         Description / Notes
                                     </Label>
@@ -156,7 +156,7 @@ export default function ReportSubmissionDialog({
                                 <div className="flex items-center justify-between border-b border-border pb-2">
                                     <div className="flex items-center gap-2">
                                         <UploadCloud className="h-5 w-5 text-muted-foreground" />
-                                        <h4 className="font-semibold text-foreground">
+                                        <h4 className="text-sm lg:text-base font-semibold text-foreground">
                                             Required Documents
                                         </h4>
                                     </div>
@@ -213,7 +213,7 @@ export default function ReportSubmissionDialog({
                                                         }}
                                                     />
 
-                                                    <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 p-4">
+                                                    <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 p-4 overflow-y-hidden">
                                                         <UploadCloud className="h-8 w-8 text-muted-foreground" />
                                                         <div className="text-center">
                                                             <p className="text-sm font-medium text-foreground">
@@ -234,12 +234,12 @@ export default function ReportSubmissionDialog({
                                                             selectedFiles[
                                                                 field.id
                                                             ].length > 0 && (
-                                                                <div className="mt-2 w-full max-w-sm rounded-md border border-border bg-background/50 p-2">
+                                                                <div className="mt-2 w-full max-w-sm overflow-hidden rounded-md border border-border bg-background/50 p-2">
                                                                     <p className="mb-1 text-xs font-medium text-muted-foreground">
                                                                         Selected
                                                                         files:
                                                                     </p>
-                                                                    <div className="space-y-1">
+                                                                    <div className="">
                                                                         {selectedFiles[
                                                                             field
                                                                                 .id
@@ -249,6 +249,7 @@ export default function ReportSubmissionDialog({
                                                                                 idx,
                                                                             ) => (
                                                                                 <div
+
                                                                                     key={
                                                                                         idx
                                                                                     }
@@ -259,7 +260,7 @@ export default function ReportSubmissionDialog({
                                                                                             file.name,
                                                                                         )}
                                                                                     </span>
-                                                                                    <span className="flex-1 truncate text-foreground">
+                                                                                    <span className="flex-1 w-20 truncate text-foreground">
                                                                                         {
                                                                                             file.name
                                                                                         }
