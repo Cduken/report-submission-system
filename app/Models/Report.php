@@ -77,4 +77,23 @@ class Report extends Model implements HasMedia
             ->where('field_officer_id', $userId)
             ->exists();
     }
+
+    public function submissionStatusForUser(int $userId): string
+    {
+        $submission = $this->submissions()
+            ->where('field_officer_id', $userId)
+            ->latest()
+            ->first();
+
+        if (!$submission) {
+            return 'pending';
+        }
+
+        if ($submission->status === 'returned') {
+            return 'returned';
+        }
+
+        return 'submitted';
+    }
+
 }

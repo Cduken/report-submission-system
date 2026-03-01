@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use App\Models\ReportSubmission;
+use App\Notifications\ReportSubmissionAccepted;
+use App\Notifications\ReportSubmissionReturned;
+use App\Notifications\ReportSubmissionSubmittedConfirmation;
+use App\Notifications\ReportSubmissionSubmittedForFocalPerson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -19,7 +23,12 @@ class ReportSubmissionController extends Controller
             'submission_data' => ['nullable', 'array'],
         ]);
 
+
+
         $report = Report::findOrFail($request->report_id);
+
+        // dd($report->form_schema);
+        // dd($request->submission_data);
 
         // Determine timeliness
         $submittedAt = now();
@@ -53,12 +62,14 @@ class ReportSubmissionController extends Controller
 
                 foreach ($request->file('submission_data') as $fieldId => $files) {
 
+
                     $files = is_array($files) ? $files : [$files];
                     $urls = [];
 
                     foreach ($files as $file) {
                         $media = $submission
                             ->addMedia($file)
+                            ->withCustomProperties(['field_id' => $fieldId])
                             ->toMediaCollection('submission_attachments');
 
                         $urls[] = $media->getUrl();
@@ -71,6 +82,12 @@ class ReportSubmissionController extends Controller
             $submission->update([
                 'data' => $finalData
             ]);
+
+            $submission->load(['report.program', 'fieldOfficer']);
+
+            $submission->fieldOfficer->notify(new ReportSubmissionSubmittedConfirmation($submission));
+            $submission->report->coordinator->notify(new ReportSubmissionSubmittedForFocalPerson($submission));
+
 
             return redirect()->back()->with('success', 'Report submitted successfully.');
     }
@@ -91,6 +108,20 @@ class ReportSubmissionController extends Controller
             ],
         ]);
 
+        $reportSubmission->load(['report.program', 'fieldOfficer']);
+
+        if($request->status === 'accepted'){
+
+            $reportSubmission->fieldOfficer->notify(new ReportSubmissionAccepted($reportSubmission));
+        }
+
+        if($request->status === 'returned'){
+
+            $reportSubmission->fieldOfficer->notify(new ReportSubmissionReturned($reportSubmission));
+        }
+
+
+
         $data = [
             'status' => $request->status,
         ];
@@ -101,7 +132,119 @@ class ReportSubmissionController extends Controller
 
         $reportSubmission->update($data);
 
+
+
+
+
         return redirect()->back()->with('success', 'Report Submission Updated Successfully');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'description' => ['nullable', 'string'],
+            'submission_data' => ['nullable', 'array'],
+            'files_to_delete' => ['nullable', 'json'],
+        ]);
+
+        $submission = ReportSubmission::with('report')->findOrFail($id);
+        $report = $submission->report;
+
+        // Check if user is authorized
+        if ($submission->field_officer_id !== Auth::id()) {
+            abort(403, 'You are not authorized to update this submission.');
+        }
+
+        // Check if deadline has passed (optional - you may want to restrict edits after deadline)
+        $deadlinePassed = $report->deadline && now()->gt($report->deadline);
+
+        // Handle file deletions
+        $filesToDelete = $request->input('files_to_delete')
+            ? json_decode($request->input('files_to_delete'), true)
+            : [];
+
+        $currentData = $submission->data ?? [];
+
+        if (!empty($filesToDelete)) {
+            $mediaToDelete = $submission->getMedia('submission_attachments')
+                ->whereIn('id', $filesToDelete);
+
+            foreach ($mediaToDelete as $media) {
+                $media->delete();
+            }
+
+            // Clean up data array
+            foreach ($filesToDelete as $fileId) {
+                $media = $submission->getMedia('submission_attachments')
+                    ->where('id', $fileId)
+                    ->first();
+
+                if ($media) {
+                    $fileUrl = $media->getUrl();
+
+                    foreach ($currentData as $fieldId => $urls) {
+                        if (is_array($urls)) {
+                            $currentData[$fieldId] = array_filter($urls, function($url) use ($fileUrl) {
+                                return $url !== $fileUrl;
+                            });
+
+                            if (empty($currentData[$fieldId])) {
+                                unset($currentData[$fieldId]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Process new file uploads
+        $finalData = $currentData;
+
+        if ($request->file('submission_data')) {
+            foreach ($request->file('submission_data') as $fieldId => $files) {
+                $files = is_array($files) ? $files : [$files];
+                $urls = $finalData[$fieldId] ?? [];
+
+                foreach ($files as $file) {
+                    $media = $submission
+                        ->addMedia($file)
+                        ->withCustomProperties(['field_id' => $fieldId])
+                        ->toMediaCollection('submission_attachments');
+
+                    $urls[] = $media->getUrl();
+                }
+
+                $finalData[$fieldId] = $urls;
+            }
+        }
+
+        // Determine if content actually changed
+        $hasChanges = $request->description !== $submission->description
+            || json_encode($finalData) !== json_encode($submission->data);
+
+        if (!$hasChanges) {
+            return redirect()->back()->with('info', 'No changes were made to the submission.');
+        }
+
+        // Update the submission
+        $submission->update([
+            'description' => $request->description,
+            'data' => $finalData,
+            'updated_at' => now(),
+        ]);
+
+        // Optionally add a note about the update
+        activity()
+        ->causedBy(Auth::user())
+        ->withProperties([
+            'changes' => [
+                'description_changed' => true,
+                'files_updated' => true,
+            ]
+        ])
+        ->log('submission_updated');
+
+        return redirect()->back()->with('success', 'Report submission updated successfully.');
     }
 
 }

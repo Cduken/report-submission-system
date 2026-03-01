@@ -5,7 +5,13 @@ import { useViewMode } from '@/hooks/use-view-mode';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, LaravelPaginator, Program } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { EllipsisVertical, Folders, Grid2x2, List } from 'lucide-react';
+import {
+    ClipboardList,
+    EllipsisVertical,
+    Folders,
+    Grid2x2,
+    List,
+} from 'lucide-react';
 import { Activity } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -15,33 +21,30 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+function ReportDueChip() {
+    return (
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs text-amber-600 ring-1 ring-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:ring-amber-800">
+            <ClipboardList className="h-3 w-3" />
+            Report due
+        </span>
+    );
+}
+
 export default function Page() {
     const { programs } = usePage<{ programs: LaravelPaginator<Program> }>()
         .props;
     const { mode: viewMode, updateMode: setViewMode } = useViewMode();
-
-    // Handle pagination
-    // const handlePageChange = (page: number) => {
-    //     if (
-    //         page === programs.current_page ||
-    //         page < 1 ||
-    //         page > programs.last_page
-    //     )
-    //         return;
-
-    //     router.get(window.location.pathname, { page });
-    // };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-lg lg:text-2xl font-semibold text-foreground">
+                        <h1 className="text-lg font-semibold text-foreground lg:text-2xl">
                             All Programs
                         </h1>
                         {programs.data.length > 0 && (
-                            <p className="mt-1 text-xs lg:text-sm text-muted-foreground">
+                            <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
                                 Showing {programs.from} to {programs.to} of{' '}
                                 {programs.total} programs
                             </p>
@@ -102,47 +105,28 @@ export default function Page() {
                                     className="group"
                                 >
                                     <div className="flex gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow">
-                                        {/* <div className="flex-shrink-0">
-                                            <Folders className="h-6 w-6 text-muted-foreground" />
-                                        </div>
-                                        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                                            <h2 className="truncate font-medium text-foreground">
-                                                {program.name}
-                                            </h2>
-                                            <p className="truncate text-sm text-muted-foreground">
-                                                {program.description}
-                                            </p>
-                                            <p className="truncate text-xs text-muted-foreground">
-                                                {program.coordinator.name}
-                                            </p>
-                                        </div> */}
-                                        {/* <div className=''>
-                                            <div className='bg-[#f3f4f6] p-3 rounded-md'>
-                                                <Folders className="h-5 text-muted-foreground" />
-                                            </div>
-                                        </div> */}
                                         <div className="flex min-w-0 flex-1 flex-col gap-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="rounded-md bg-muted p-3">
                                                     <Folders className="h-5 text-muted-foreground" />
                                                 </div>
                                                 <div className="flex min-w-0 flex-col">
-                                                    <div>
-                                                        <h1 className="text-sm lg:text-base truncate font-medium text-foreground">
-                                                            {program.name}
-                                                        </h1>
-                                                        <p className="text-xs truncate text-muted-foreground">
-                                                            {
-                                                                program.description
-                                                            }
-                                                        </p>
-                                                    </div>
+                                                    <h1 className="truncate font-medium text-foreground">
+                                                        {program.name}
+                                                    </h1>
+                                                    <p className="truncate text-sm text-muted-foreground">
+                                                        {program.description}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col gap-3 pl-15">
+
+                                            <div className="flex items-center justify-between pl-15">
                                                 <p className="font-lighter truncate text-xs text-gray-500">
                                                     {program.coordinator.name}
                                                 </p>
+                                                {program.has_pending_reports && (
+                                                    <ReportDueChip />
+                                                )}
                                             </div>
                                         </div>
                                         <div className="flex items-center">
@@ -174,11 +158,14 @@ export default function Page() {
                                     className="group"
                                 >
                                     <div className="grid grid-cols-12 items-center gap-4 border-b px-4 py-3 transition-colors hover:bg-accent/50">
-                                        <div className="col-span-5 flex min-w-0 items-center gap-3">
+                                        <div className="col-span-5 flex min-w-0 items-center gap-2">
                                             <Folders className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
                                             <h2 className="truncate font-medium text-foreground">
                                                 {program.name}
                                             </h2>
+                                            {program.has_pending_reports && (
+                                                <ReportDueChip />
+                                            )}
                                         </div>
                                         <div className="col-span-3 truncate text-sm text-muted-foreground">
                                             {program.coordinator.name}

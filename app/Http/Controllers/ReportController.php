@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Notifications\NewReportAdded;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class ReportController extends Controller
 {
@@ -19,6 +22,8 @@ class ReportController extends Controller
 
             'template_files' => 'nullable|array',
             'template_files.*' => 'file|max:10240',
+            'reference_files' => 'nullable|array',
+            'reference_files.*' => 'file|max:10240',
         ]);
 
 
@@ -36,6 +41,20 @@ class ReportController extends Controller
             }
 
         }
+
+        if($request->hasFile('reference_files')){
+
+            foreach($request->file('reference_files') as $file){
+                $report->addMedia($file)->toMediaCollection('references');
+            }
+
+        }
+
+        $fieldOfficers = User::role('field_officer')->get();
+
+        Notification::send($fieldOfficers, new NewReportAdded($report));
+
+
 
 
         return redirect()->back()->with('success', 'Report created successfully.');

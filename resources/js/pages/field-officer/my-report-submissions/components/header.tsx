@@ -1,6 +1,6 @@
 // components/header.tsx (Simple & Elegant)
-import { router } from '@inertiajs/react';
 import { FilterType } from '@/types';
+import { router } from '@inertiajs/react';
 
 interface HeaderProps {
     activeFilter?: FilterType;
@@ -21,10 +21,10 @@ export default function Header({ activeFilter = 'all' }: HeaderProps) {
     return (
         <div className="mb-8">
             <div className="mb-6">
-                <h1 className="text-lg lg:text-2xl font-semibold tracking-tight text-foreground">
+                <h1 className="text-lg font-semibold tracking-tight text-foreground lg:text-2xl">
                     My All Submissions Report
                 </h1>
-                <p className="mt-1 text-xs lg:text-sm text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
                     View and manage all your report submissions
                 </p>
             </div>
@@ -39,18 +39,15 @@ export default function Header({ activeFilter = 'all' }: HeaderProps) {
                             <button
                                 key={filter.key}
                                 onClick={() => handleFilterClick(filter.key)}
-                                className={`
-                                    text-xs relative px-4 py-3 lg:text-sm font-medium transition-colors
-                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-                                    ${isActive
+                                className={`relative px-4 py-3 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none lg:text-sm ${
+                                    isActive
                                         ? 'text-foreground'
                                         : 'text-muted-foreground hover:text-foreground'
-                                    }
-                                `}
+                                } `}
                             >
                                 {filter.label}
                                 {isActive && (
-                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />
+                                    <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-t-full bg-primary" />
                                 )}
                             </button>
                         );

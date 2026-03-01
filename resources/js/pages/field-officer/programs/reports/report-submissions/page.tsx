@@ -1,7 +1,8 @@
 import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Program, Report, ReportSubmission } from '@/types';
+import { breadcrumbs } from '@/pages/field-officer/dashboard/page';
+import { Program, Report, ReportSubmission } from '@/types';
 import { usePage } from '@inertiajs/react';
 import {
     AlertCircle,
@@ -13,17 +14,38 @@ import {
     User,
 } from 'lucide-react';
 import { Activity, useState } from 'react';
+import EditReportSubmissionDialog from './components/edit-report-submission-dialog';
 import EmptyReportSubmission from './components/empty-submission';
 import ReportSubmissionDialog from './components/report-submission-dialog';
 import SampleTemplate from './components/sample-template';
 
+const STATUS_MAP = {
+    submitted: {
+        text: 'Submitted',
+        style: 'text-emerald-600 dark:text-emerald-400',
+    },
+    returned: {
+        text: 'Returned',
+        style: 'text-red-600 dark:text-red-400',
+    },
+    accepted: {
+        text: 'Accepted',
+        style: 'text-blue-600 dark:text-blue-400',
+    },
+    draft: {
+        text: 'Draft',
+        style: 'text-gray-600 dark:text-gray-400',
+    },
+};
+
 export default function page() {
-    const [open, setOpen] = useState<boolean>(false);
+    const [submitOpen, setSubmitOpen] = useState<boolean>(false);
+    const [editOpen, setEditOpen] = useState<boolean>(false);
 
     const { program, report, reportSubmission, hasSubmitted } = usePage<{
         program: Program;
         report: Report;
-        reportSubmission: ReportSubmission;
+        reportSubmission: ReportSubmission & { media?: any[] };
         hasSubmitted: boolean;
     }>().props;
 
@@ -43,12 +65,10 @@ export default function page() {
         (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: `Programs/${program.name}/Reports/${report.title}/Report Submissions`,
-            href: ViewController.reportSubmissions([program, report]).url,
-        },
-    ];
+    const statusInfo = STATUS_MAP[reportSubmission?.status] ?? {
+        text: 'Unknown',
+        style: 'text-gray-600 dark:text-gray-400',
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -57,12 +77,22 @@ export default function page() {
                 <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between">
                         <Back link={ViewController.reports(program)} />
-                        <ReportSubmissionDialog
-                            open={open}
-                            hasSubmitted={hasSubmitted}
-                            setOpen={setOpen}
-                            report={report}
-                        />
+                        {/* Show submit dialog if not yet submitted, edit dialog if already submitted */}
+                        {hasSubmitted && reportSubmission ? (
+                            <EditReportSubmissionDialog
+                                open={editOpen}
+                                setOpen={setEditOpen}
+                                report={report}
+                                submission={reportSubmission}
+                            />
+                        ) : (
+                            <ReportSubmissionDialog
+                                open={submitOpen}
+                                hasSubmitted={hasSubmitted}
+                                setOpen={setSubmitOpen}
+                                report={report}
+                            />
+                        )}
                     </div>
 
                     {/* Title and Deadline Card */}
@@ -100,7 +130,6 @@ export default function page() {
                                             : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
                                 }`}
                             >
-                                {/* Icon */}
                                 <div
                                     className={`rounded-full p-2 ${
                                         isOverdue
@@ -117,7 +146,6 @@ export default function page() {
                                     )}
                                 </div>
 
-                                {/* Text */}
                                 <div className="flex flex-col leading-tight">
                                     <span className="text-xs font-medium opacity-80">
                                         {isOverdue
@@ -155,7 +183,7 @@ export default function page() {
 
                 {/* Empty State */}
                 <Activity mode={!reportSubmission ? 'visible' : 'hidden'}>
-                    <EmptyReportSubmission setIsOpen={setOpen} />
+                    <EmptyReportSubmission setIsOpen={setSubmitOpen} />
                 </Activity>
 
                 {/* Single Submission Card */}
@@ -165,9 +193,11 @@ export default function page() {
                             <h2 className="text-lg font-semibold text-foreground/90">
                                 Your Submission
                             </h2>
-                            <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                            <div
+                                className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium ${statusInfo.style}`}
+                            >
                                 <CheckCircle2 className="h-4 w-4" />
-                                <span>Submitted</span>
+                                <span>{statusInfo.text}</span>
                             </div>
                         </div>
 
@@ -265,6 +295,16 @@ export default function page() {
                                                 : ''}
                                         </span>
                                     </div>
+
+                                    {/* Edit button inside the card as a secondary entry point */}
+                                    {/* {reportSubmission && (
+                                        <EditReportSubmissionDialog
+                                            open={editOpen}
+                                            setOpen={setEditOpen}
+                                            report={report}
+                                            submission={reportSubmission}
+                                        />
+                                    )} */}
                                 </div>
                             </div>
                         </div>

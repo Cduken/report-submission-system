@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Program extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'description',
@@ -27,5 +27,20 @@ class Program extends Model
     public function reports()
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function hasPendingReportsForUser(int $userId): bool
+    {
+        return $this->reports()
+            ->where(function ($query) use ($userId) {
+                $query->whereDoesntHave('submissions', function ($q) use ($userId) {
+                    $q->where('field_officer_id', $userId);
+                })
+                ->orWhereHas('submissions', function ($q) use ($userId) {
+                    $q->where('field_officer_id', $userId)
+                    ->where('status', 'returned');
+                });
+            })
+            ->exists();
     }
 }

@@ -20,6 +20,8 @@ export interface NavItem {
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    showNotificationBadge?: boolean;
+    badge?: NavItemBadge;
 }
 
 export interface SharedData {
@@ -50,6 +52,8 @@ export interface User {
     created_at: string;
     updated_at: string;
     role: string;
+    notifications_count: number;
+    pending_reports_count: number;
     [key: string]: unknown; // This allows for additional properties...
 }
 
@@ -60,6 +64,7 @@ export interface Program {
     coordinator: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
     created_at: string;
     updated_at: string;
+    has_pending_reports: boolean;
 }
 
 export interface Report {
@@ -72,8 +77,10 @@ export interface Report {
     final_deadline: Date;
     form_schema: Array;
     templates: Media[];
+    references: Media[];
     created_at: string;
     updated_at: string;
+    submission_status: string
 }
 
 export interface Media {
@@ -97,11 +104,13 @@ export interface ReportSubmission {
     updated_at: string;
     remarks: string;
     description: string
+    data: Object
 
     // Relationships
     fieldOfficer?: Pick<User, 'id' | 'name' | 'email' | 'avatar'>;
     media?: Media[];
     report?: Report; // Added report relationship
+    program?: Program;
 }
 
 export interface LaravelPaginator<T> {
@@ -125,4 +134,21 @@ export interface LaravelPaginator<T> {
 
 }
 
+interface NotificationItem {
+    id: string;
+    title: string;
+    message: string;
+    created_at: string;
+    read_at: string | null;
+    action_url: string | null;
+}
+
+export interface NavItemBadge {
+    countKey: keyof User;           // which field from auth.user to read
+    variant?: NavBadgeVariant;      // controls the color
+}
+
+
 export type FilterType = 'all' | 'pending' | 'rejected' | 'accepted';
+
+export type NavBadgeVariant = 'notification' | 'warning' | 'info';

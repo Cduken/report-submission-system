@@ -18,6 +18,10 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: FieldOfficerNavigationPath.programs().url,
                     icon: Layers,
+                    badge: {
+                        countKey: 'pending_reports_count',
+                        variant: 'warning',
+                    },
                 },
 
                 {
@@ -30,6 +34,10 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Notifications',
                     href: FieldOfficerNavigationPath.notifications().url,
                     icon: Bell,
+                    badge: {
+                        countKey: 'notifications_count',
+                        variant: 'notification',
+                    },
                 },
             ];
 
@@ -49,6 +57,7 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Notifications',
                     href: FocalPersonNavigationPath.notifications().url,
                     icon: Bell,
+                    showNotificationBadge: true,
                 },
             ];
         case 'program_head':
@@ -72,6 +81,7 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Notifications',
                     href: ProgramHeadNavigationPath.notifications().url,
                     icon: Bell,
+                    showNotificationBadge: true,
                 },
             ];
 

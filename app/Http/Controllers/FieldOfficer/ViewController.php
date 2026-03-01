@@ -8,6 +8,7 @@ use App\Models\Report;
 use App\Models\ReportSubmission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ViewController extends Controller
 {
@@ -18,20 +19,46 @@ class ViewController extends Controller
 
     public function programs(Request $request)
     {
-        $perPage = $request->get('per_page', 12);
-
+        $user = auth()->user();
         $programs = Program::with('coordinator')
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+            ->paginate(10)
+            ->through(function ($program) use ($user) {
+                return [
+                    'id' => $program->id,
+                    'name' => $program->name,
+                    'description' => $program->description,
+                    'coordinator' => $program->coordinator,
+
+                    // add this indicator
+                    'has_pending_reports' => $program->hasPendingReportsForUser($user->id),
+                ];
+            });
 
         return inertia('field-officer/programs/page', compact('programs'));
     }
 
     public function reports(Program $program)
     {
-        $reports = $program->reports()->get();
+        $user = auth()->user();
 
-        return inertia('field-officer/programs/reports/page', compact('reports', 'program'));
+        $reports = $program->reports()
+            ->with('coordinator')
+            ->paginate(12)
+            ->through(function ($report) use ($user) {
+                return [
+                    'id'                => $report->id,
+                    'title'             => $report->title,
+                    'description'       => $report->description,
+                    'deadline'          => $report->deadline,
+                    'final_deadline'    => $report->final_deadline,
+                    'submission_status' => $report->submissionStatusForUser($user->id),
+                ];
+            });
+
+        return inertia('field-officer/programs/reports/page', [
+            'reports' => Inertia::scroll($reports),
+            'program' => $program,
+        ]);
     }
 
     public function reportSubmissions(Program $program, Report $report)
@@ -80,13 +107,29 @@ class ViewController extends Controller
         ];
 
         $submission = $report->submissions()
-            ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
+            ->select('id', 'report_id', 'field_officer_id', 'description', 'data', 'status', 'created_at', 'updated_at')
             ->whereBelongsTo(auth()->user(), 'fieldOfficer')
             ->with([
                 'fieldOfficer:id,name,email',
                 'media'
             ])
             ->first();
+
+        if ($submission) {
+            $submission->media->transform(function ($media) {
+                return [
+                    'id' => $media->id,
+                    'uuid' => $media->uuid,
+                    'file_name' => $media->file_name,
+                    'size' => $media->size,
+                    'url' => $media->getUrl(),
+                    'field_id' => $media->getCustomProperty('field_id') ?? null, // ✅ THIS IS WHAT YOU NEED
+                    'collection_name' => $media->collection_name,
+                    'created_at' => $media->created_at,
+                    'download_url' => route('media.download', $media),
+                ];
+            });
+        }
 
         return inertia('field-officer/programs/reports/report-submissions/page', [
             'program' => $program,
@@ -107,7 +150,8 @@ class ViewController extends Controller
             ->with([
                 'fieldOfficer:id,name,email',
                 'media',
-                'report' // Eager load the report relationship
+                'report.program', // Eager load the report relationship
+
             ])
             ->orderBy('created_at', 'desc');
 
@@ -137,6 +181,23 @@ class ViewController extends Controller
 
     public function notifications()
     {
-        return inertia('field-officer/notifications/page');
+        $notifications = auth()->user()
+            ->notifications()
+            ->latest()
+            ->paginate(5)
+            ->through(function ($notification){
+                return [
+                    'id' => $notification->id,
+                    'title' => $notification->data['title'] ?? '',
+                    'message' => $notification->data['message'] ?? '',
+                    'created_at' => $notification->created_at,
+                    'read_at' => $notification->read_at,
+                    'action_url' => $notification->data['action_url'] ?? null
+                ];
+            });
+
+        return inertia('field-officer/notifications/page', [
+            'notifications' => Inertia::scroll($notifications)
+        ]);
     }
 }

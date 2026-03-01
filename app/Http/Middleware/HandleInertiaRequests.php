@@ -44,6 +44,8 @@ class HandleInertiaRequests extends Middleware
             'quote' => ['message' => trim($message), 'author' => trim($author)],
              'auth' => [
             'user' => $request->user() ? [
+                'notifications_count' => $request->user()->unreadNotifications()->count(),
+                'pending_reports_count' => $request->user()->pendingReportsCount(),
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
                 'email' => $request->user()->email,

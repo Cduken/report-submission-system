@@ -65,6 +65,18 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(ReportSubmission::class, 'field_officer_id');
     }
 
+    public function pendingReportsCount(): int
+    {
+        return Report::whereDoesntHave('submissions', function ($query) {
+                $query->where('field_officer_id', $this->id);
+            })
+            ->orWhereHas('submissions', function ($query) {
+                $query->where('field_officer_id', $this->id)
+                    ->where('status', 'returned');
+            })
+            ->count();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

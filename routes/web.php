@@ -57,7 +57,14 @@ Route::middleware(['auth', 'verified', 'role.redirect'])->group(function () {
 
 });
 
+Route::get('/media/{media}/download', function (\Spatie\MediaLibrary\MediaCollections\Models\Media $media) {
+    return response()->download($media->getPath(), $media->file_name);
+})->name('media.download');
+
+
+
 require __DIR__.'/settings.php';
+require __DIR__.'/notifications.php';
 require __DIR__.'/field_officer.php';
 require __DIR__.'/focal_person.php';
 require __DIR__.'/program_head.php';

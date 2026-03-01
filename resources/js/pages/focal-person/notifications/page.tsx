@@ -1,25 +1,23 @@
-import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
+import { useNotifications } from '@/hooks/use-notifications';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-import { Bell, BellRing, CheckCheck, Clock3, Filter } from 'lucide-react';
+import { dashboard } from '@/routes';
+import { NotificationItem, type BreadcrumbItem } from '@/types';
+import { Head, router, usePage } from '@inertiajs/react';
+import {
+    Bell,
+    BellRing,
+    CheckCheck,
+    Clock3,
+    ExternalLink,
+    Filter,
+    Trash2,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Notifications',
-        href: ViewController.notifications().url,
-    },
+    { title: 'Dashboard', href: dashboard().url },
+    { title: 'Notifications', href: '#' },
 ];
-
-interface NotificationItem {
-    id: string;
-    title: string;
-    message: string;
-    created_at: string;
-    read_at: string | null;
-    type?: string;
-}
 
 type NotificationFilter = 'all' | 'unread' | 'read';
 
@@ -33,10 +31,53 @@ function formatDateTime(value: string) {
     }).format(new Date(value));
 }
 
+// Maps notification title keywords to a color theme
+// Extend this as you add more notification types
+function getNotificationTheme(title: string): {
+    unreadBorder: string;
+    unreadBg: string;
+    badge: string;
+    markReadBtn: string;
+    viewBtn: string;
+} {
+    const t = title.toLowerCase();
+
+    if (t.includes('approved') || t.includes('success')) {
+        return {
+            unreadBorder: 'border-emerald-200',
+            unreadBg: 'bg-emerald-50',
+            badge: 'bg-emerald-100 text-emerald-700',
+            markReadBtn:
+                'border-emerald-200 text-emerald-600 hover:bg-emerald-50',
+            viewBtn: 'bg-emerald-600 hover:bg-emerald-700',
+        };
+    }
+    if (t.includes('rejected') || t.includes('denied')) {
+        return {
+            unreadBorder: 'border-red-200',
+            unreadBg: 'bg-red-50',
+            badge: 'bg-red-100 text-red-700',
+            markReadBtn: 'border-red-200 text-red-600 hover:bg-red-50',
+            viewBtn: 'bg-red-600 hover:bg-red-700',
+        };
+    }
+    // default: indigo (submitted/pending/etc)
+    return {
+        unreadBorder: 'border-indigo-100',
+        unreadBg: 'bg-indigo-50',
+        badge: 'bg-indigo-100 text-indigo-700',
+        markReadBtn: 'border-indigo-200 text-indigo-600 hover:bg-indigo-50',
+        viewBtn: 'bg-indigo-600 hover:bg-indigo-700',
+    };
+}
+
 export default function NotificationsPage() {
-    const { notifications = [] } = usePage<{
-        notifications?: NotificationItem[];
+    const { notifications } = usePage<{
+        notifications: { data: NotificationItem[] };
     }>().props;
+
+    const notificationList = notifications?.data ?? [];
+    const { markAsRead, markAllAsRead, remove, removeAll } = useNotifications();
 
     const [filter, setFilter] = useState<NotificationFilter>('all');
     const [localReadMap, setLocalReadMap] = useState<Record<string, boolean>>(
@@ -45,40 +86,74 @@ export default function NotificationsPage() {
 
     const normalized = useMemo(
         () =>
-            notifications.map((item) => ({
+            notificationList.map((item) => ({
                 ...item,
                 isRead: item.read_at !== null || localReadMap[item.id] === true,
             })),
-        [notifications, localReadMap],
+        [notificationList, localReadMap],
     );
 
     const filtered = useMemo(() => {
-        if (filter === 'unread')
-            return normalized.filter((item) => !item.isRead);
-        if (filter === 'read') return normalized.filter((item) => item.isRead);
+        if (filter === 'unread') return normalized.filter((n) => !n.isRead);
+        if (filter === 'read') return normalized.filter((n) => n.isRead);
         return normalized;
     }, [filter, normalized]);
 
-    const unreadCount = normalized.filter((item) => !item.isRead).length;
+    const unreadCount = normalized.filter((n) => !n.isRead).length;
     const readCount = normalized.length - unreadCount;
 
-    const markAsRead = (id: string) => {
+    const markNotificationAsRead = (id: string) => {
+        markAsRead(id);
         setLocalReadMap((prev) => ({ ...prev, [id]: true }));
     };
 
-    const markAllAsRead = () => {
+    const markAllNotificationsAsRead = () => {
+        markAllAsRead();
         const next: Record<string, boolean> = {};
-        normalized.forEach((item) => {
-            next[item.id] = true;
-        });
+        normalized.forEach((n) => (next[n.id] = true));
         setLocalReadMap(next);
+    };
+
+    // Click the card body → mark as read + navigate
+    const handleCardClick = (item: NotificationItem & { isRead: boolean }) => {
+        if (!item.isRead) {
+            markNotificationAsRead(item.id);
+        }
+        if (item.action_url) {
+            router.visit(item.action_url);
+        }
+    };
+
+    // Click the "View" button → same behavior, but explicit
+    const handleViewClick = (
+        e: React.MouseEvent,
+        item: NotificationItem & { isRead: boolean },
+    ) => {
+        e.stopPropagation(); // prevent card click from double-firing
+        if (!item.isRead) {
+            markNotificationAsRead(item.id);
+        }
+        if (item.action_url) {
+            router.visit(item.action_url);
+        }
+    };
+
+    const handleMarkAsRead = (e: React.MouseEvent, id: string) => {
+        e.stopPropagation(); // prevent card click
+        markNotificationAsRead(id);
+    };
+
+    const handleRemove = (e: React.MouseEvent, id: string) => {
+        e.stopPropagation(); // prevent card click
+        remove(id);
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifications" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                {/* Header Card */}
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
@@ -91,7 +166,7 @@ export default function NotificationsPage() {
                             </p>
                         </div>
                         <button
-                            onClick={markAllAsRead}
+                            onClick={markAllNotificationsAsRead}
                             disabled={unreadCount === 0}
                             className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                         >
@@ -100,6 +175,7 @@ export default function NotificationsPage() {
                         </button>
                     </div>
 
+                    {/* Stats */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
                         <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -128,7 +204,9 @@ export default function NotificationsPage() {
                     </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                {/* List Card */}
+                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                    {/* Filter Row */}
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-medium text-foreground">
@@ -136,26 +214,24 @@ export default function NotificationsPage() {
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
                             {(['all', 'unread', 'read'] as const).map(
-                                (value) => {
-                                    const active = filter === value;
-                                    return (
-                                        <button
-                                            key={value}
-                                            onClick={() => setFilter(value)}
-                                            className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
-                                                active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : 'bg-muted text-muted-foreground hover:bg-accent'
-                                            }`}
-                                        >
-                                            {value}
-                                        </button>
-                                    );
-                                },
+                                (value) => (
+                                    <button
+                                        key={value}
+                                        onClick={() => setFilter(value)}
+                                        className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
+                                            filter === value
+                                                ? 'bg-indigo-100 text-indigo-700'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        }`}
+                                    >
+                                        {value}
+                                    </button>
+                                ),
                             )}
                         </div>
                     </div>
 
+                    {/* Notification List */}
                     {filtered.length === 0 ? (
                         <div className="rounded-lg border border-dashed border-border bg-muted/20 px-4 py-12 text-center">
                             <Bell className="mx-auto h-9 w-9 text-muted-foreground/40" />
@@ -168,51 +244,117 @@ export default function NotificationsPage() {
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {filtered.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className={`rounded-lg border px-4 py-3 transition-colors ${
-                                        item.isRead
-                                            ? 'border-border bg-card'
-                                            : 'border-primary/20 bg-primary/5'
-                                    }`}
-                                >
-                                    <div className="flex flex-wrap items-start justify-between gap-2">
-                                        <div className="min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-sm font-semibold text-foreground">
-                                                    {item.title}
+                            {filtered.map((item) => {
+                                const theme = getNotificationTheme(item.title);
+                                const isClickable = !!item.action_url;
+
+                                return (
+                                    <div
+                                        key={item.id}
+                                        onClick={() =>
+                                            isClickable && handleCardClick(item)
+                                        }
+                                        className={`group rounded-lg border px-4 py-3 transition-all ${
+                                            item.isRead
+                                                ? 'border-gray-200 bg-white'
+                                                : `${theme.unreadBorder} ${theme.unreadBg}`
+                                        } ${
+                                            isClickable
+                                                ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
+                                                : 'cursor-default'
+                                        } `}
+                                    >
+                                        <div className="flex flex-wrap items-start justify-between gap-2">
+                                            {/* Left: title + message */}
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    {/* Unread dot */}
+                                                    {!item.isRead && (
+                                                        <span className="h-2 w-2 flex-shrink-0 rounded-full bg-indigo-500" />
+                                                    )}
+                                                    <p className="text-sm font-semibold text-gray-900">
+                                                        {item.title}
+                                                    </p>
+                                                    {!item.isRead && (
+                                                        <span
+                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${theme.badge}`}
+                                                        >
+                                                            New
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="mt-1 text-sm text-gray-600">
+                                                    {item.message}
                                                 </p>
-                                                {!item.isRead && (
-                                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-primary uppercase">
-                                                        New
-                                                    </span>
+                                            </div>
+
+                                            {/* Right: timestamp + dismiss */}
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-1 text-xs text-gray-400">
+                                                    <Clock3 className="h-3.5 w-3.5" />
+                                                    {formatDateTime(
+                                                        item.created_at,
+                                                    )}
+                                                </div>
+                                                {/* Dismiss button — appears on hover */}
+                                                <button
+                                                    onClick={(e) =>
+                                                        handleRemove(e, item.id)
+                                                    }
+                                                    className="rounded p-1 text-gray-300 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-50 hover:text-red-400"
+                                                    title="Dismiss notification"
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Action row — only for unread */}
+                                        {!item.isRead && (
+                                            <div className="mt-3 flex items-center gap-2">
+                                                <button
+                                                    onClick={(e) =>
+                                                        handleMarkAsRead(
+                                                            e,
+                                                            item.id,
+                                                        )
+                                                    }
+                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border bg-white px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
+                                                >
+                                                    <CheckCheck className="h-3.5 w-3.5" />
+                                                    Mark as read
+                                                </button>
+
+                                                {/* View button — only if action_URL exists */}
+                                                {item.action_url && (
+                                                    <button
+                                                        onClick={(e) =>
+                                                            handleViewClick(
+                                                                e,
+                                                                item,
+                                                            )
+                                                        }
+                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-colors ${theme.viewBtn}`}
+                                                    >
+                                                        <ExternalLink className="h-3.5 w-3.5" />
+                                                        View Report
+                                                    </button>
                                                 )}
                                             </div>
-                                            <p className="mt-1 text-sm text-muted-foreground">
-                                                {item.message}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                            <Clock3 className="h-3.5 w-3.5" />
-                                            {formatDateTime(item.created_at)}
-                                        </div>
-                                    </div>
+                                        )}
 
-                                    {!item.isRead && (
-                                        <div className="mt-3">
-                                            <button
-                                                onClick={() =>
-                                                    markAsRead(item.id)
-                                                }
-                                                className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-primary/20 bg-card px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
-                                            >
-                                                Mark as read
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                        {/* If already read but has action_URL — show subtle link */}
+                                        {item.isRead && item.action_url && (
+                                            <div className="mt-2">
+                                                <span className="inline-flex items-center gap-1 text-xs text-gray-400 transition-colors group-hover:text-indigo-500">
+                                                    <ExternalLink className="h-3 w-3" />
+                                                    Click to view report
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
                 </div>

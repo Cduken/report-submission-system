@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Program;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ViewController extends Controller
 {
@@ -56,6 +57,7 @@ public function programs(Request $request)
     $reports = auth()->user()
         ->createdReports()
         ->where('program_id', $program->id)
+        ->latest()
         ->with(['program', 'coordinator', 'media'])
         ->get()
         ->map(fn ($report) => [
@@ -93,6 +95,7 @@ public function programs(Request $request)
             'updated_at' => $report->updated_at->toISOString(),
         ]);
 
+
     return inertia('focal-person/programs/reports/page', [
         'program' => $program,
         'reports' => $reports,
@@ -107,7 +110,6 @@ public function programs(Request $request)
         $submissions = $report->submissions()->with(['fieldOfficer:id,name,email', 'media'])->get();
 
 
-
         return inertia('focal-person/programs/reports/report-submissions/page', [
             'program' => $program,
             'reportSubmissions' => $submissions,
@@ -117,6 +119,24 @@ public function programs(Request $request)
     }
 
     public function notifications(){
-        return inertia('focal-person/notifications/page');
+
+        $notifications = auth()->user()
+            ->notifications()
+            ->latest()
+            ->paginate(20)
+            ->through(function ($notification){
+                return [
+                    'id' => $notification->id,
+                    'title' => $notification->data['title'] ?? '',
+                    'message' => $notification->data['message'] ?? '',
+                    'created_at' => $notification->created_at,
+                    'read_at' => $notification->read_at,
+                    'action_url' => $notification->data['action_url']
+                ];
+            });
+
+        return inertia('focal-person/notifications/page', [
+            'notifications' => Inertia::scroll($notifications)
+        ]);
     }
 }
