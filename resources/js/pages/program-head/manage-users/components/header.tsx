@@ -12,15 +12,15 @@ export default function Header({
 
     console.log({ users_id });
     return (
-        <div className="flex items-center justify-between">
-            <h1 className="text-lg font-semibold">All Users</h1>
-            <div className="flex items-center gap-3">
+        <div className="lg:flex items-center justify-between">
+            <h1 className="lg:text-lg mb-1 lg:mb-0 font-semibold">All Users</h1>
+            <div className="flex items-center gap-1 lg:gap-3">
                 {/* Search Bar */}
-                <div className="flex items-center gap-2 rounded-lg border px-2 py-2">
+                <div className="flex items-center gap-2 rounded-lg border px-2 py-2 flex-1">
                     <Search size={15} />
                     <input
                         placeholder="Search..."
-                        className="flex-1 bg-transparent text-sm outline-none"
+                        className="flex-1 bg-transparent text-sm outline-none w-10 lg:w-auto"
                     />
                 </div>
                 {/* filter */}

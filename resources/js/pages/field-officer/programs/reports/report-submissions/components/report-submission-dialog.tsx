@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import ReportSubmissionController from '@/actions/App/Http/Controllers/ReportSubmissionController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -244,9 +242,6 @@ export default function ReportSubmissionDialog({
                                             Required Attachments
                                         </h3>
                                     </div>
-                                    {/* <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-                                        {schema.length} file(s) required
-                                    </span> */}
                                 </div>
 
                                 {schema.length === 0 ? (

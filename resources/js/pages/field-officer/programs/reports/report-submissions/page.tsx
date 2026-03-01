@@ -100,9 +100,9 @@ export default function page() {
                         <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
                         <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
 
-                        <div className="relative flex items-start justify-between gap-6">
+                        <div className="relative lg:flex lg:items-start lg:justify-between gap-6">
                             <div className="flex-1">
-                                <h1 className="mb-3 text-3xl font-bold tracking-tight">
+                                <h1 className="mb-3 text-lg lg:text-3xl font-bold tracking-tight">
                                     {report.title}
                                 </h1>
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -122,12 +122,12 @@ export default function page() {
 
                             {/* Enhanced Deadline Badge */}
                             <div
-                                className={`inline-flex items-center gap-3 rounded-xl px-5 py-3 shadow-sm transition-all ${
+                                className={`mt-5 lg:mt-0 inline-flex items-center gap-3 rounded-xl px-3 py-2 lg:px-5 lg:py-3 shadow-sm transition-all ${
                                     isOverdue
                                         ? 'border-2 border-destructive/30 bg-destructive/10 text-destructive shadow-destructive/10'
                                         : daysUntilDeadline <= 3
-                                          ? 'border-2 border-amber-500/30 bg-amber-500/10 text-amber-700 shadow-amber-500/10 dark:text-amber-400'
-                                          : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
+                                            ? 'border-2 border-amber-500/30 bg-amber-500/10 text-amber-700 shadow-amber-500/10 dark:text-amber-400'
+                                            : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
                                 }`}
                             >
                                 <div
@@ -135,8 +135,8 @@ export default function page() {
                                         isOverdue
                                             ? 'bg-destructive/20'
                                             : daysUntilDeadline <= 3
-                                              ? 'bg-amber-500/20'
-                                              : 'bg-emerald-500/20'
+                                                ? 'bg-amber-500/20'
+                                                : 'bg-emerald-500/20'
                                     }`}
                                 >
                                     {isOverdue ? (
@@ -155,7 +155,7 @@ export default function page() {
                                               : 'Deadline'}
                                     </span>
 
-                                    <span className="text-sm font-bold">
+                                    <span className="text-xs lg:text-sm font-bold">
                                         {deadlineDate.toLocaleDateString(
                                             'en-US',
                                             {
@@ -217,10 +217,10 @@ export default function page() {
                                     {/* Details Section */}
                                     <div className="flex-1 space-y-4">
                                         <div>
-                                            <h3 className="text-xl font-bold text-foreground">
+                                            <h3 className="text-lg lg:text-xl font-bold text-foreground">
                                                 Report Submitted
                                             </h3>
-                                            <p className="mt-1 text-sm text-muted-foreground">
+                                            <p className="mt-1 text-xs lg:text-sm text-muted-foreground">
                                                 Your report has been
                                                 successfully submitted and is
                                                 under review
@@ -238,7 +238,7 @@ export default function page() {
                                                     <span className="text-xs font-medium text-muted-foreground">
                                                         Submitted By
                                                     </span>
-                                                    <span className="font-semibold text-foreground">
+                                                    <span className="text-sm lg:text-base font-semibold text-foreground">
                                                         {reportSubmission
                                                             ?.field_officer
                                                             ?.name || 'N/A'}
@@ -255,18 +255,18 @@ export default function page() {
                                                     <span className="text-xs font-medium text-muted-foreground">
                                                         Submission Date
                                                     </span>
-                                                    <span className="font-semibold text-foreground">
+                                                    <span className="text-sm lg:text-base font-semibold text-foreground">
                                                         {reportSubmission?.created_at
                                                             ? new Date(
-                                                                  reportSubmission.created_at,
-                                                              ).toLocaleDateString(
-                                                                  'en-US',
-                                                                  {
-                                                                      month: 'long',
-                                                                      day: 'numeric',
-                                                                      year: 'numeric',
-                                                                  },
-                                                              )
+                                                                    reportSubmission.created_at,
+                                                                ).toLocaleDateString(
+                                                                    'en-US',
+                                                                    {
+                                                                        month: 'long',
+                                                                        day: 'numeric',
+                                                                        year: 'numeric',
+                                                                    },
+                                                                )
                                                             : 'N/A'}
                                                     </span>
                                                 </div>
@@ -277,21 +277,21 @@ export default function page() {
 
                                 {/* Footer Actions */}
                                 <div className="mt-6 flex items-center justify-between border-t pt-4">
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
                                         <Upload className="h-4 w-4" />
                                         <span>
                                             Uploaded{' '}
                                             {reportSubmission?.created_at
                                                 ? new Date(
-                                                      reportSubmission.created_at,
-                                                  ).toLocaleTimeString(
-                                                      'en-US',
-                                                      {
-                                                          hour: 'numeric',
-                                                          minute: '2-digit',
-                                                          hour12: true,
-                                                      },
-                                                  )
+                                                        reportSubmission.created_at,
+                                                    ).toLocaleTimeString(
+                                                        'en-US',
+                                                        {
+                                                            hour: 'numeric',
+                                                            minute: '2-digit',
+                                                            hour12: true,
+                                                        },
+                                                    )
                                                 : ''}
                                         </span>
                                     </div>

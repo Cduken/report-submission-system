@@ -40,10 +40,10 @@ export default function page() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                    <Back link={ViewController.reports(program)} />
+                <Back link={ViewController.reports(program)} />
 
-                    <h1 className="text-xl font-semibold">{report.title}</h1>
+                <div className='flex items-center justify-between'>
+                    <h1 className="text-lg lg:text-xl font-semibold truncate">{report.title}</h1>
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1 rounded-lg border bg-background p-1">
                             <button

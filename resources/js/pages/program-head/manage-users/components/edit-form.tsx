@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { User } from '@/types';
 import { Form } from '@inertiajs/react';
-import { Upload, User as UserIcon } from 'lucide-react';
+import { Upload, UserPen } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 type pageProps = {
@@ -57,12 +57,12 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
             {({ processing, errors }) => (
                 <>
                     {/* Avatar Section */}
-                    <div className="flex items-start gap-6 rounded-lg border bg-card p-6">
+                    <div className="lg:flex items-start gap-6 rounded-lg border bg-card p-6">
                         <div className="flex flex-col items-center gap-3">
                             <button
                                 type="button"
                                 onClick={handleAvatarClick}
-                                className="group relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-muted-foreground/25 bg-muted/50"
+                                className="mb-2 lg:mb-0 group relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-all hover:border-primary hover:bg-muted"
                             >
                                 {previewUrl || user.avatar ? (
                                     <img
@@ -71,7 +71,10 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                         className="h-full w-full object-cover"
                                     />
                                 ) : (
-                                    <UserIcon size={32} />
+                                    <UserPen
+                                        size={32}
+                                        className="text-muted-foreground"
+                                    />
                                 )}
                                 <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100">
                                     <Upload size={20} className="text-white" />
@@ -90,21 +93,21 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                         </div>
 
                         <div className="flex-1">
-                            <Label className="text-base font-semibold">
+                            <Label className="text-sm lg:text-base font-semibold">
                                 Profile Picture
                             </Label>
-                            <p className="mt-1 text-sm text-muted-foreground">
+                            <p className="mt-1 text-xs lg:text-sm text-muted-foreground">
                                 Update your profile picture. Accepted formats: PNG, JPG, JPEG
                             </p>
                             <div className="mt-4">
-                                <Label htmlFor="employee_code">
+                                <Label htmlFor="employee_code" className="text-sm lg:text-base">
                                     Employee Code
                                 </Label>
                                 <Input
                                     id="employee_code"
                                     name="employee_code"
                                     defaultValue={user.employee_code}
-                                    className="mt-1.5 max-w-xs"
+                                    className="mt-1.5 max-w-xs text-xs lg:text-base"
                                 />
                                 <InputError message={errors.employee_code} />
                             </div>
@@ -116,7 +119,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                         {/* Personal */}
                         <div className="space-y-4 rounded-lg border bg-card p-6">
                             <div className='mb-4'>
-                                <h3 className="font-semibold">
+                                <h3 className="text-sm lg:text-base font-semibold">
                                     Personal Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground">
@@ -125,7 +128,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                             </div>
 
                             <div className='space-y-2'>
-                                <Label htmlFor="first_name">
+                                <Label htmlFor="first_name" className='text-sm lg:text-base'>
                                     First Name{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -134,22 +137,24 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                     placeholder="First Name"
                                     defaultValue={user.first_name}
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.first_name} />
                             </div>
 
                             <div className='space-y-2'>
-                                <Label htmlFor="middle_name">Middle Name</Label>
+                                <Label htmlFor="middle_name" className='text-sm lg:text-base'>Middle Name</Label>
                                 <Input
                                     name="middle_name"
                                     placeholder="Middle Name"
                                     defaultValue={user.middle_name}
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.middle_name} />
                             </div>
 
                             <div className='space-y-2'>
-                                <Label htmlFor="last_name">
+                                <Label htmlFor="last_name" className='text-sm lg:text-base'>
                                     Last Name{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -158,12 +163,13 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                     placeholder="Last Name"
                                     defaultValue={user.last_name}
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.last_name} />
                             </div>
 
                             <Select name="gender" defaultValue={user.gender}>
-                                <Label htmlFor="gender">
+                                <Label htmlFor="gender" className='text-sm lg:text-base'>
                                     Gender{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -184,11 +190,12 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                             <InputError message={errors.gender} />
 
                             <div className='space-y-2'>
-                                <Label htmlFor="birthday">Birthday</Label>
+                                <Label htmlFor="birthday" className='text-sm lg:text-base'>Birthday</Label>
                                 <Input
                                     name="birthday"
                                     type="date"
                                     defaultValue={user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : ''}
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.birthday} />
                             </div>
@@ -198,7 +205,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                         {/* Work */}
                         <div className="space-y-4 rounded-lg border bg-card p-6">
                             <div className='mb-4'>
-                                <h3 className="font-semibold">
+                                <h3 className="text-sm lg:text-base font-semibold">
                                     Work Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground">
@@ -207,7 +214,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                             </div>
 
                             <div  className="space-y-2">
-                                <Label htmlFor="department">
+                                <Label htmlFor="department" className='text-sm lg:text-base'>
                                     Department{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -215,12 +222,13 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                     name="department"
                                     defaultValue={user.department}
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.department} />
                             </div>
 
                             <div className='space-y-2'>
-                                <Label htmlFor="position">
+                                <Label htmlFor="position" className='text-sm lg:text-base'>
                                     Position{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -228,11 +236,12 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                     name="position"
                                     defaultValue={user.position}
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="cluster">
+                                <Label htmlFor="cluster" className='text-sm lg:text-base'>
                                     Cluster
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -252,7 +261,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                             </div>
 
                             <Select name="role" defaultValue={user.role}>
-                                <Label htmlFor="role">
+                                <Label htmlFor="role" className='text-sm lg:text-base' >
                                     System Role{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -276,7 +285,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                         {/* Account */}
                         <div className="space-y-4 rounded-lg border bg-card p-6">
                             <div className='mb-4'>
-                                <h3 className="font-semibold">
+                                <h3 className="text-sm lg:text-base font-semibold">
                                     Account Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground">
@@ -285,7 +294,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                             </div>
 
                             <div className='space-y-2'>
-                                <Label htmlFor="email">
+                                <Label htmlFor="email" className='text-sm lg:text-base'>
                                     Email{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -294,12 +303,13 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                     type="email"
                                     defaultValue={user.email}
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className='space-y-2'>
-                                <Label htmlFor="password">
+                                <Label htmlFor="password" className='text-sm lg:text-base'>
                                     Password{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -307,12 +317,13 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                     name="password"
                                     type="password"
                                     placeholder="Leave blank to keep current"
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.password} />
                             </div>
 
                             <div className='space-y-2'>
-                                <Label htmlFor="password_confirmation">
+                                <Label htmlFor="password_confirmation" className='text-sm lg:text-base'>
                                     Confirm Password{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -320,6 +331,7 @@ export default function EditProfileForm({ user, closeDialog }: pageProps) {
                                     name="password_confirmation"
                                     type="password"
                                     placeholder="Confirm password"
+                                    className='text-sm lg:text-base'
                                 />
                             </div>
                         </div>

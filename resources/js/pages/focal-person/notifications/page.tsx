@@ -233,12 +233,12 @@ export default function NotificationsPage() {
 
                     {/* Notification List */}
                     {filtered.length === 0 ? (
-                        <div className="rounded-lg border border-dashed border-gray-200 px-4 py-12 text-center">
-                            <Bell className="mx-auto h-9 w-9 text-gray-300" />
-                            <p className="mt-3 text-sm font-medium text-gray-700">
+                        <div className="rounded-lg border border-dashed border-border bg-muted/20 px-4 py-12 text-center">
+                            <Bell className="mx-auto h-9 w-9 text-muted-foreground/40" />
+                            <p className="mt-3 text-sm font-medium text-foreground">
                                 No notifications found
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">
+                            <p className="mt-1 text-xs text-muted-foreground">
                                 New updates will appear here once available.
                             </p>
                         </div>

@@ -41,7 +41,7 @@ export default function ListView({
                         <div>
                             <h2 className="">{program.name}</h2>
                         </div>
-                        <div>
+                        <div className=''>
                             <EllipsisPopover program={program} />
                         </div>
                     </div>

@@ -14,7 +14,7 @@ interface Props {
 
 export default function ToggleGridList({ isList, setIsList }: Props) {
     return (
-        <Tooltip>
+        <Tooltip >
             <TooltipTrigger asChild>
                 <Button
                     onClick={() => {

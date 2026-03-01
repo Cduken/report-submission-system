@@ -25,24 +25,24 @@ export default function CreateReport() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                    <Back link={ViewController.programs()} />
-
-                    <h1 className="text-xl font-semibold">{program.name}</h1>
+                <Back link={ViewController.programs()} />
+                <div className='flex items-center justify-between'>
+                    <h1 className="text-lg lg:text-xl font-semibold">{program.name}</h1>
                     <ReportDialog
                         program={program}
                         open={open}
                         setOpen={setOpen}
                     />
                 </div>
-                <h1>All Reports</h1>
+
+                {/* <h1>All Reports</h1> */}
 
                 <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
                     <EmptyReport setIsOpen={setOpen} />
                 </Activity>
 
                 <Activity mode={reports.length > 0 ? 'visible' : 'hidden'}>
-                    <div className="grid grid-cols-3 gap-5">
+                    <div className="grid grid-rows-1 lg:grid-cols-3 gap-5">
                         {reports.map((report, index) => (
                             <Link
                                 href={ViewController.reportSubmissions([

@@ -10,7 +10,7 @@ export default function Back({ link }: Props) {
         <Link href={link}>
             <div className="flex items-center gap-1">
                 <ArrowLeftIcon size={20} />
-                <span> Back</span>
+                <span className='text-sm lg:text-base'>Back</span>
             </div>
         </Link>
     );

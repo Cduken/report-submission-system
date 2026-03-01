@@ -96,10 +96,12 @@ export default function ReportDialog({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button type="button" variant="default" className="shadow-sm">
-                    <Folder className="mr-2 h-4 w-4" />
-                    <span>Create New Report</span>
-                </Button>
+                <div className="flex justify-end">
+                    <Button type="button" variant={'secondary'}>
+                        <Folder className="mr-2 h-4 w-4" />
+                        <span className="text-xs">Create New Report</span>
+                    </Button>
+                </div>
             </DialogTrigger>
             <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
