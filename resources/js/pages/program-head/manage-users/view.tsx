@@ -11,7 +11,7 @@ export default function ViewUser() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`User Management - ${user.name}`}/>
             <div className='p-4 flex flex-col gap-4'>
-                <h1 className="text-xl font-semibold">User Information</h1>
+                <h1 className="text-lg lg:text-xl font-semibold">User Information</h1>
 
                 <UserProfile user={user} />
             </div>

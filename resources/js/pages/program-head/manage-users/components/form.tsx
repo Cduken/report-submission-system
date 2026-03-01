@@ -11,7 +11,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Form } from '@inertiajs/react';
-import { Upload, User } from 'lucide-react';
+import { Upload, UserPlus } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 interface Props {
@@ -55,12 +55,12 @@ export default function UserForm({ setOpen }: Props) {
             {({ processing, errors }) => (
                 <>
                     {/* Avatar Section */}
-                    <div className="flex items-start gap-6 rounded-lg border bg-card p-6">
+                    <div className="lg:flex items-start gap-6 rounded-lg border bg-card p-6">
                         <div className="flex flex-col items-center gap-3">
                             <button
                                 type="button"
                                 onClick={handleAvatarClick}
-                                className="group relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-all hover:border-primary hover:bg-muted"
+                                className="mb-2 lg:mb-0 group relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-all hover:border-primary hover:bg-muted"
                             >
                                 {previewUrl ? (
                                     <img
@@ -69,7 +69,7 @@ export default function UserForm({ setOpen }: Props) {
                                         className="h-full w-full object-cover"
                                     />
                                 ) : (
-                                    <User
+                                    <UserPlus
                                         size={32}
                                         className="text-muted-foreground"
                                     />
@@ -90,17 +90,17 @@ export default function UserForm({ setOpen }: Props) {
                             <InputError message={errors.avatar} />
                         </div>
                         <div className="flex-1">
-                            <Label className="text-base font-semibold">
+                            <Label className="text-sm lg:text-base font-semibold">
                                 Profile Picture
                             </Label>
-                            <p className="mt-1 text-sm text-muted-foreground">
+                            <p className="mt-1 text-xs lg:text-sm text-muted-foreground">
                                 Upload a profile picture for the user. Accepted
                                 formats: PNG, JPG, JPEG
                             </p>
                             <div className="mt-4">
                                 <Label
                                     htmlFor="employee_code"
-                                    className="text-sm"
+                                    className="text-sm lg:text-base"
                                 >
                                     Employee Code (Optional)
                                 </Label>
@@ -108,7 +108,7 @@ export default function UserForm({ setOpen }: Props) {
                                     id="employee_code"
                                     name="employee_code"
                                     placeholder="e.g., 000000"
-                                    className="mt-1.5 max-w-xs"
+                                    className="mt-1.5 max-w-xs text-xs lg:text-base"
                                 />
                                 <InputError message={errors.employee_code} />
                             </div>
@@ -120,7 +120,7 @@ export default function UserForm({ setOpen }: Props) {
                         {/* Personal Information */}
                         <div className="space-y-4 rounded-lg border bg-card p-6">
                             <div className="mb-4">
-                                <h3 className="font-semibold">
+                                <h3 className="text-sm lg:text-base font-semibold">
                                     Personal Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground">
@@ -129,7 +129,7 @@ export default function UserForm({ setOpen }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="first_name">
+                                <Label htmlFor="first_name" className='text-sm lg:text-base'>
                                     First Name{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -137,23 +137,25 @@ export default function UserForm({ setOpen }: Props) {
                                     id="first_name"
                                     name="first_name"
                                     placeholder="John"
+                                    className='text-sm lg:text-base'
                                     required
                                 />
                                 <InputError message={errors.first_name} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="middle_name">Middle Name</Label>
+                                <Label htmlFor="middle_name" className='text-sm lg:text-base'>Middle Name</Label>
                                 <Input
                                     id="middle_name"
                                     name="middle_name"
                                     placeholder="Wail"
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.middle_name} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="last_name">
+                                <Label htmlFor="last_name" className='text-sm lg:text-base'>
                                     Last Name{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -162,12 +164,13 @@ export default function UserForm({ setOpen }: Props) {
                                     name="last_name"
                                     placeholder="Doe"
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.last_name} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="gender">
+                                <Label htmlFor="gender" className='text-sm lg:text-base'>
                                     Gender{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -190,11 +193,12 @@ export default function UserForm({ setOpen }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="birthday">Birthday</Label>
+                                <Label htmlFor="birthday" className='text-sm lg:text-base'>Birthday</Label>
                                 <Input
                                     id="birthday"
                                     name="birthday"
                                     type="date"
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.birthday} />
                             </div>
@@ -203,7 +207,7 @@ export default function UserForm({ setOpen }: Props) {
                         {/* Work Information */}
                         <div className="space-y-4 rounded-lg border bg-card p-6">
                             <div className="mb-4">
-                                <h3 className="font-semibold">
+                                <h3 className="text-sm lg:text-base font-semibold">
                                     Work Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground">
@@ -212,7 +216,7 @@ export default function UserForm({ setOpen }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="department">
+                                <Label htmlFor="department" className='text-sm lg:text-base'>
                                     Department{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -221,13 +225,14 @@ export default function UserForm({ setOpen }: Props) {
                                     name="department"
                                     placeholder="e.g., DILG - Tubigon"
                                     required
+                                    className='text-sm lg:text-base'
                                 />
 
                                 <InputError message={errors.department} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="position">
+                                <Label htmlFor="position" className='text-sm lg:text-base'>
                                     Position{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -236,10 +241,11 @@ export default function UserForm({ setOpen }: Props) {
                                     name="position"
                                     placeholder="e.g., LGOO VI"
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="cluster">
+                                <Label htmlFor="cluster" className='text-sm lg:text-base'>
                                     Cluster
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -259,7 +265,7 @@ export default function UserForm({ setOpen }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="role">
+                                <Label htmlFor="role" className='text-sm lg:text-base'  >
                                     System Role{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -285,7 +291,7 @@ export default function UserForm({ setOpen }: Props) {
                         {/* Account Information */}
                         <div className="space-y-4 rounded-lg border bg-card p-6">
                             <div className="mb-4">
-                                <h3 className="font-semibold">
+                                <h3 className="text-sm lg:text-base font-semibold">
                                     Account Information
                                 </h3>
                                 <p className="text-xs text-muted-foreground">
@@ -294,7 +300,7 @@ export default function UserForm({ setOpen }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="email">
+                                <Label htmlFor="email" className='text-sm lg:text-base'>
                                     Email{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -304,12 +310,13 @@ export default function UserForm({ setOpen }: Props) {
                                     type="email"
                                     placeholder="john.doe@company.com"
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="password">
+                                <Label htmlFor="password" className='text-sm lg:text-base'>
                                     Password{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -319,12 +326,13 @@ export default function UserForm({ setOpen }: Props) {
                                     type="password"
                                     placeholder="••••••••"
                                     required
+                                    className='text-sm lg:text-base'
                                 />
                                 <InputError message={errors.password} />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="password_confirmation">
+                                <Label htmlFor="password_confirmation" className='text-sm lg:text-base'>
                                     Confirm Password{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
@@ -334,6 +342,7 @@ export default function UserForm({ setOpen }: Props) {
                                     type="password"
                                     placeholder="••••••••"
                                     required
+                                    className='text-sm lg:text-base'
                                 />
 
                                 <InputError

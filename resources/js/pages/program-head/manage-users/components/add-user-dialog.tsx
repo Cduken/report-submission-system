@@ -31,7 +31,7 @@ export default function AddUserDialog() {
                 </DialogHeader>
 
                 {/* THIS is the only scroll container */}
-                <ScrollArea className="max-h-[calc(90vh-6rem)] flex-1 pr-4">
+                <ScrollArea className="max-h-[calc(90vh-6rem)] flex-1 pr-0 lg:pr-4">
                     <UserForm setOpen={setOpen} />
                 </ScrollArea>
             </DialogContent>

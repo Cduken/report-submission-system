@@ -22,21 +22,18 @@ export default function Reports() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="flex items-center justify-between gap-3">
-                    <Back link={ViewController.programs()} />
+                <Back link={ViewController.programs()} />
+                <h1 className="text-lg lg:text-2xl font-semibold">All Reports </h1>
 
-                    <h1 className="text-2xl font-semibold">All Reports </h1>
-                    <div></div>
-                </div>
                 <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
                     <div className="flex h-[60vh] items-center justify-center">
                         <div>
                             <img
                                 src="/Images/no-report.svg"
                                 alt="No report"
-                                className="mb-2 h-30"
+                                className="mb-2 h-20 lg:h-30 dark:opacity-45"
                             />
-                            <p className="text-center text-gray-500">
+                            <p className="text-sm lg:text-base text-center text-gray-500">
                                 No reports yet
                             </p>
                         </div>
@@ -44,7 +41,7 @@ export default function Reports() {
                 </Activity>
 
                 <Activity mode={reports.length > 0 ? 'visible' : 'hidden'}>
-                    <div className="grid grid-cols-3 gap-5">
+                    <div className="grid grid-rows-1 lg:grid-cols-3 gap-5">
                         {reports.map((report, index) => (
                             <Link
                                 href={ViewController.reportSubmissions([
@@ -59,10 +56,10 @@ export default function Reports() {
                                 </div>
                                 <div className="flex w-full items-center justify-between">
                                     <div>
-                                        <h2 className="truncate text-lg font-semibold">
+                                        <h2 className="truncate text-sm lg:text-lg font-semibold">
                                             {report.title}
                                         </h2>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="text-xs lg:text-sm text-muted-foreground">
                                             Deadline:{' '}
                                             {dateFormatter(report.deadline)}
                                         </p>

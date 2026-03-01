@@ -32,13 +32,13 @@ export default function Submissions({
     if (!submissions || submissions.data.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="mb-4 rounded-full bg-muted/30 p-4">
-                    <FileText className="h-12 w-12 text-muted-foreground/50" />
+                <div className="mb-4 rounded-full bg-muted/30 p-3 lg:p-4">
+                    <FileText className="h-10 w-10 lg:h-12 lg:w-12 text-muted-foreground/50" />
                 </div>
-                <h3 className="mb-2 text-lg font-medium text-foreground">
+                <h3 className="mb-2 text-sm lg:text-lg font-medium text-foreground">
                     No submissions yet
                 </h3>
-                <p className="max-w-md text-muted-foreground">
+                <p className="text-sm lg:text-base max-w-md text-muted-foreground">
                     You haven't submitted any reports yet. Your submissions will
                     appear here once you start submitting reports.
 
@@ -145,10 +145,10 @@ export default function Submissions({
             {/* Results count and view toggle */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-foreground">
+                    <h2 className="text-sm lg:text-lg font-semibold text-foreground">
                         My Submissions
                     </h2>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs lg:text-sm text-muted-foreground">
                         Showing {submissions.from} to {submissions.to} of{' '}
                         {submissions.total} results
                     </p>
@@ -165,7 +165,7 @@ export default function Submissions({
                         }`}
                         title="Grid view"
                     >
-                        <Grid2X2 className="h-4 w-4" />
+                        <Grid2X2 className="h-3 w-3 lg:h-4 lg:w-4" />
                     </button>
                     <button
                         onClick={() => setViewMode('list')}
@@ -176,7 +176,7 @@ export default function Submissions({
                         }`}
                         title="List view"
                     >
-                        <List className="h-4 w-4" />
+                        <List className="h-3 w-3 lg:h-4 lg:w-4" />
                     </button>
                 </div>
             </div>
@@ -190,13 +190,13 @@ export default function Submissions({
                                 {/* Date header */}
                                 <div className="flex items-center gap-3">
                                     <div className="rounded-lg bg-primary/5 p-2">
-                                        <Calendar className="h-5 w-5 text-primary" />
+                                        <Calendar className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium text-muted-foreground">
+                                        <p className="text-xs lg:text-sm font-medium text-muted-foreground">
                                             Submitted on
                                         </p>
-                                        <p className="text-lg font-semibold text-foreground">
+                                        <p className="text-sm lg:text-lg font-semibold text-foreground">
                                             {date}
                                         </p>
                                     </div>
@@ -226,7 +226,7 @@ export default function Submissions({
                                                                     <div className="rounded-md bg-primary/5 p-1.5">
                                                                         <FileText className="h-4 w-4 text-primary" />
                                                                     </div>
-                                                                    <CardTitle className="text-base font-semibold">
+                                                                    <CardTitle className="text-sm lg:text-base font-semibold">
                                                                         Report #
                                                                         {
                                                                             submission.id
@@ -245,7 +245,7 @@ export default function Submissions({
                                                             >
                                                                 <div className="flex items-center gap-1.5">
                                                                     <StatusIcon
-                                                                        className={`h-3.5 w-3.5 ${statusDetails.color}`}
+                                                                        className={`h-2.5 w-2.5 lg:h-3.5 lg:w-3.5 ${statusDetails.color}`}
                                                                     />
                                                                     <span
                                                                         className={`text-xs font-medium ${statusDetails.color}`}

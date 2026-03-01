@@ -12,12 +12,12 @@ export default function ListView({
     return (
         <div className="space-y-2">
             {/* Table Header */}
-            <div className="flex items-center gap-4 px-4 py-2 text-xs font-medium text-muted-foreground">
-                <div className="w-10"></div>
-                <div className="min-w-0 flex-1">Name</div>
-                <div className="w-32">Date Submitted</div>
-                <div className="w-20">Files</div>
-                <div className="w-10"></div>
+             <div className="ml-8 lg:ml-0 flex items-center gap-4 lg:gap-4 lg:px-4 px-3 py-2 text-xs font-medium text-muted-foreground">
+                <div className="lg:w-10"></div>
+                <div className="ml-3 lg:ml-0 lg:min-w-0 flex-1">Name</div>
+                <div className="lg:w-32">Date Submitted</div>
+                <div className="lg:w-20">Files</div>
+                <div className="lg:w-10 w-8"></div>
             </div>
 
             {/* Table Rows */}
@@ -47,7 +47,7 @@ export default function ListView({
                         </span>
                     </div>
 
-                    <div className="w-32">
+                    <div className="ml-2 lg:w-32 lg:ml-2 ">
                         <span className="text-sm text-muted-foreground">
                             {new Date(submission.created_at).toLocaleDateString(
                                 'en-US',
@@ -60,7 +60,7 @@ export default function ListView({
                         </span>
                     </div>
 
-                    <div className="flex w-20 items-center gap-1.5">
+                    <div className="flex lg:w-20 items-center gap-1.5">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
                             {submission.media?.length || 0}

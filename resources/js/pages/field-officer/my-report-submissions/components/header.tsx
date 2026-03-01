@@ -21,10 +21,10 @@ export default function Header({ activeFilter = 'all' }: HeaderProps) {
     return (
         <div className="mb-8">
             <div className="mb-6">
-                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                <h1 className="text-lg lg:text-2xl font-semibold tracking-tight text-foreground">
                     My All Submissions Report
                 </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-xs lg:text-sm text-muted-foreground">
                     View and manage all your report submissions
                 </p>
             </div>
@@ -40,7 +40,7 @@ export default function Header({ activeFilter = 'all' }: HeaderProps) {
                                 key={filter.key}
                                 onClick={() => handleFilterClick(filter.key)}
                                 className={`
-                                    relative px-4 py-3 text-sm font-medium transition-colors
+                                    text-xs relative px-4 py-3 lg:text-sm font-medium transition-colors
                                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
                                     ${isActive
                                         ? 'text-foreground'

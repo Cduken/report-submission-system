@@ -52,33 +52,36 @@ export default function ProgramsPage() {
             <FlashToaster />
 
             <div
-                className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl"
+                className="flex h-full flex-1 flex-col gap-2 rounded-xl"
                 onClick={(e) => {
                     if (e.target === e.currentTarget)
                         setSelecReviewProgram(null);
                 }}
             >
-                <div className="mt-4 flex justify-end gap-2 px-4">
-                    <ProgramDialog
-                        coordinators={coordinators}
-                        open={open}
-                        setOpen={setOpen}
-                    />
-                    <Button
-                        onClick={() => {
-                            setReviewOpen((prev) => !prev);
-                        }}
-                        variant={'outline'}
-                    >
-                        {reviewOpen ? <EyeClosed /> : <Eye />}
-                        {reviewOpen ? 'Hide' : 'Show'} Preview
-                    </Button>
-                    <FilterBtn onSelect={setSelectedYear} />
-                    <ToggleGridList isList={isList} setIsList={setIsList} />
+                <div className="mt-4 w-full lg:w-auto flex items-center lg:justify-end gap-2 px-4">
+                    <div className='flex items-center gap-2 overflow-x-auto pb-3'>
+                        <ProgramDialog
+                            coordinators={coordinators}
+                            open={open}
+                            setOpen={setOpen}
+                        />
+                        <Button
+                            onClick={() => {
+                                setReviewOpen((prev) => !prev);
+                            }}
+                            variant={'outline'}
+                            className='flex-1'
+                        >
+                            {reviewOpen ? <EyeClosed /> : <Eye />}
+                            {reviewOpen ? 'Hide' : 'Show'} Preview
+                        </Button>
+                        <FilterBtn onSelect={setSelectedYear} />
+                        <ToggleGridList isList={isList} setIsList={setIsList} />
+                    </div>
                 </div>
 
                 <div
-                    className="relative h-full overflow-hidden border-t p-4"
+                    className="relative h-full border-t p-4"
                     onClick={(e) => {
                         if (e.target === e.currentTarget)
                             setSelecReviewProgram(null);
@@ -88,7 +91,7 @@ export default function ProgramsPage() {
                         data={'programs'}
                         fallback={<ProgramGridSkeleton />}
                     >
-                        <ScrollArea className="relative h-[600px] w-full">
+                        <ScrollArea className="relative ">
                             <div
                                 className={cn(
                                     'space-x-3 transition-all duration-300 ease-in-out',

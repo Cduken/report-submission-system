@@ -103,7 +103,7 @@ class ViewController extends Controller
 
     public function manageUsers()
     {
-           $users = User::query()
+        $users = User::query()
         ->select([
             'id',
             'employee_code',

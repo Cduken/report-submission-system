@@ -37,11 +37,11 @@ export default function Page() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-semibold text-foreground">
+                        <h1 className="text-lg lg:text-2xl font-semibold text-foreground">
                             All Programs
                         </h1>
                         {programs.data.length > 0 && (
-                            <p className="mt-1 text-sm text-muted-foreground">
+                            <p className="mt-1 text-xs lg:text-sm text-muted-foreground">
                                 Showing {programs.from} to {programs.to} of{' '}
                                 {programs.total} programs
                             </p>
@@ -59,7 +59,7 @@ export default function Page() {
                                 }`}
                                 title="Grid view"
                             >
-                                <Grid2x2 className="h-4 w-4" />
+                                <Grid2x2 className="h-3 w-3 lg:h-4 lg:w-4" />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
@@ -128,10 +128,10 @@ export default function Page() {
                                                 </div>
                                                 <div className="flex min-w-0 flex-col">
                                                     <div>
-                                                        <h1 className="truncate font-medium text-foreground">
+                                                        <h1 className="text-sm lg:text-base truncate font-medium text-foreground">
                                                             {program.name}
                                                         </h1>
-                                                        <p className="truncate text-sm text-muted-foreground">
+                                                        <p className="text-xs truncate text-muted-foreground">
                                                             {
                                                                 program.description
                                                             }

@@ -17,7 +17,7 @@ export default function GridView({
     setSelecReviewProgram,
 }: Props) {
     return (
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-rows-1 lg:grid-cols-3 gap-5">
             {programs.map((program, index) => (
                 <div
                     key={index}

@@ -23,7 +23,7 @@ export default function UserProfile({user}:pageProps) {
                     <div className='flex items-center justify-between'>
                         <Link
                             href={'/program-head/manage-users'}
-                            className='flex items-center gap-1 text-primary-foreground font-medium'
+                            className='flex items-center gap-1 text-primary-foreground font-medium dark:text-foreground'
                         >
                             <ArrowLeft size={15} />
                             Back
@@ -32,14 +32,14 @@ export default function UserProfile({user}:pageProps) {
                             <SquarePen
                                 onClick={() => setOpenDialog(true)}
                                 size={20}
-                                className='text-primary-foreground cursor-pointer'
+                                className='text-primary-foreground cursor-pointer dark:text-foreground'
                             />
                         </div>
                     </div>
 
                     <div className='absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t p-6 rounded-md from-black/80 via-black/40 to-transparent'>
-                        <div className='flex gap-4 items-end'>
-                            <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-primary/90 text-5xl font-semibold text-primary-foreground border-4 border-white shadow-lg ring-2 ring-white/20 flex-shrink-0">
+                        <div className='lg:flex gap-4 items-end'>
+                            <div className="relative flex h-20 w-20 lg:h-32 lg:w-32 items-center justify-center rounded-full bg-primary/90 text-2xl lg:text-5xl font-semibold text-primary-foreground border-4 border-white shadow-lg ring-2 ring-white/20 flex-shrink-0 mb-2 lg:mb-0">
                                 {user.avatar ? (
                                     <img
                                         src={user.avatar}
@@ -53,24 +53,24 @@ export default function UserProfile({user}:pageProps) {
                             </div>
 
                             <div className='flex-1 text-white'>
-                                <h1 className='font-bold text-3xl mb-1 drop-shadow-md'>{user.name}</h1>
+                                <h1 className='font-bold lg:text-3xl mb-1 drop-shadow-md'>{user.name}</h1>
 
                                 <div className='space-y-1.5'>
                                     <p className='text-sm flex gap-2 items-center bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full w-fit'>
                                         <AtSign size={14} className="text-blue-300" />
-                                        <span className="text-white/90">{user.email}</span>
+                                        <span className="text-white/90 text-xs lg:text-base">{user.email}</span>
                                     </p>
 
                                     <p className='text-sm flex gap-2 items-center'>
                                         <BriefcaseBusiness size={14} className="text-blue-300" />
-                                        <span className="font-medium">{user.department}</span>
+                                        <span className="font-medium text-xs lg:text-base">{user.department}</span>
                                         <span className="text-white/60">•</span>
-                                        <span className="text-white/80">{user.position}</span>
+                                        <span className="text-white/80 text-xs lg:text-base">{user.position}</span>
                                     </p>
 
                                     <p className='text-sm flex gap-2 items-center text-white/80'>
                                         <CalendarPlus size={14} className="text-blue-300" />
-                                        <span>Joined {new Date(user.created_at).toLocaleDateString(
+                                        <span className='text-xs lg:text-base'>Joined {new Date(user.created_at).toLocaleDateString(
                                             'en-US',
                                             {
                                                 month: 'long',
