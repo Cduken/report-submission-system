@@ -46,7 +46,7 @@ export interface User {
     position: string;
     cluster: 'M&M' | "D'ONE" | null;
     email: string;
-    avatar?: string;
+    avatar_url: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
     created_at: string;
@@ -80,7 +80,7 @@ export interface Report {
     references: Media[];
     created_at: string;
     updated_at: string;
-    submission_status: string
+    submission_status: string;
 }
 
 export interface Media {
@@ -103,8 +103,8 @@ export interface ReportSubmission {
     created_at: string;
     updated_at: string;
     remarks: string;
-    description: string
-    data: Object
+    description: string;
+    data: Object;
 
     // Relationships
     fieldOfficer?: Pick<User, 'id' | 'name' | 'email' | 'avatar'>;
@@ -131,7 +131,6 @@ export interface LaravelPaginator<T> {
     prev_page_url: string | null;
     to: number | null;
     total: number;
-
 }
 
 interface NotificationItem {
@@ -144,10 +143,9 @@ interface NotificationItem {
 }
 
 export interface NavItemBadge {
-    countKey: keyof User;           // which field from auth.user to read
-    variant?: NavBadgeVariant;      // controls the color
+    countKey: keyof User; // which field from auth.user to read
+    variant?: NavBadgeVariant; // controls the color
 }
-
 
 export type FilterType = 'all' | 'pending' | 'rejected' | 'accepted';
 
