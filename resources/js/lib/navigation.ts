@@ -23,9 +23,14 @@ export function mainNavigationPath(role: string): NavItem[] {
                         variant: 'warning',
                     },
                 },
+                {
+                    title: 'Pending Report',
+                    href: FieldOfficerNavigationPath.pendingReports().url,
+                    icon: File,
+                },
 
                 {
-                    title: 'My Report Submissions',
+                    title: 'My Reports ',
                     href: FieldOfficerNavigationPath.myReportSubmissions().url,
                     icon: FileCheck,
                 },
