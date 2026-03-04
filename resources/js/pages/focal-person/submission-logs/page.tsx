@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { CheckCircle2, Clock3, Search, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock3, Search, XCircle, File, FolderOpen, FileClock, FileCheck } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 type UserSubmission = {
@@ -220,7 +220,7 @@ export default function SubmissionLogs() {
             <Head title="Submission Logs" />
 
             <div className="flex-1 space-y-6 p-6 md:p-8 bg-background">
-                <div className="rounded-xl border bg-card p-6">
+                <div className="rounded-xl border bg-card p-8">
                     <h1 className="text-xl md:text-2xl font-bold text-foreground">Submission Logs</h1>
                     <p className="text-sm text-muted-foreground mt-1">
                         Click a report row to open the user submission list and status in a modal.
@@ -229,20 +229,34 @@ export default function SubmissionLogs() {
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="rounded-xl border bg-card p-4">
-                        <p className="text-xs text-muted-foreground">Reports</p>
-                        <p className="text-2xl font-bold mt-1">{summary.reportTotal}</p>
+                        <div className='p-3 inline-flex rounded-md mb-3 bg-gray-100  dark:bg-[#1e1e1e]'>
+                            <File strokeWidth={2} className="w-5 h-5 dark:text-white text-black" />
+                        </div>
+                        <h2 className="text-2xl font-bold mb-2">{summary.reportTotal}</h2>
+                        <p className="text-xs lg:text-sm lg:mb-0 text-gray-400 ">Reports</p>
                     </div>
                     <div className="rounded-xl border bg-card p-4">
-                        <p className="text-xs text-muted-foreground">Open Reports</p>
-                        <p className="text-2xl font-bold mt-1 text-emerald-600 dark:text-emerald-400">{summary.open}</p>
+                        <div className='p-3  inline-flex rounded-md mb-3 bg-[#e6f9f2] dark:bg-[#091c15]'>
+                            <FolderOpen strokeWidth={2} className="w-5 h-5 text-emerald-500 " />
+                        </div>
+                        <h2 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">{summary.open}</h2>
+                        <p className="text-xs lg:text-sm lg:mb-0 text-gray-400">Open Reports</p>
+                    </div>
+
+                    <div className="rounded-xl border bg-card p-4">
+                        <div className='p-3  inline-flex rounded-md mb-3 bg-[#fff5e6] dark:bg-[#221809]'>
+                            <FileClock strokeWidth={2} className="w-5 h-5 text-amber-500 " />
+                        </div>
+                        <h2 className="text-2xl font-bold text-amber-600 dark:text-amber-400 mb-2">{summary.overdue}</h2>
+                        <p className="text-xs lg:text-sm  lg:mb-0 text-gray-400">Overdue Reports</p>
+
                     </div>
                     <div className="rounded-xl border bg-card p-4">
-                        <p className="text-xs text-muted-foreground">Overdue Reports</p>
-                        <p className="text-2xl font-bold mt-1 text-amber-600 dark:text-amber-400">{summary.overdue}</p>
-                    </div>
-                    <div className="rounded-xl border bg-card p-4">
-                        <p className="text-xs text-muted-foreground">Completed Reports</p>
-                        <p className="text-2xl font-bold mt-1 text-blue-600 dark:text-blue-400">{summary.completed}</p>
+                        <div className='p-3 inline-flex rounded-md mb-3 bg-[#eaf3ff] dark:bg-[#04243e] '>
+                            <FileCheck strokeWidth={2} className="w-5 h-5 text-blue-500" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">{summary.completed}</h2>
+                        <p className="text-xs lg:text-sm lg:mb-0 text-gray-400">Completed Reports</p>
                     </div>
                 </div>
 
@@ -344,12 +358,12 @@ export default function SubmissionLogs() {
             </div>
 
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="max-h-[90vh] w-[95vw] !max-w-4xl !p-0 flex flex-col overflow-hidden">
+                <DialogContent className="max-h-[95vh] w-[95vw] !max-w-4xl !p-0 flex flex-col overflow-hidden">
                     {/* Fixed Header */}
                     <div className="flex-shrink-0 p-6 pb-4 border-b">
                         <DialogHeader>
-                            <DialogTitle>{selectedReport ? `Users for: ${selectedReport.title}` : 'Report Users'}</DialogTitle>
-                            <DialogDescription>
+                            <DialogTitle className='text-left'>{selectedReport ? `Users for: ${selectedReport.title}` : 'Report Users'}</DialogTitle>
+                            <DialogDescription className='text-left'>
                                 {selectedReport
                                     ? `${selectedReport.program} | Due ${formatDate(selectedReport.dueDate)}`
                                     : 'Click a report to view assigned users.'}
@@ -395,7 +409,7 @@ export default function SubmissionLogs() {
                             </div>
 
                             {/* Scrollable Table */}
-                            <div className="flex-1 overflow-y-auto min-h-[300px]">
+                            <div className="flex-1 min-h-0 overflow-y-auto md:min-h-[300px]">
                                 <div className="overflow-x-auto">
                                     <table className="w-full min-w-[700px]">
                                         <thead className="bg-muted/50 sticky top-0 z-10">
@@ -419,7 +433,7 @@ export default function SubmissionLogs() {
                                                     const status = getUserStatus(selectedReport.dueDate, user.submittedAt);
                                                     return (
                                                         <tr key={user.id} className="border-t hover:bg-muted/40 transition-colors">
-                                                            <td className="px-6 py-4">
+                                                            <td className="px-6 py-2 lg:py-4">
                                                                 <p className="text-sm font-medium">{user.name}</p>
                                                                 <p className="text-xs text-muted-foreground">{user.email}</p>
                                                             </td>
@@ -463,12 +477,12 @@ export default function SubmissionLogs() {
                             {/* Fixed Footer */}
                             {filteredUsers.length > 0 && (
                                 <div className="flex-shrink-0 px-6 py-4 border-t bg-background">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between sm:flex-row sm:items-center sm:justify-between">
                                         <p className="text-xs text-muted-foreground">
                                             Showing {(userPage - 1) * USERS_PER_PAGE + 1}-
                                             {Math.min(userPage * USERS_PER_PAGE, filteredUsers.length)} of {filteredUsers.length}
                                         </p>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 self-start sm:self-auto">
                                             <button
                                                 type="button"
                                                 onClick={() => setUserPage((prev) => Math.max(1, prev - 1))}
