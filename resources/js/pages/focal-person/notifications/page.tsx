@@ -1,7 +1,9 @@
+// notifications/page.tsx
+import { ScrollToTop } from '@/components/ui/scroll-to-top';
 import { useNotifications } from '@/hooks/use-notifications';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { NotificationItem, type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import {
     Bell,
@@ -10,14 +12,30 @@ import {
     Clock3,
     ExternalLink,
     Filter,
+    Loader2,
     Trash2,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Notifications', href: '#' },
 ];
+
+interface NotificationItem {
+    id: string;
+    title: string;
+    message: string;
+    created_at: string;
+    read_at: string | null;
+    action_url: string | null;
+}
+
+interface NotificationPaginator {
+    data: NotificationItem[];
+    next_page_url: string | null;
+    total: number;
+}
 
 type NotificationFilter = 'all' | 'unread' | 'read';
 
@@ -31,58 +49,88 @@ function formatDateTime(value: string) {
     }).format(new Date(value));
 }
 
-// Maps notification title keywords to a color theme
-// Extend this as you add more notification types
-function getNotificationTheme(title: string): {
-    unreadBorder: string;
-    unreadBg: string;
-    badge: string;
-    markReadBtn: string;
-    viewBtn: string;
-} {
+function getNotificationTheme(title: string) {
     const t = title.toLowerCase();
-
     if (t.includes('approved') || t.includes('success')) {
         return {
-            unreadBorder: 'border-emerald-200',
-            unreadBg: 'bg-emerald-50',
-            badge: 'bg-emerald-100 text-emerald-700',
+            unreadBorder: 'border-emerald-200 dark:border-emerald-800',
+            unreadBg: 'bg-emerald-50 dark:bg-emerald-950/30',
+            badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
             markReadBtn:
-                'border-emerald-200 text-emerald-600 hover:bg-emerald-50',
-            viewBtn: 'bg-emerald-600 hover:bg-emerald-700',
+                'border-emerald-200 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-950/50',
+            viewBtn:
+                'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600',
         };
     }
     if (t.includes('rejected') || t.includes('denied')) {
         return {
-            unreadBorder: 'border-red-200',
-            unreadBg: 'bg-red-50',
-            badge: 'bg-red-100 text-red-700',
-            markReadBtn: 'border-red-200 text-red-600 hover:bg-red-50',
-            viewBtn: 'bg-red-600 hover:bg-red-700',
+            unreadBorder: 'border-red-200 dark:border-red-800',
+            unreadBg: 'bg-red-50 dark:bg-red-950/30',
+            badge: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+            markReadBtn:
+                'border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50',
+            viewBtn:
+                'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600',
         };
     }
-    // default: indigo (submitted/pending/etc)
     return {
-        unreadBorder: 'border-indigo-100',
-        unreadBg: 'bg-indigo-50',
-        badge: 'bg-indigo-100 text-indigo-700',
-        markReadBtn: 'border-indigo-200 text-indigo-600 hover:bg-indigo-50',
-        viewBtn: 'bg-indigo-600 hover:bg-indigo-700',
+        unreadBorder: 'border-primary/20 dark:border-primary/10',
+        unreadBg: 'bg-primary/5 dark:bg-primary/10',
+        badge: 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground',
+        markReadBtn:
+            'border-primary/20 text-primary hover:bg-primary/5 dark:border-primary/10 dark:text-primary-foreground dark:hover:bg-primary/20',
+        viewBtn:
+            'bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary dark:hover:bg-primary/90',
     };
 }
 
 export default function NotificationsPage() {
     const { notifications } = usePage<{
-        notifications: { data: NotificationItem[] };
+        notifications: NotificationPaginator;
     }>().props;
 
     const notificationList = notifications?.data ?? [];
-    const { markAsRead, markAllAsRead, remove, removeAll } = useNotifications();
+    const nextPageUrl = notifications?.next_page_url ?? null;
 
+    const { markAsRead, markAllAsRead, remove } = useNotifications();
     const [filter, setFilter] = useState<NotificationFilter>('all');
     const [localReadMap, setLocalReadMap] = useState<Record<string, boolean>>(
         {},
     );
+    const [loading, setLoading] = useState(false);
+
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+    const loadMore = useCallback(() => {
+        if (!nextPageUrl || loading) return;
+        setLoading(true);
+
+        router.get(
+            nextPageUrl,
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['notifications'],
+                onFinish: () => setLoading(false),
+            },
+        );
+    }, [nextPageUrl, loading]);
+
+    useEffect(() => {
+        const el = sentinelRef.current;
+        if (!el) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) loadMore();
+            },
+            { rootMargin: '200px' },
+        );
+
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [loadMore]);
 
     const normalized = useMemo(
         () =>
@@ -114,37 +162,27 @@ export default function NotificationsPage() {
         setLocalReadMap(next);
     };
 
-    // Click the card body → mark as read + navigate
     const handleCardClick = (item: NotificationItem & { isRead: boolean }) => {
-        if (!item.isRead) {
-            markNotificationAsRead(item.id);
-        }
-        if (item.action_url) {
-            router.visit(item.action_url);
-        }
+        if (!item.isRead) markNotificationAsRead(item.id);
+        if (item.action_url) router.visit(item.action_url);
     };
 
-    // Click the "View" button → same behavior, but explicit
     const handleViewClick = (
         e: React.MouseEvent,
         item: NotificationItem & { isRead: boolean },
     ) => {
-        e.stopPropagation(); // prevent card click from double-firing
-        if (!item.isRead) {
-            markNotificationAsRead(item.id);
-        }
-        if (item.action_url) {
-            router.visit(item.action_url);
-        }
+        e.stopPropagation();
+        if (!item.isRead) markNotificationAsRead(item.id);
+        if (item.action_url) router.visit(item.action_url);
     };
 
     const handleMarkAsRead = (e: React.MouseEvent, id: string) => {
-        e.stopPropagation(); // prevent card click
+        e.stopPropagation();
         markNotificationAsRead(id);
     };
 
     const handleRemove = (e: React.MouseEvent, id: string) => {
-        e.stopPropagation(); // prevent card click
+        e.stopPropagation();
         remove(id);
     };
 
@@ -156,7 +194,7 @@ export default function NotificationsPage() {
                 <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <h1 className="flex items-center gap-2 text-xl font-semibold text-card-foreground">
+                            <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
                                 <BellRing className="h-5 w-5 text-primary" />
                                 Notifications
                             </h1>
@@ -168,44 +206,45 @@ export default function NotificationsPage() {
                         <button
                             onClick={markAllNotificationsAsRead}
                             disabled={unreadCount === 0}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <CheckCheck className="h-4 w-4" />
                             Mark all as read
                         </button>
                     </div>
 
-                    {/* Stats Cards */}
+                    {/* Stats */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-border bg-muted px-4 py-3">
+                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Total
                             </p>
                             <p className="mt-1 text-lg font-semibold text-foreground">
-                                {normalized.length}
+                                {notifications.total}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-950/30">
-                            <p className="text-xs font-medium tracking-wide text-blue-600 dark:text-blue-400 uppercase">
+                        <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+                            <p className="text-xs font-medium tracking-wide text-primary uppercase">
                                 Unread
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-blue-700 dark:text-blue-300">
+                            <p className="mt-1 text-lg font-semibold text-primary">
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-950/30">
-                            <p className="text-xs font-medium tracking-wide text-emerald-600 dark:text-emerald-400 uppercase">
+                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
+                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Read
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-emerald-700 dark:text-emerald-300">
+                            <p className="mt-1 text-lg font-semibold text-foreground">
                                 {readCount}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Notifications List Card */}
+                {/* List Card */}
                 <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                    {/* Filter row */}
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-medium text-foreground">
@@ -213,30 +252,27 @@ export default function NotificationsPage() {
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
                             {(['all', 'unread', 'read'] as const).map(
-                                (value) => {
-                                    const active = filter === value;
-                                    return (
-                                        <button
-                                            key={value}
-                                            onClick={() => setFilter(value)}
-                                            className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
-                                                active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-                                            }`}
-                                        >
-                                            {value}
-                                        </button>
-                                    );
-                                },
+                                (value) => (
+                                    <button
+                                        key={value}
+                                        onClick={() => setFilter(value)}
+                                        className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
+                                            filter === value
+                                                ? 'bg-primary text-primary-foreground'
+                                                : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                                        }`}
+                                    >
+                                        {value}
+                                    </button>
+                                ),
                             )}
                         </div>
                     </div>
 
-                    {/* Notification List */}
+                    {/* Notification list */}
                     {filtered.length === 0 ? (
                         <div className="rounded-lg border border-dashed border-border px-4 py-12 text-center">
-                            <Bell className="mx-auto h-9 w-9 text-muted-foreground" />
+                            <Bell className="mx-auto h-9 w-9 text-muted-foreground/30" />
                             <p className="mt-3 text-sm font-medium text-foreground">
                                 No notifications found
                             </p>
@@ -246,54 +282,135 @@ export default function NotificationsPage() {
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {filtered.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className={`rounded-lg border px-4 py-3 transition-colors ${
-                                        item.isRead
-                                            ? 'border-border bg-card'
-                                            : 'border-primary/20 bg-primary/5'
-                                    }`}
-                                >
-                                    <div className="flex flex-wrap items-start justify-between gap-2">
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-sm font-semibold text-foreground">
-                                                    {item.title}
+                            {filtered.map((item) => {
+                                const theme = getNotificationTheme(item.title);
+                                const isClickable = !!item.action_url;
+
+                                return (
+                                    <div
+                                        key={item.id}
+                                        onClick={() =>
+                                            isClickable && handleCardClick(item)
+                                        }
+                                        className={`group rounded-lg border px-4 py-3 transition-all ${
+                                            item.isRead
+                                                ? 'border-border bg-card'
+                                                : `${theme.unreadBorder} ${theme.unreadBg}`
+                                        } ${
+                                            isClickable
+                                                ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
+                                                : 'cursor-default'
+                                        }`}
+                                    >
+                                        <div className="flex flex-wrap items-start justify-between gap-2">
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    {!item.isRead && (
+                                                        <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
+                                                    )}
+                                                    <p className="text-sm font-semibold text-foreground">
+                                                        {item.title}
+                                                    </p>
+                                                    {!item.isRead && (
+                                                        <span
+                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${theme.badge}`}
+                                                        >
+                                                            New
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="mt-1 text-sm text-muted-foreground">
+                                                    {item.message}
                                                 </p>
-                                                {!item.isRead && (
-                                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-primary uppercase">
-                                                        New
-                                                    </span>
+                                            </div>
+
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                                    <Clock3 className="h-3.5 w-3.5" />
+                                                    {formatDateTime(
+                                                        item.created_at,
+                                                    )}
+                                                </div>
+                                                <button
+                                                    onClick={(e) =>
+                                                        handleRemove(e, item.id)
+                                                    }
+                                                    className="rounded p-1 text-muted-foreground/50 opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+                                                    title="Dismiss notification"
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {!item.isRead && (
+                                            <div className="mt-3 flex items-center gap-2">
+                                                <button
+                                                    onClick={(e) =>
+                                                        handleMarkAsRead(
+                                                            e,
+                                                            item.id,
+                                                        )
+                                                    }
+                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border bg-card px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
+                                                >
+                                                    <CheckCheck className="h-3.5 w-3.5" />
+                                                    Mark as read
+                                                </button>
+
+                                                {item.action_url && (
+                                                    <button
+                                                        onClick={(e) =>
+                                                            handleViewClick(
+                                                                e,
+                                                                item,
+                                                            )
+                                                        }
+                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors ${theme.viewBtn}`}
+                                                    >
+                                                        <ExternalLink className="h-3.5 w-3.5" />
+                                                        View Report
+                                                    </button>
                                                 )}
                                             </div>
-                                            <p className="mt-1 text-sm text-muted-foreground">
-                                                {item.message}
-                                            </p>
-                                        </div>
-                                        <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-                                            <Clock3 className="h-3.5 w-3.5" />
-                                            {formatDateTime(item.created_at)}
-                                        </div>
-                                    </div>
+                                        )}
 
-                                    {!item.isRead && (
-                                        <div className="mt-3">
-                                            <button
-                                                onClick={() =>
-                                                    markAsRead(item.id)
-                                                }
-                                                className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-primary/20 bg-background px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/5"
-                                            >
-                                                Mark as read
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                        {item.isRead && item.action_url && (
+                                            <div className="mt-2">
+                                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:text-primary">
+                                                    <ExternalLink className="h-3 w-3" />
+                                                    Click to view report
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
+
+                    {/* Infinite scroll sentinel */}
+                    <div
+                        ref={sentinelRef}
+                        className="mt-4 flex justify-center py-2"
+                    >
+                        {loading && (
+                            <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Loading more…
+                            </span>
+                        )}
+                        {!nextPageUrl &&
+                            !loading &&
+                            notificationList.length > 0 && (
+                                <p className="text-xs text-muted-foreground/50">
+                                    You've seen all notifications
+                                </p>
+                            )}
+                    </div>
                 </div>
+
+                <ScrollToTop threshold={300} />
             </div>
         </AppLayout>
     );
