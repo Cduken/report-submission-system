@@ -1,3 +1,4 @@
+//focal-person/notifications.tsx
 import { useNotifications } from '@/hooks/use-notifications';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
@@ -44,30 +45,30 @@ function getNotificationTheme(title: string): {
 
     if (t.includes('approved') || t.includes('success')) {
         return {
-            unreadBorder: 'border-emerald-200',
-            unreadBg: 'bg-emerald-50',
-            badge: 'bg-emerald-100 text-emerald-700',
+            unreadBorder: 'border-emerald-200 dark:border-emerald-800',
+            unreadBg: 'bg-emerald-50 dark:bg-emerald-950/30',
+            badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300',
             markReadBtn:
-                'border-emerald-200 text-emerald-600 hover:bg-emerald-50',
-            viewBtn: 'bg-emerald-600 hover:bg-emerald-700',
+                'border-emerald-200 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-950/50',
+            viewBtn: 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white',
         };
     }
     if (t.includes('rejected') || t.includes('denied')) {
         return {
-            unreadBorder: 'border-red-200',
-            unreadBg: 'bg-red-50',
-            badge: 'bg-red-100 text-red-700',
-            markReadBtn: 'border-red-200 text-red-600 hover:bg-red-50',
-            viewBtn: 'bg-red-600 hover:bg-red-700',
+            unreadBorder: 'border-red-200 dark:border-red-800',
+            unreadBg: 'bg-red-50 dark:bg-red-950/30',
+            badge: 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300',
+            markReadBtn: 'border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50',
+            viewBtn: 'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white',
         };
     }
     // default: indigo (submitted/pending/etc)
     return {
-        unreadBorder: 'border-indigo-100',
-        unreadBg: 'bg-indigo-50',
-        badge: 'bg-indigo-100 text-indigo-700',
-        markReadBtn: 'border-indigo-200 text-indigo-600 hover:bg-indigo-50',
-        viewBtn: 'bg-indigo-600 hover:bg-indigo-700',
+        unreadBorder: 'border-indigo-200 dark:border-indigo-800',
+        unreadBg: 'bg-indigo-50 dark:bg-indigo-950/30',
+        badge: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300',
+        markReadBtn: 'border-indigo-200 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-800 dark:text-indigo-400 dark:hover:bg-indigo-950/50',
+        viewBtn: 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 text-white',
     };
 }
 
@@ -148,6 +149,37 @@ export default function NotificationsPage() {
         remove(id);
     };
 
+    // Filter button styling helper
+    const getFilterButtonStyle = (value: NotificationFilter) => {
+        const baseClasses = "rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide capitalize transition-all duration-200";
+
+        if (filter === value) {
+            // Active filter - use distinct colors for each filter type
+            switch(value) {
+                case 'all':
+                    return `${baseClasses} bg-primary text-primary-foreground shadow-md shadow-primary/25 ring-2 ring-primary/20`;
+                case 'unread':
+                    return `${baseClasses} bg-blue-600 text-white shadow-md shadow-blue-600/25 ring-2 ring-blue-400/30 dark:bg-blue-500`;
+                case 'read':
+                    return `${baseClasses} bg-emerald-600 text-white shadow-md shadow-emerald-600/25 ring-2 ring-emerald-400/30 dark:bg-emerald-500`;
+                default:
+                    return `${baseClasses} bg-primary text-primary-foreground`;
+            }
+        } else {
+            // Inactive filters
+            switch(value) {
+                case 'all':
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary hover:ring-2 hover:ring-primary/30`;
+                case 'unread':
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-blue-50 hover:text-blue-600 hover:ring-2 hover:ring-blue-200 dark:hover:bg-blue-950/30 dark:hover:text-blue-400`;
+                case 'read':
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-emerald-50 hover:text-emerald-600 hover:ring-2 hover:ring-emerald-200 dark:hover:bg-emerald-950/30 dark:hover:text-emerald-400`;
+                default:
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary`;
+            }
+        }
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifications" />
@@ -168,16 +200,16 @@ export default function NotificationsPage() {
                         <button
                             onClick={markAllNotificationsAsRead}
                             disabled={unreadCount === 0}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-all hover:border-primary/20 hover:bg-primary/5 hover:text-primary hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <CheckCheck className="h-4 w-4" />
                             Mark all as read
                         </button>
                     </div>
 
-                    {/* Stats Cards */}
+                    {/* Stats Cards - Improved colors */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-border bg-muted px-4 py-3">
+                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3 transition-colors hover:bg-muted/70">
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Total
                             </p>
@@ -185,7 +217,7 @@ export default function NotificationsPage() {
                                 {normalized.length}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-950/30">
+                        <div className="rounded-lg border border-blue-200 bg-blue-50/80 px-4 py-3 backdrop-blur-sm transition-colors hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-950/40 dark:hover:bg-blue-950/60">
                             <p className="text-xs font-medium tracking-wide text-blue-600 dark:text-blue-400 uppercase">
                                 Unread
                             </p>
@@ -193,7 +225,7 @@ export default function NotificationsPage() {
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-950/30">
+                        <div className="rounded-lg border border-emerald-200 bg-emerald-50/80 px-4 py-3 backdrop-blur-sm transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/40 dark:hover:bg-emerald-950/60">
                             <p className="text-xs font-medium tracking-wide text-emerald-600 dark:text-emerald-400 uppercase">
                                 Read
                             </p>
@@ -209,88 +241,122 @@ export default function NotificationsPage() {
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-medium text-foreground">
-                            Filter
+                            Filter by:
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
                             {(['all', 'unread', 'read'] as const).map(
-                                (value) => {
-                                    const active = filter === value;
-                                    return (
-                                        <button
-                                            key={value}
-                                            onClick={() => setFilter(value)}
-                                            className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
-                                                active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-                                            }`}
-                                        >
-                                            {value}
-                                        </button>
-                                    );
-                                },
+                                (value) => (
+                                    <button
+                                        key={value}
+                                        onClick={() => setFilter(value)}
+                                        className={getFilterButtonStyle(value)}
+                                    >
+                                        {value}
+                                        {value === 'unread' && unreadCount > 0 && (
+                                            <span className="ml-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px] font-bold text-white">
+                                                {unreadCount}
+                                            </span>
+                                        )}
+                                    </button>
+                                ),
                             )}
                         </div>
                     </div>
 
                     {/* Notification List */}
                     {filtered.length === 0 ? (
-                        <div className="rounded-lg border border-dashed border-border px-4 py-12 text-center">
-                            <Bell className="mx-auto h-9 w-9 text-muted-foreground" />
+                        <div className="rounded-lg border border-dashed border-border bg-muted/30 px-4 py-12 text-center transition-colors hover:bg-muted/40">
+                            <Bell className="mx-auto h-9 w-9 text-muted-foreground/70" />
                             <p className="mt-3 text-sm font-medium text-foreground">
-                                No notifications found
+                                No {filter !== 'all' ? filter : ''} notifications found
                             </p>
                             <p className="mt-1 text-xs text-muted-foreground">
-                                New updates will appear here once available.
+                                {filter === 'unread'
+                                    ? "You've caught up on all your notifications!"
+                                    : filter === 'read'
+                                    ? "You haven't marked any notifications as read yet"
+                                    : "New updates will appear here once available."}
                             </p>
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {filtered.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className={`rounded-lg border px-4 py-3 transition-colors ${
-                                        item.isRead
-                                            ? 'border-border bg-card'
-                                            : 'border-primary/20 bg-primary/5'
-                                    }`}
-                                >
-                                    <div className="flex flex-wrap items-start justify-between gap-2">
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-sm font-semibold text-foreground">
-                                                    {item.title}
+                            {filtered.map((item) => {
+                                const theme = getNotificationTheme(item.title);
+                                return (
+                                    <div
+                                        key={item.id}
+                                        onClick={() => handleCardClick(item)}
+                                        className={`group rounded-lg border px-4 py-3 transition-all duration-200 cursor-pointer ${
+                                            item.isRead
+                                                ? 'border-border bg-card hover:border-primary/20 hover:bg-primary/5 hover:shadow-sm'
+                                                : `${theme.unreadBorder} ${theme.unreadBg} hover:shadow-md`
+                                        }`}
+                                    >
+                                        <div className="flex flex-wrap items-start justify-between gap-2">
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-sm font-semibold text-foreground">
+                                                        {item.title}
+                                                    </p>
+                                                    {!item.isRead && (
+                                                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${theme.badge}`}>
+                                                            New
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="mt-1 text-sm text-muted-foreground">
+                                                    {item.message}
                                                 </p>
-                                                {!item.isRead && (
-                                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-primary uppercase">
-                                                        New
-                                                    </span>
-                                                )}
                                             </div>
-                                            <p className="mt-1 text-sm text-muted-foreground">
-                                                {item.message}
-                                            </p>
+                                            <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+                                                <Clock3 className="h-3.5 w-3.5" />
+                                                {formatDateTime(item.created_at)}
+                                            </div>
                                         </div>
-                                        <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-                                            <Clock3 className="h-3.5 w-3.5" />
-                                            {formatDateTime(item.created_at)}
-                                        </div>
-                                    </div>
 
-                                    {!item.isRead && (
-                                        <div className="mt-3">
+                                        <div className="mt-3 flex items-center gap-2">
+                                            {!item.isRead && (
+                                                <button
+                                                    onClick={(e) => handleMarkAsRead(e, item.id)}
+                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border px-2.5 py-1.5 text-xs font-medium transition-all ${theme.markReadBtn}`}
+                                                >
+                                                    <CheckCheck className="h-3 w-3" />
+                                                    Mark as read
+                                                </button>
+                                            )}
+                                            {item.action_url && (
+                                                <button
+                                                    onClick={(e) => handleViewClick(e, item)}
+                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-all hover:shadow-md ${theme.viewBtn}`}
+                                                >
+                                                    <ExternalLink className="h-3 w-3" />
+                                                    View
+                                                </button>
+                                            )}
                                             <button
-                                                onClick={() =>
-                                                    markAsRead(item.id)
-                                                }
-                                                className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-primary/20 bg-background px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/5"
+                                                onClick={(e) => handleRemove(e, item.id)}
+                                                className="ml-auto inline-flex cursor-pointer items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:hover:border-red-800 dark:hover:bg-red-950/50"
+                                                title="Remove notification"
                                             >
-                                                Mark as read
+                                                <Trash2 className="h-3 w-3" />
                                             </button>
                                         </div>
-                                    )}
-                                </div>
-                            ))}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {/* Clear all button - only show if there are notifications */}
+                    {normalized.length > 0 && (
+                        <div className="mt-4 flex justify-end border-t border-border pt-4">
+                            <button
+                                onClick={() => removeAll()}
+                                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-muted-foreground transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:hover:border-red-800 dark:hover:bg-red-950/50"
+                            >
+                                <Trash2 className="h-4 w-4" />
+                                Clear all notifications
+                            </button>
                         </div>
                     )}
                 </div>
