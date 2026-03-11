@@ -10,7 +10,7 @@ export default function GridView({
     onCardClick: (submission: ReportSubmission) => void;
 }) {
     return (
-        <div className="grid grid-rows-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-rows-1 gap-5 lg:grid-cols-3">
             {reportSubmissions.map((submission) => (
                 <button
                     key={submission.id}
@@ -34,7 +34,7 @@ export default function GridView({
                     </h3>
 
                     {/* Submission Date */}
-                    <p className="mb-3 text-xs text-muted-foreground">
+                    <p className="mb-1 text-xs text-muted-foreground">
                         Submitted on{' '}
                         {new Date(submission.created_at).toLocaleDateString(
                             'en-US',
@@ -45,6 +45,20 @@ export default function GridView({
                             },
                         )}
                     </p>
+
+                    {submission?.updated_at && (
+                        <p className="mb-3 text-xs text-muted-foreground">
+                            Updated at{' '}
+                            {new Date(submission.updated_at).toLocaleDateString(
+                                'en-US',
+                                {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                },
+                            )}
+                        </p>
+                    )}
 
                     {/* File Count Badge */}
                     <div className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5">

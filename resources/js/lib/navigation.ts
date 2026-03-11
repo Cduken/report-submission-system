@@ -65,6 +65,15 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: FocalPersonNavigationPath.programs().url,
                     icon: File,
+                    // badge: {
+                    //     countKey: 'pending_submissions_count', // amber — submissions to review
+                    //     variant: 'warning',
+                    // },
+                },
+                {
+                    title: 'Review Queue',
+                    href: FocalPersonNavigationPath.reviewQueuePage().url,
+                    icon: File,
                     badge: {
                         countKey: 'pending_submissions_count', // amber — submissions to review
                         variant: 'warning',

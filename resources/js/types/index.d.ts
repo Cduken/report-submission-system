@@ -94,6 +94,17 @@ export interface Media {
     original_url: string;
 }
 
+interface ActivityLog {
+    id: number;
+    description: string;
+    created_at: string;
+    causer?: { name: string };
+    properties?: {
+        old?: Record<string, any>;
+        attributes?: Record<string, any>;
+    };
+}
+
 // Add to types/index.d.ts
 export interface ReportSubmission {
     id: string;
@@ -107,7 +118,8 @@ export interface ReportSubmission {
     remarks: string;
     description: string
     data: Object
-
+    // Add to ReportSubmission type
+    activities?: ActivityLog[];
     // Relationships
     fieldOfficer?: Pick<User, 'id' | 'name' | 'email' | 'avatar'>;
     media?: Media[];

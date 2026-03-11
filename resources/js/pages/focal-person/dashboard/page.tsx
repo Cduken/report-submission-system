@@ -522,7 +522,7 @@ export default function Dashboard() {
 
                             <div className="border-t p-4">
                                 <Link
-                                    href="/focal-person/submissions"
+                                    href="/focal-person/submission-logs"
                                     className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground"
                                 >
                                     View all submissions
@@ -552,7 +552,7 @@ export default function Dashboard() {
                                     {assigned_programs.map((program) => (
                                         <Link
                                             key={program.id}
-                                            href={`/focal-person/programs/${program.id}`}
+                                            href={`/focal-person/programs/${program.id}/reports`}
                                             className="block p-4 transition-colors hover:bg-muted/50"
                                         >
                                             <div className="mb-2 flex items-start justify-between">

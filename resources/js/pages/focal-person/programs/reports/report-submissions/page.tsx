@@ -42,8 +42,10 @@ export default function page() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Back link={ViewController.reports(program)} />
 
-                <div className='flex items-center justify-between'>
-                    <h1 className="text-lg lg:text-xl font-semibold truncate">{report.title}</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="truncate text-lg font-semibold lg:text-xl">
+                        {report.title}
+                    </h1>
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1 rounded-lg border bg-background p-1">
                             <button

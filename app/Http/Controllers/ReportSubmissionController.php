@@ -242,15 +242,16 @@ class ReportSubmissionController extends Controller
         ]);
 
         // Optionally add a note about the update
-        activity()
-        ->causedBy(Auth::user())
-        ->withProperties([
-            'changes' => [
-                'description_changed' => true,
-                'files_updated' => true,
-            ]
-        ])
-        ->log('submission_updated');
+        // activity()
+        // ->causedBy(Auth::user())
+        // ->performedOn($submission)
+        // ->withProperties([
+        //     'changes' => [
+        //         'description_changed' => true,
+        //         'files_updated' => true,
+        //     ]
+        // ])
+        // ->log('submission_updated');
 
         return redirect()->back()->with('success', 'Report submission updated successfully.');
     }

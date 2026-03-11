@@ -219,7 +219,7 @@ export default function Programs() {
         const params: Record<string, unknown> = { page: 1 };
         if (year) params.year = year;
 
-        router.get(route('focal-person.programs.index'), params, {
+        router.get(router('focal-person.programs.index'), params, {
             preserveScroll: true,
             preserveState: true,
             onFinish: () => setIsFiltering(false),
