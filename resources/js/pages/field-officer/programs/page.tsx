@@ -10,6 +10,7 @@ import {
     EllipsisVertical,
     Folders,
     Grid2x2,
+    Layers,
     List,
 } from 'lucide-react';
 import { Activity } from 'react';
@@ -40,11 +41,12 @@ export default function Page() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-lg font-semibold text-foreground lg:text-2xl">
+                        <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl">
+                            <Layers className="h-5 w-5 text-primary" />
                             All Programs
                         </h1>
                         {programs.data.length > 0 && (
-                            <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
+                            <p className="text-xs text-muted-foreground lg:text-sm">
                                 Showing {programs.from} to {programs.to} of{' '}
                                 {programs.total} programs
                             </p>
@@ -83,7 +85,7 @@ export default function Page() {
                     mode={programs.data.length <= 0 ? 'visible' : 'hidden'}
                 >
                     <div className="flex flex-col items-center justify-center gap-2 py-12 text-center h-[60vh]">
-                        <Folders className="h-16 w-16 text-muted-foreground/50" />
+                        <Folders className="h-16 w-16 text-muted-foreground/50"/>
                         <h2 className="text-xl font-medium text-muted-foreground">
                             No programs yet
                         </h2>
@@ -98,50 +100,70 @@ export default function Page() {
                 >
                     {viewMode === 'grid' ? (
                         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                            {programs.data.map((program, index) => (
-                                <Link
-                                    key={index}
-                                    href={ViewController.reports(program)}
-                                    className="group"
-                                >
-                                    <div className="flex gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow">
-                                        <div className="flex min-w-0 flex-1 flex-col gap-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="rounded-md bg-muted p-3">
-                                                    <Folders className="h-5 text-muted-foreground" />
-                                                </div>
-                                                <div className="flex min-w-0 flex-col">
-                                                    <h1 className="truncate font-medium text-foreground">
-                                                        {program.name}
-                                                    </h1>
-                                                    <p className="truncate text-sm text-muted-foreground">
-                                                        {program.description}
-                                                    </p>
-                                                </div>
-                                            </div>
+                            {programs.data.map((program, index) => {
+                                const hasPending = program.has_pending_reports;
 
-                                            <div className="flex items-center justify-between pl-15">
-                                                <p className="font-lighter truncate text-xs text-gray-500">
-                                                    {program.coordinator.name}
-                                                </p>
-                                                {program.has_pending_reports && (
-                                                    <ReportDueChip />
-                                                )}
+                                return (
+                                    <Link
+                                        key={index}
+                                        href={ViewController.reports(program)}
+                                        className="group"
+                                    >
+                                        <div
+                                            className={`group relative flex gap-3 rounded-xl border p-4 transition-all duration-200 hover:border-gray-300 hover:shadow-sm ${
+                                                hasPending
+                                                ? "border-l-4 border-l-amber-500 bg-amber-600/20"
+                                                : "border-l-4 border-l-green-500 bg-green-600/20"
+                                            }`}
+                                            >
+                                            <div className="flex min-w-0 flex-1 flex-col gap-3">
+                                                <div className="flex items-start gap-3">
+                                                    <div
+                                                        className={`rounded-lg p-2.5 ${
+                                                        hasPending ? "bg-amber-50" : "bg-emerald-50"
+                                                        }`}
+                                                    >
+                                                        <Folders
+                                                        className={`h-4.5 w-4.5 ${
+                                                            hasPending ? "text-amber-600" : "text-emerald-600"
+                                                        }`}
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex min-w-0 flex-1 flex-col">
+                                                        <h3 className="truncate text-sm font-medium text-gray-900">
+                                                        {program.name}
+                                                        </h3>
+                                                        <p className="truncate text-xs text-gray-500">
+                                                        {program.description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-between pl-11">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="h-5 w-5 rounded-full bg-gray-100 flex items-center justify-center">
+                                                        <span className="text-xs font-medium text-gray-600">
+                                                            {program.coordinator.name.charAt(0)}
+                                                        </span>
+                                                        </div>
+                                                        <span className="text-xs text-gray-500">
+                                                        {program.coordinator.name}
+                                                        </span>
+                                                    </div>
+
+                                                    {hasPending && (
+                                                        <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-2 py-0.5">
+                                                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                        <span className="text-xs font-medium text-amber-600">Due soon</span>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center">
-                                            <button
-                                                onClick={(e) =>
-                                                    e.preventDefault()
-                                                }
-                                                className="flex-shrink-0 rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
-                                            >
-                                                <EllipsisVertical className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="flex flex-col">
@@ -172,16 +194,6 @@ export default function Page() {
                                         </div>
                                         <div className="col-span-3 truncate text-sm text-muted-foreground">
                                             {program.description}
-                                        </div>
-                                        <div className="col-span-1 flex justify-end">
-                                            <button
-                                                onClick={(e) =>
-                                                    e.preventDefault()
-                                                }
-                                                className="rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
-                                            >
-                                                <EllipsisVertical className="h-4 w-4" />
-                                            </button>
                                         </div>
                                     </div>
                                 </Link>

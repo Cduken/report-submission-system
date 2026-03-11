@@ -130,7 +130,7 @@ class ViewController extends Controller
         ];
 
         $submission = $report->submissions()
-            ->select('id', 'report_id', 'field_officer_id', 'description', 'data', 'status', 'created_at', 'updated_at')
+            ->select('id', 'report_id', 'field_officer_id', 'description', 'data', 'status', 'remarks', 'created_at', 'updated_at')
             ->whereBelongsTo(auth()->user(), 'fieldOfficer')
             ->with([
                 'fieldOfficer:id,name,email',
