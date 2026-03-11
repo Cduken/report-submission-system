@@ -10,10 +10,11 @@ import {
     CheckCircle2,
     Clock,
     FileText,
+    MessageSquare,
     Upload,
     User,
 } from 'lucide-react';
-import { Activity, useState } from 'react';
+import { useState } from 'react';  // Only import useState
 import EditReportSubmissionDialog from './components/edit-report-submission-dialog';
 import EmptyReportSubmission from './components/empty-submission';
 import ReportSubmissionDialog from './components/report-submission-dialog';
@@ -22,20 +23,25 @@ import MediaCard from './components/sample-template';
 const STATUS_MAP = {
     submitted: {
         text: 'Submitted',
-        style: 'text-emerald-600 dark:text-emerald-400',
+        textColor: 'text-emerald-600 dark:text-emerald-400',
+        borderColor: 'border-emerald-500',
+        bgColor: 'bg-emerald-500/10',
+        icon: CheckCircle2,
     },
     returned: {
         text: 'Returned',
-        style: 'text-red-600 dark:text-red-400',
+        textColor: 'text-red-600 dark:text-red-400',
+        borderColor: 'border-red-500',
+        bgColor: 'bg-red-500/10',
+        icon: AlertCircle,
     },
     accepted: {
         text: 'Accepted',
-        style: 'text-blue-600 dark:text-blue-400',
-    },
-    draft: {
-        text: 'Draft',
-        style: 'text-gray-600 dark:text-gray-400',
-    },
+        textColor: 'text-blue-600 dark:text-blue-400',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10',
+        icon: CheckCircle2,
+    }
 };
 
 export default function page() {
@@ -67,7 +73,10 @@ export default function page() {
 
     const statusInfo = STATUS_MAP[reportSubmission?.status] ?? {
         text: 'Unknown',
-        style: 'text-gray-600 dark:text-gray-400',
+        textColor: 'text-gray-600 dark:text-gray-400',
+        borderColor: 'border-gray-500',
+        bgColor: 'bg-gray-500/10',
+        icon: AlertCircle,
     };
 
     return (
@@ -184,27 +193,36 @@ export default function page() {
                     references={report.references}
                 />
 
-                {/* Empty State */}
-                <Activity mode={!reportSubmission ? 'visible' : 'hidden'}>
+                {/* Empty State - Show only if no report submission */}
+                {!reportSubmission && (
                     <EmptyReportSubmission setIsOpen={setSubmitOpen} />
-                </Activity>
+                )}
 
-                {/* Single Submission Card */}
-                <Activity mode={reportSubmission ? 'visible' : 'hidden'}>
+                {/* Single Submission Card - Show only if report submission exists */}
+                {reportSubmission && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-semibold text-foreground/90">
                                 Your Submission
                             </h2>
                             <div
-                                className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium ${statusInfo.style}`}
+                                className={`
+                                    flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium
+                                    ${statusInfo.borderColor} ${statusInfo.bgColor} ${statusInfo.textColor}
+                                `}
                             >
-                                <CheckCircle2 className="h-4 w-4" />
+                                <statusInfo.icon className="h-4 w-4" />
                                 <span>{statusInfo.text}</span>
                             </div>
                         </div>
 
-                        <div className="group relative overflow-hidden rounded-2xl border bg-card shadow-md transition-all duration-300 hover:shadow-lg">
+                        <div className={`group relative overflow-hidden rounded-2xl border-2 bg-card shadow-md transition-all duration-300 hover:shadow-lg
+${
+                                reportSubmission?.status === 'returned' ? 'border-red-500 bg-red-50':
+                                reportSubmission?.status === 'accepted' ? 'border-blue-500 bg-blue-50' :
+                                reportSubmission?.status === 'submitted' ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-white'
+                            }
+                        `}>
                             {/* Decorative Background */}
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
                             <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
@@ -261,19 +279,35 @@ export default function page() {
                                                     <span className="text-sm font-semibold text-foreground lg:text-base">
                                                         {reportSubmission?.created_at
                                                             ? new Date(
-                                                                  reportSubmission.created_at,
-                                                              ).toLocaleDateString(
-                                                                  'en-US',
-                                                                  {
-                                                                      month: 'long',
-                                                                      day: 'numeric',
-                                                                      year: 'numeric',
-                                                                  },
-                                                              )
+                                                                    reportSubmission.created_at,
+                                                                ).toLocaleDateString(
+                                                                    'en-US',
+                                                                    {
+                                                                        month: 'long',
+                                                                        day: 'numeric',
+                                                                        year: 'numeric',
+                                                                    },
+                                                                )
                                                             : 'N/A'}
                                                     </span>
                                                 </div>
                                             </div>
+
+                                            {reportSubmission?.status === 'returned' && (
+                                                <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm">
+                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                                        <MessageSquare className="h-5 w-5 text-primary" />
+                                                    </div>
+                                                    <div className="flex flex-col gap-1">
+                                                        <span className="text-xs font-medium text-muted-foreground">
+                                                            Remarks
+                                                        </span>
+                                                        <span className="text-sm font-semibold text-foreground lg:text-base">
+                                                            {reportSubmission.remarks}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -286,15 +320,15 @@ export default function page() {
                                             Uploaded{' '}
                                             {reportSubmission?.created_at
                                                 ? new Date(
-                                                      reportSubmission.created_at,
-                                                  ).toLocaleTimeString(
-                                                      'en-US',
-                                                      {
-                                                          hour: 'numeric',
-                                                          minute: '2-digit',
-                                                          hour12: true,
-                                                      },
-                                                  )
+                                                        reportSubmission.created_at,
+                                                    ).toLocaleTimeString(
+                                                        'en-US',
+                                                        {
+                                                            hour: 'numeric',
+                                                            minute: '2-digit',
+                                                            hour12: true,
+                                                        },
+                                                    )
                                                 : ''}
                                         </span>
                                     </div>
@@ -302,7 +336,7 @@ export default function page() {
                             </div>
                         </div>
                     </div>
-                </Activity>
+                )}
             </div>
         </AppLayout>
     );

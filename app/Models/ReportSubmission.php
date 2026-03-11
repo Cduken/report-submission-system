@@ -30,7 +30,8 @@ class ReportSubmission extends Model implements HasMedia
         'status',
         'timeliness',
         'description',
-        'data'
+        'data',
+        'remarks',
     ];
 
     protected $casts = [
