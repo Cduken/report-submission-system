@@ -1,4 +1,5 @@
 // notifications/page.tsx
+import { ScrollToTop } from '@/components/ui/scroll-to-top';
 import { useNotifications } from '@/hooks/use-notifications';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
@@ -408,6 +409,8 @@ export default function NotificationsPage() {
                             )}
                     </div>
                 </div>
+
+                <ScrollToTop threshold={300} />
             </div>
         </AppLayout>
     );
