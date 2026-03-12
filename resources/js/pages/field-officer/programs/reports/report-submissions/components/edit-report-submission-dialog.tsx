@@ -146,7 +146,7 @@ export default function EditReportSubmissionDialog({
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-h-[90vh] max-w-3xl overflow-x-hidden overflow-y-auto p-0">
+            <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col overflow-x-hidden overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
                         <div className="flex items-start justify-between">

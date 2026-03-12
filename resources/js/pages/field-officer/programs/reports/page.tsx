@@ -103,8 +103,8 @@ function DeadlineLabel({ deadline }: { deadline: any }) {
                         overdue
                             ? 'text-rose-500 dark:text-rose-400'
                             : soon
-                              ? 'text-amber-500 dark:text-amber-400'
-                              : 'text-muted-foreground'
+                                ? 'text-amber-500 dark:text-amber-400'
+                                : 'text-muted-foreground'
                     }`}
                 >
                     {(overdue || soon) && <AlertCircle className="h-3 w-3" />}
@@ -238,46 +238,73 @@ export default function Reports() {
                         {reportList.map((report, index) => (
                             <Link
                                 key={index}
-                                href={ViewController.reportSubmissions([
-                                    program,
-                                    report,
-                                ])}
-                                className="group relative flex flex-col gap-3 rounded-xl border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-sm"
+                                href={ViewController.reportSubmissions([program, report])}
+                                className={`group relative flex gap-3 rounded-xl border  p-4 transition-all duration-200 hover:border-gray-300 hover:shadow-sm ${
+                                    report.submission_status === "pending"
+                                    ? 'border-l-4 border-l-amber-500 bg-amber-600/20'
+                                    : report.submission_status === "submitted"
+                                        ? 'border-l-4 border-l-green-500 bg-green-600/20'
+                                        : 'border-l-4 border-l-red-500 bg-red-600/20'
+                                }`}
                             >
-                                {/* Status icon — top right */}
-                                <div className="absolute top-3 right-3">
-                                    <StatusIcon
-                                        status={
-                                            report.submission_status as SubmissionStatus
-                                        }
-                                    />
-                                </div>
+                                <div className="flex min-w-0 flex-1 flex-col gap-3">
+                                    <div className="flex items-start gap-3">
+                                        <div
+                                            className={`rounded-lg p-2.5 ${
+                                                report.submission_status === "pending"
+                                                ? 'bg-amber-50'
+                                                : report.submission_status === "submitted"
+                                                    ? 'bg-green-50'
+                                                    : 'bg-red-50'
+                                            }`}
+                                        >
+                                            <FileText
+                                            className={`h-4.5 w-4.5 ${
+                                                report.submission_status === "pending"
+                                                    ? 'text-amber-700'
+                                                    : report.submission_status === "submitted"
+                                                        ? 'text-green-700'
+                                                        : 'text-red-700'
+                                                }`}
+                                            />
+                                        </div>
 
-                                {/* Icon + title */}
-                                <div className="flex items-start gap-3 pr-6">
-                                    <div className="rounded-md bg-muted p-2.5">
-                                        <FileText className="h-4 w-4 text-muted-foreground" />
-                                    </div>
-                                    <div className="flex min-w-0 flex-col">
-                                        <h2 className="truncate leading-snug font-medium text-foreground">
-                                            {report.title}
-                                        </h2>
-                                        {report.description && (
-                                            <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                                        <div className="flex min-w-0 flex-1 flex-col">
+                                            <h3 className="truncate text-sm font-medium text-gray-900">
+                                                {report.title}
+                                            </h3>
+                                            {report.description && (
+                                            <p className="truncate text-xs text-gray-500">
                                                 {report.description}
                                             </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pl-12.5">
+                                        <DeadlineLabel deadline={report.deadline} />
+
+                                        {report.submission_status === "pending" && (
+                                            <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-2 py-0.5">
+                                                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                <span className="text-xs font-medium text-amber-600">Pending</span>
+                                            </div>
+                                        )}
+
+                                        {report.submission_status === "submitted" && (
+                                            <div className="flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5">
+                                                <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                                                <span className="text-xs font-medium text-green-600">Submitted</span>
+                                            </div>
+                                        )}
+
+                                        {report.submission_status === "returned" && (
+                                            <div className="flex items-center gap-1.5 rounded-full bg-red-50 px-2 py-0.5">
+                                                <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                                                <span className="text-xs font-medium text-red-600">Returned</span>
+                                            </div>
                                         )}
                                     </div>
-                                </div>
-
-                                {/* Footer */}
-                                <div className="flex items-center justify-between border-t pt-2.5">
-                                    <DeadlineLabel deadline={report.deadline} />
-                                    <StatusBadge
-                                        status={
-                                            report.submission_status as SubmissionStatus
-                                        }
-                                    />
                                 </div>
                             </Link>
                         ))}
@@ -308,6 +335,7 @@ export default function Reports() {
                                         {report.title}
                                     </span>
                                 </div>
+
                                 <div className="col-span-3">
                                     <DeadlineLabel deadline={report.deadline} />
                                 </div>
