@@ -1,6 +1,7 @@
 // components/header.tsx (Simple & Elegant)
 import { FilterType } from '@/types';
 import { router } from '@inertiajs/react';
+import { FileCheck } from 'lucide-react';
 
 interface HeaderProps {
     activeFilter?: FilterType;
@@ -19,9 +20,10 @@ export default function Header({ activeFilter = 'all' }: HeaderProps) {
     };
 
     return (
-        <div className="mb-8">
-            <div className="mb-6">
-                <h1 className="text-lg font-semibold tracking-tight text-foreground lg:text-2xl">
+        <div className="mb-4">
+            <div className="mb-4">
+                <h1 className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl">
+                    <FileCheck className="h-5 w-5 text-primary" />
                     My All Submissions Report
                 </h1>
                 <p className="mt-1 text-xs text-muted-foreground lg:text-sm">

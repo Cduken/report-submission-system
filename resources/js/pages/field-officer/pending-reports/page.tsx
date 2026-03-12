@@ -96,53 +96,28 @@ export default function PendingReportsPage() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pending Reports" />
 
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <Card className="gap-4 py-5">
-                    <CardHeader className="px-5">
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <CardTitle className="flex items-center gap-2 text-xl">
-                                    <FileText className="h-5 w-5 text-primary" />
-                                    Pending Reports
-                                </CardTitle>
-                                <CardDescription>
-                                    Track and submit reports before deadline.
-                                </CardDescription>
-                            </div>
-                            <Link
-                                href={ViewController.programs().url}
-                                className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent"
-                            >
-                                <FolderKanban className="h-4 w-4" />
-                                View Programs
-                            </Link>
-                        </div>
-                    </CardHeader>
-
+            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-hidden">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <CardTitle className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl">
+                            <FileText className="h-5 w-5 text-primary" />
+                            Pending Reports
+                        </CardTitle>
+                        <CardDescription>
+                            Track and submit reports before deadline.
+                        </CardDescription>
+                    </div>
+                    <Link
+                        href={ViewController.programs().url}
+                        className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent"
+                    >
+                        <FolderKanban className="h-4 w-4" />
+                        View Programs
+                    </Link>
+                </div>
+                <Card className="gap-4">
                     <CardContent className="space-y-4 px-5">
-                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                            <StatCard
-                                label="Total Pending"
-                                value={stats.total}
-                                icon={<FileText className="h-4 w-4" />}
-                            />
-                            <StatCard
-                                label="Overdue"
-                                value={stats.overdue}
-                                icon={
-                                    <AlertTriangle className="h-4 w-4 text-rose-500" />
-                                }
-                            />
-                            <StatCard
-                                label="Due in 7 Days"
-                                value={stats.dueSoon}
-                                icon={
-                                    <Clock3 className="h-4 w-4 text-amber-500" />
-                                }
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-3 md:flex-row md:items-center">
+                        <div className="flex flex-col justify-between md:flex-row md:items-center">
                             <div className="relative w-full md:max-w-sm">
                                 <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <input
@@ -188,10 +163,31 @@ export default function PendingReportsPage() {
                                 ))}
                             </div>
                         </div>
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            <StatCard
+                                label="Total Pending"
+                                value={stats.total}
+                                icon={<FileText className="h-4 w-4" />}
+                            />
+                            <StatCard
+                                label="Overdue"
+                                value={stats.overdue}
+                                icon={
+                                    <AlertTriangle className="h-4 w-4 text-rose-500" />
+                                }
+                            />
+                            <StatCard
+                                label="Due in 7 Days"
+                                value={stats.dueSoon}
+                                icon={
+                                    <Clock3 className="h-4 w-4 text-amber-500" />
+                                }
+                            />
+                        </div>
                     </CardContent>
                 </Card>
 
-                <div className="grid gap-3">
+                <div className="grid gap-3 h-[48vh] overflow-y-auto">
                     {filteredReports.length === 0 ? (
                         <Card className="py-8 text-center">
                             <CardContent>
