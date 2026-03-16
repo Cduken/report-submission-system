@@ -55,8 +55,8 @@ function TimelinessBadge({
 // ─── Status config (keep in sync with ListView) ───────────────────────────────
 
 const STATUS_CONFIG = {
-    approved: {
-        label: 'Approved',
+    accepted: {
+        label: 'Accepted',
         icon: CheckCircle2,
         badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
         ring: 'ring-emerald-500',

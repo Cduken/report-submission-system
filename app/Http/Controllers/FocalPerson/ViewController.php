@@ -183,7 +183,8 @@ class ViewController extends Controller
 
         $report->load([ 'submissions.fieldOfficer', ]);
 
-        $submissions = $report->submissions()->with(['fieldOfficer:id,name,email', 'media', 'activities.causer'])->get();
+        $submissions = $report->submissions()->with(['fieldOfficer:id,name,email', 'media', 'activities.causer'])
+        ->orderBy('updated_at', 'desc')->get();
 
 
         return inertia('focal-person/programs/reports/report-submissions/page', [

@@ -56,8 +56,8 @@ function TimelinessBadge({
 // ─── Status config ────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG = {
-    approved: {
-        label: 'Approved',
+    accepted: {
+        label: 'Accepted',
         icon: CheckCircle2,
         badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
         dot: 'bg-emerald-500',
