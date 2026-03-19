@@ -25,6 +25,7 @@ import {
     FileUp,
     Folder,
     Pencil,
+    RotateCcw,
     UploadCloud,
     X,
     XCircle,
@@ -41,6 +42,7 @@ interface DynamicFieldDefinition {
 interface MediaFile {
     id: string;
     name: string;
+    file_name: string;
     size: number;
     download_url: string;
     url: string;
@@ -131,17 +133,23 @@ export default function EditReportSubmissionDialog({
                 <Button
                     type="button"
                     variant="outline"
-                    size="sm"
-                    className="text-primary hover:bg-primary/10 hover:text-primary"
+                    // size="default" (h-10) or "sm" (h-9) for a more substantial hit area
+                    className={cn(
+                        'h-9 border-2 px-4 transition-all active:scale-95',
+                        'border-primary/20 bg-primary/5 text-primary',
+                        'hover:border-primary hover:bg-primary hover:text-white',
+                    )}
                 >
                     {submission.status === 'returned' ? (
-                        <p>Resubmit</p>
+                        <span className="flex items-center gap-2 text-[11px] font-bold tracking-wide uppercase">
+                            <RotateCcw className="h-4 w-4" />
+                            Resubmit
+                        </span>
                     ) : (
-                        <>
-                            {' '}
-                            <Pencil className="mr-1 h-3.5 w-3.5" />
-                            Edit
-                        </>
+                        <span className="flex items-center gap-2">
+                            <Pencil className="h-4 w-4" />
+                            Edit Submission
+                        </span>
                     )}
                 </Button>
             </DialogTrigger>
@@ -374,7 +382,7 @@ export default function EditReportSubmissionDialog({
                                                                                 <div className="min-w-0 flex-1">
                                                                                     <p className="truncate text-sm font-medium text-foreground">
                                                                                         {
-                                                                                            file.name
+                                                                                            file.file_name
                                                                                         }
                                                                                     </p>
                                                                                     <p className="text-xs text-muted-foreground">
@@ -396,6 +404,7 @@ export default function EditReportSubmissionDialog({
                                                                                             '_blank',
                                                                                         )
                                                                                     }
+                                                                                    type="button"
                                                                                     title="View file"
                                                                                 >
                                                                                     <Eye className="h-4 w-4" />
@@ -407,6 +416,7 @@ export default function EditReportSubmissionDialog({
                                                                                     className="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground"
                                                                                     asChild
                                                                                     title="Download file"
+                                                                                    type="button"
                                                                                 >
                                                                                     <a
                                                                                         href={

@@ -32,19 +32,49 @@ class ViewController extends Controller
 
     public function programs(Request $request)
     {
-        $programs = Program::query()
-            ->where('coordinator_id', auth()->id()) // focal person owns these
+        $query = Program::query()
+            ->where('coordinator_id', auth()->id())
             ->withCount([
-                'pendingSubmissions as pending_submissions_count', // how many to review
+                'pendingSubmissions as pending_submissions_count',
             ])
-            ->with(['coordinator:id,name'])
+            ->with(['coordinator:id,name']);
+
+        // ── Search by program name ────────────────────────────────────────────
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        // ── Created year ──────────────────────────────────────────────────────
+        if ($year = $request->integer('year', 0)) {
+            $query->whereYear('created_at', $year);
+        }
+
+        // ── Created month (only applied when year is also set) ────────────────
+        if ($year && $month = $request->integer('month', 0)) {
+            $query->whereMonth('created_at', $month);
+        }
+
+        // ── Has pending submissions quick toggle ──────────────────────────────
+        if ($request->boolean('pending_only')) {
+            $query->has('pendingSubmissions');
+        }
+
+        $programs = $query
             ->latest()
             ->paginate(12)
             ->withQueryString();
 
+        // Build year options from the focal person's own programs
+        $availableYears = Program::where('coordinator_id', auth()->id())
+            ->selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year');
+
         return inertia('focal-person/programs/page', [
-            'programs' => $programs,
-            'filters'  => $request->only('year'),
+            'programs'       => $programs,
+            'available_years' => $availableYears,
+            'filters'        => $request->only(['search', 'year', 'month', 'pending_only']),
         ]);
     }
 

@@ -163,6 +163,6 @@ export interface NavItemBadge {
 }
 
 
-export type FilterType = 'all' | 'pending' | 'rejected' | 'accepted';
+export type FilterType = 'all' | 'pending' | 'returned' | 'accepted';
 
 export type NavBadgeVariant = 'notification' | 'warning' | 'info';
