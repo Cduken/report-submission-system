@@ -14,6 +14,7 @@ export function FlashToaster() {
     useEffect(() => {
         if (flash.success) {
             toast.success('Success', {
+                id: 'flash-success',
                 description: flash.success,
                 richColors: true,
                 duration: 3000,
@@ -22,6 +23,7 @@ export function FlashToaster() {
 
         if (flash.error) {
             toast.error('Error', {
+                id: 'flash-error',
                 description: flash.error,
                 richColors: true,
                 duration: 3000,
