@@ -71,6 +71,7 @@ export interface Program {
 
 export interface Report {
     id: string;
+    program_id: number;
     title: string;
     description?: string;
     program: Program<Pick<Program, 'id' | 'name' | 'description'>>;

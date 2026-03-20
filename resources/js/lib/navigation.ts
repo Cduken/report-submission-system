@@ -64,7 +64,7 @@ export function mainNavigationPath(role: string): NavItem[] {
                 {
                     title: 'Programs',
                     href: FocalPersonNavigationPath.programs().url,
-                    icon: Folder,
+                    icon: Layers,
                     // badge: {
                     //     countKey: 'pending_submissions_count', // amber — submissions to review
                     //     variant: 'warning',

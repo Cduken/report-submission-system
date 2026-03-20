@@ -18,9 +18,12 @@ Route::middleware(['auth', 'verified', 'role:program_head'])->group(function () 
 
     // POST
     Route::post('/program-head/manage-users', [UserController::class, 'store'])->name('program-head.store');
-    Route::put('/program-heade/manage-users/{user}', [UserController::class, 'update']);
+    Route::put('/program-head/manage-users/{user}', [UserController::class, 'update']);
     Route::post('/program-head/programs',[ProgramController::class, 'store'])->name('program-head.programs.store');
     Route::post('/program-head/programs/{program}/report',[ReportController::class, 'storeForProgramHead'])->name('program-head.programs.reports.storeForProgramHead');
+
+    //PUT
+    Route::put('/program-head/programs/{program}', [ProgramController::class, 'update'])->name('program-head.programs.update');
 
 
 

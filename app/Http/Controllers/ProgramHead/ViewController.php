@@ -74,6 +74,7 @@ class ViewController extends Controller
 
     public function submissions(Report $report)
 {
+
     // Load submissions with relationships
     $report->load(['submissions' => function($query) {
         $query->with([

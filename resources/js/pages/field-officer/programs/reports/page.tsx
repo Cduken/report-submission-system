@@ -88,23 +88,38 @@ function isOverdue(deadline: string | null): boolean {
     return new Date(deadline).getTime() < Date.now();
 }
 
-function DeadlineLabel({ deadline }: { deadline: any }) {
+function DeadlineLabel({
+    deadline,
+    viewMode,
+}: {
+    deadline: any;
+    viewMode: string;
+}) {
     if (!deadline)
-        return <span className="text-xs text-muted-foreground/50 dark:text-gray-600">—</span>;
+        return (
+            <span className="text-xs text-muted-foreground/50 dark:text-gray-600">
+                —
+            </span>
+        );
     const overdue = isOverdue(deadline);
     const soon = isDeadlineSoon(deadline);
 
     return (
         <>
             <div className="flex gap-2">
-                <span className="text-xs text-muted-foreground dark:text-gray-400">Deadline:</span>
+                {viewMode === 'grid' && (
+                    <span className="text-xs text-muted-foreground dark:text-gray-400">
+                        Deadline:
+                    </span>
+                )}
+
                 <span
                     className={`flex items-center gap-1 text-xs ${
                         overdue
                             ? 'text-rose-500 dark:text-rose-400'
                             : soon
-                                ? 'text-amber-500 dark:text-amber-400'
-                                : 'text-muted-foreground dark:text-gray-400'
+                              ? 'text-amber-500 dark:text-amber-400'
+                              : 'text-muted-foreground dark:text-gray-400'
                     }`}
                 >
                     {(overdue || soon) && <AlertCircle className="h-3 w-3" />}
@@ -180,11 +195,11 @@ export default function Reports() {
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                         <div>
-                            <h1 className="text-lg lg:text-2xl leading-tight font-semibold text-foreground dark:text-white">
+                            <h1 className="text-lg leading-tight font-semibold text-foreground lg:text-2xl dark:text-white">
                                 {program.name}
                             </h1>
                             {hasReports && (
-                                <p className="text-xs lg:text-sm text-muted-foreground dark:text-gray-400">
+                                <p className="text-xs text-muted-foreground lg:text-sm dark:text-gray-400">
                                     {reports.total} report
                                     {reports.total !== 1 ? 's' : ''}
                                 </p>
@@ -198,7 +213,7 @@ export default function Reports() {
                                 onClick={() => setViewMode('grid')}
                                 className={`rounded p-2 transition-colors ${
                                     viewMode === 'grid'
-                                        ? 'bg-primary text-primary-foreground dark:bg-primary-600 dark:text-white'
+                                        ? 'dark:bg-primary-600 bg-primary text-primary-foreground dark:text-white'
                                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200'
                                 }`}
                                 title="Grid view"
@@ -209,7 +224,7 @@ export default function Reports() {
                                 onClick={() => setViewMode('list')}
                                 className={`rounded p-2 transition-colors ${
                                     viewMode === 'list'
-                                        ? 'bg-primary text-primary-foreground dark:bg-primary-600 dark:text-white'
+                                        ? 'dark:bg-primary-600 bg-primary text-primary-foreground dark:text-white'
                                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200'
                                 }`}
                                 title="List view"
@@ -238,33 +253,41 @@ export default function Reports() {
                         {reportList.map((report, index) => (
                             <Link
                                 key={index}
-                                href={ViewController.reportSubmissions([program, report])}
+                                href={ViewController.reportSubmissions([
+                                    program,
+                                    report,
+                                ])}
                                 className={`group relative flex gap-3 rounded-xl border p-4 transition-all duration-200 hover:border-gray-300 hover:shadow-sm dark:hover:border-gray-600 ${
-                                    report.submission_status === "pending"
-                                    ? 'border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950/20'
-                                    : report.submission_status === "submitted"
-                                        ? 'border-l-4 border-l-green-500 bg-green-50 dark:bg-green-950/20'
-                                        : 'border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20'
+                                    report.submission_status === 'pending'
+                                        ? 'border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950/20'
+                                        : report.submission_status ===
+                                            'submitted'
+                                          ? 'border-l-4 border-l-green-500 bg-green-50 dark:bg-green-950/20'
+                                          : 'border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20'
                                 }`}
                             >
                                 <div className="flex min-w-0 flex-1 flex-col gap-3">
                                     <div className="flex items-start gap-3">
                                         <div
                                             className={`rounded-lg p-2.5 ${
-                                                report.submission_status === "pending"
-                                                ? 'bg-amber-100 dark:bg-amber-900/50'
-                                                : report.submission_status === "submitted"
-                                                    ? 'bg-green-100 dark:bg-green-900/50'
-                                                    : 'bg-red-100 dark:bg-red-900/50'
+                                                report.submission_status ===
+                                                'pending'
+                                                    ? 'bg-amber-100 dark:bg-amber-900/50'
+                                                    : report.submission_status ===
+                                                        'submitted'
+                                                      ? 'bg-green-100 dark:bg-green-900/50'
+                                                      : 'bg-red-100 dark:bg-red-900/50'
                                             }`}
                                         >
                                             <FileText
-                                            className={`h-4.5 w-4.5 ${
-                                                report.submission_status === "pending"
-                                                    ? 'text-amber-700 dark:text-amber-400'
-                                                    : report.submission_status === "submitted"
-                                                        ? 'text-green-700 dark:text-green-400'
-                                                        : 'text-red-700 dark:text-red-400'
+                                                className={`h-4.5 w-4.5 ${
+                                                    report.submission_status ===
+                                                    'pending'
+                                                        ? 'text-amber-700 dark:text-amber-400'
+                                                        : report.submission_status ===
+                                                            'submitted'
+                                                          ? 'text-green-700 dark:text-green-400'
+                                                          : 'text-red-700 dark:text-red-400'
                                                 }`}
                                             />
                                         </div>
@@ -274,34 +297,46 @@ export default function Reports() {
                                                 {report.title}
                                             </h3>
                                             {report.description && (
-                                            <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                                                {report.description}
-                                            </p>
+                                                <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                                                    {report.description}
+                                                </p>
                                             )}
                                         </div>
                                     </div>
 
                                     <div className="flex items-center justify-between pl-12.5">
-                                        <DeadlineLabel deadline={report.deadline} />
+                                        <DeadlineLabel
+                                            deadline={report.deadline}
+                                            viewMode={viewMode}
+                                        />
 
-                                        {report.submission_status === "pending" && (
+                                        {report.submission_status ===
+                                            'pending' && (
                                             <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-2 py-0.5 dark:bg-amber-950/30">
-                                                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse dark:bg-amber-400" />
-                                                <span className="text-xs font-medium text-amber-600 dark:text-amber-400">Pending</span>
+                                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500 dark:bg-amber-400" />
+                                                <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                                                    Pending
+                                                </span>
                                             </div>
                                         )}
 
-                                        {report.submission_status === "submitted" && (
+                                        {report.submission_status ===
+                                            'submitted' && (
                                             <div className="flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5 dark:bg-green-950/30">
-                                                <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse dark:bg-green-400" />
-                                                <span className="text-xs font-medium text-green-600 dark:text-green-400">Submitted</span>
+                                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500 dark:bg-green-400" />
+                                                <span className="text-xs font-medium text-green-600 dark:text-green-400">
+                                                    Submitted
+                                                </span>
                                             </div>
                                         )}
 
-                                        {report.submission_status === "returned" && (
+                                        {report.submission_status ===
+                                            'returned' && (
                                             <div className="flex items-center gap-1.5 rounded-full bg-red-50 px-2 py-0.5 dark:bg-red-950/30">
                                                 <span className="h-1.5 w-1.5 rounded-full bg-red-500 dark:bg-red-400" />
-                                                <span className="text-xs font-medium text-red-600 dark:text-red-400">Returned</span>
+                                                <span className="text-xs font-medium text-red-600 dark:text-red-400">
+                                                    Returned
+                                                </span>
                                             </div>
                                         )}
                                     </div>
@@ -327,21 +362,26 @@ export default function Reports() {
                                     report,
                                 ])}
                                 className={`group grid grid-cols-12 items-center gap-4 border-b px-4 py-3 transition-colors last:border-0 hover:bg-accent/50 dark:border-gray-700 dark:hover:bg-gray-800/50 ${
-                                    report.submission_status === "pending"
-                                    ? 'border-l-4 border-l-amber-500 bg-amber-50/30 dark:bg-amber-950/10'
-                                    : report.submission_status === "submitted"
-                                        ? 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/10'
-                                        : 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/10'
+                                    report.submission_status === 'pending'
+                                        ? 'border-l-4 border-l-amber-500 bg-amber-50/30 dark:bg-amber-950/10'
+                                        : report.submission_status ===
+                                            'submitted'
+                                          ? 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/10'
+                                          : 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/10'
                                 }`}
                             >
                                 <div className="col-span-5 flex min-w-0 items-center gap-3">
-                                    <FileText className={`h-4 w-4 flex-shrink-0 ${
-                                        report.submission_status === "pending"
-                                            ? 'text-amber-500 dark:text-amber-400'
-                                            : report.submission_status === "submitted"
-                                                ? 'text-green-500 dark:text-green-400'
-                                                : 'text-red-500 dark:text-red-400'
-                                    }`} />
+                                    <FileText
+                                        className={`h-4 w-4 flex-shrink-0 ${
+                                            report.submission_status ===
+                                            'pending'
+                                                ? 'text-amber-500 dark:text-amber-400'
+                                                : report.submission_status ===
+                                                    'submitted'
+                                                  ? 'text-green-500 dark:text-green-400'
+                                                  : 'text-red-500 dark:text-red-400'
+                                        }`}
+                                    />
                                     <span className="truncate font-medium text-foreground dark:text-white">
                                         {report.title}
                                     </span>

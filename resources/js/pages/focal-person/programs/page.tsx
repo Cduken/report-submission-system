@@ -9,6 +9,7 @@ import {
     FolderOpen,
     Folders,
     Grid2x2,
+    Layers,
     List,
     Search,
     SlidersHorizontal,
@@ -338,9 +339,12 @@ export default function Programs() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 {/* ── Page header ───────────────────────────────────────────── */}
                 <div className="flex items-center justify-between gap-3">
-                    <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
-                        All Programs
-                    </h1>
+                    <div className="flex items-center justify-center gap-1">
+                        <Layers />
+                        <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
+                            All Programs
+                        </h1>
+                    </div>
 
                     {/* View toggle */}
                     <div className="flex items-center gap-1 rounded-lg border bg-background p-1">

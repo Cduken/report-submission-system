@@ -22,7 +22,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { User } from '@/types';
 import { Form } from '@inertiajs/react';
-import { Folder } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 type Coordinator = Pick<User, 'id' | 'name' | 'email' | 'avatar'>;
 
@@ -41,11 +41,13 @@ export default function ProgramDialog({
                 <div className="flex justify-end">
                     <Button
                         type="button"
-                        variant={'secondary'}
-                        className='py-5 hover:cursor-pointer'
+                        size="sm"
+                        className="gap-2 bg-primary text-sm font-medium text-primary-foreground shadow-sm transition-all hover:cursor-pointer hover:bg-primary/90 hover:shadow-md active:scale-[0.98]"
                     >
-                        <Folder className="mr-2 h-4 w-4" />
-                        <span>Create New Program</span>
+                        <div className="flex items-center justify-center rounded-full bg-primary-foreground/20">
+                            <Plus className="h-3.5 w-3.5" />
+                        </div>
+                        <span>New Program</span>
                     </Button>
                 </div>
             </DialogTrigger>
