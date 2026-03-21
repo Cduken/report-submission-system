@@ -4,14 +4,7 @@ import { useViewMode } from '@/hooks/use-view-mode';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, LaravelPaginator, Program } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import {
-    ClipboardList,
-    EllipsisVertical,
-    Folders,
-    Grid2x2,
-    Layers,
-    List,
-} from 'lucide-react';
+import { ClipboardList, Folders, Grid2x2, Layers, List } from 'lucide-react';
 import { Activity } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -41,7 +34,7 @@ export default function Page() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
-                            <Layers className="h-5 w-5 text-primary dark:text-primary-400" />
+                            <Layers className="dark:text-primary-400 h-5 w-5 text-primary" />
                             All Programs
                         </h1>
                         {programs.data.length > 0 && (
@@ -58,7 +51,7 @@ export default function Page() {
                                 onClick={() => setViewMode('grid')}
                                 className={`rounded p-2 transition-colors ${
                                     viewMode === 'grid'
-                                        ? 'bg-primary text-primary-foreground dark:bg-primary-600 '
+                                        ? 'dark:bg-primary-600 bg-primary text-primary-foreground dark:text-white'
                                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200'
                                 }`}
                                 title="Grid view"
@@ -69,7 +62,7 @@ export default function Page() {
                                 onClick={() => setViewMode('list')}
                                 className={`rounded p-2 transition-colors ${
                                     viewMode === 'list'
-                                        ? 'bg-primary text-primary-foreground dark:bg-primary-600 dark:text-white'
+                                        ? 'dark:bg-primary-600 bg-primary text-primary-foreground dark:text-white'
                                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200'
                                 }`}
                                 title="List view"
@@ -83,8 +76,8 @@ export default function Page() {
                 <Activity
                     mode={programs.data.length <= 0 ? 'visible' : 'hidden'}
                 >
-                    <div className="flex flex-col items-center justify-center gap-2 py-12 text-center h-[60vh]">
-                        <Folders className="h-16 w-16 text-muted-foreground/50 dark:text-gray-600"/>
+                    <div className="flex h-[60vh] flex-col items-center justify-center gap-2 py-12 text-center">
+                        <Folders className="h-16 w-16 text-muted-foreground/50 dark:text-gray-600" />
                         <h2 className="text-xl font-medium text-muted-foreground dark:text-gray-300">
                             No programs yet
                         </h2>
@@ -111,25 +104,25 @@ export default function Page() {
                                         <div
                                             className={`group relative flex gap-3 rounded-xl border p-4 transition-all duration-200 hover:border-gray-300 hover:shadow-sm dark:hover:border-gray-600 ${
                                                 hasPending
-                                                ? "border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950/20"
-                                                : "border-l-4 border-l-green-500 bg-green-50 dark:bg-green-950/20"
+                                                    ? 'border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950/20'
+                                                    : 'border-l-4 border-l-green-500 bg-green-50 dark:bg-green-950/20'
                                             }`}
                                         >
                                             <div className="flex min-w-0 flex-1 flex-col gap-3">
                                                 <div className="flex items-start gap-3">
                                                     <div
                                                         className={`rounded-lg p-2.5 ${
-                                                        hasPending
-                                                            ? "bg-amber-100 dark:bg-amber-900/50"
-                                                            : "bg-emerald-100 dark:bg-emerald-900/50"
+                                                            hasPending
+                                                                ? 'bg-amber-100 dark:bg-amber-900/50'
+                                                                : 'bg-emerald-100 dark:bg-emerald-900/50'
                                                         }`}
                                                     >
                                                         <Folders
-                                                        className={`h-4.5 w-4.5 ${
-                                                            hasPending
-                                                                ? "text-amber-600 dark:text-amber-400"
-                                                                : "text-emerald-600 dark:text-emerald-400"
-                                                        }`}
+                                                            className={`h-4.5 w-4.5 ${
+                                                                hasPending
+                                                                    ? 'text-amber-600 dark:text-amber-400'
+                                                                    : 'text-emerald-600 dark:text-emerald-400'
+                                                            }`}
                                                         />
                                                     </div>
 
@@ -138,26 +131,34 @@ export default function Page() {
                                                             {program.name}
                                                         </h3>
                                                         <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                                                            {program.description}
+                                                            {
+                                                                program.description
+                                                            }
                                                         </p>
                                                     </div>
                                                 </div>
 
                                                 <div className="flex items-center justify-between pl-11">
                                                     <div className="flex items-center gap-2">
-                                                        <div className="h-5 w-5 rounded-full bg-gray-100 flex items-center justify-center dark:bg-gray-700">
+                                                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700">
                                                             <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                                                                {program.coordinator.name.charAt(0)}
+                                                                {program.coordinator.name.charAt(
+                                                                    0,
+                                                                )}
                                                             </span>
                                                         </div>
                                                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                            {program.coordinator.name}
+                                                            {
+                                                                program
+                                                                    .coordinator
+                                                                    .name
+                                                            }
                                                         </span>
                                                     </div>
 
                                                     {hasPending && (
                                                         <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-2 py-0.5 dark:bg-amber-950/30">
-                                                            <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse dark:bg-amber-400" />
+                                                            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500 dark:bg-amber-400" />
                                                             <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
                                                                 Due soon
                                                             </span>
@@ -172,40 +173,85 @@ export default function Page() {
                         </div>
                     ) : (
                         <div className="flex flex-col">
-                            <div className="grid grid-cols-12 gap-4 border-b px-4 py-2 text-sm font-medium text-muted-foreground dark:border-gray-700 dark:text-gray-400">
+                            <div className="grid grid-cols-12 gap-4 border-b px-4 py-2 text-xs font-medium tracking-wide text-muted-foreground uppercase dark:border-gray-700 dark:text-gray-400">
                                 <div className="col-span-5">Name</div>
                                 <div className="col-span-3">Coordinator</div>
                                 <div className="col-span-3">Description</div>
                                 <div className="col-span-1"></div>
                             </div>
-                            {programs.data.map((program, index) => (
-                                <Link
-                                    key={index}
-                                    href={ViewController.reports(program)}
-                                    className="group"
-                                >
-                                    <div className="grid grid-cols-12 items-center gap-4 border-b px-4 py-3 transition-colors hover:bg-accent/50 dark:border-gray-700 dark:hover:bg-gray-800/50">
-                                        <div className="col-span-5 flex min-w-0 items-center gap-2">
-                                            <Folders className="h-5 w-5 flex-shrink-0 text-muted-foreground dark:text-gray-500" />
-                                            <h2 className="truncate font-medium text-foreground dark:text-white">
-                                                {program.name}
-                                            </h2>
-                                            {program.has_pending_reports && (
-                                                <ReportDueChip />
-                                            )}
+
+                            {programs.data.map((program, index) => {
+                                const hasPending = program.has_pending_reports;
+
+                                return (
+                                    <Link
+                                        key={index}
+                                        href={ViewController.reports(program)}
+                                        className="group"
+                                    >
+                                        <div
+                                            className={`grid grid-cols-12 items-center gap-4 border-b border-l-4 px-4 py-3 transition-colors hover:brightness-95 dark:border-gray-700 ${
+                                                hasPending
+                                                    ? 'border-l-amber-500 bg-amber-50 dark:bg-amber-950/20'
+                                                    : 'border-l-green-500 bg-green-50 dark:bg-green-950/20'
+                                            }`}
+                                        >
+                                            {/* Name */}
+                                            <div className="col-span-5 flex min-w-0 items-center gap-2">
+                                                <div
+                                                    className={`flex-shrink-0 rounded-md p-1.5 ${
+                                                        hasPending
+                                                            ? 'bg-amber-100 dark:bg-amber-900/50'
+                                                            : 'bg-emerald-100 dark:bg-emerald-900/50'
+                                                    }`}
+                                                >
+                                                    <Folders
+                                                        className={`h-3.5 w-3.5 ${
+                                                            hasPending
+                                                                ? 'text-amber-600 dark:text-amber-400'
+                                                                : 'text-emerald-600 dark:text-emerald-400'
+                                                        }`}
+                                                    />
+                                                </div>
+                                                <h2 className="truncate text-sm font-medium text-foreground dark:text-white">
+                                                    {program.name}
+                                                </h2>
+                                                {hasPending && (
+                                                    <ReportDueChip />
+                                                )}
+                                            </div>
+
+                                            {/* Coordinator */}
+                                            <div className="col-span-3 flex min-w-0 items-center gap-2">
+                                                <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700">
+                                                    <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                                                        {program.coordinator.name.charAt(
+                                                            0,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                <span className="truncate text-sm text-muted-foreground dark:text-gray-400">
+                                                    {program.coordinator.name}
+                                                </span>
+                                            </div>
+
+                                            {/* Description */}
+                                            <div className="col-span-3 truncate text-sm text-muted-foreground dark:text-gray-400">
+                                                {program.description}
+                                            </div>
+
+                                            {/* Status / action */}
+                                            <div className="col-span-1 flex justify-end">
+                                                {hasPending && (
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500 dark:bg-amber-400" />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="col-span-3 truncate text-sm text-muted-foreground dark:text-gray-400">
-                                            {program.coordinator.name}
-                                        </div>
-                                        <div className="col-span-3 truncate text-sm text-muted-foreground dark:text-gray-400">
-                                            {program.description}
-                                        </div>
-                                        <div className="col-span-1 flex justify-end">
-                                            <EllipsisVertical className="h-4 w-4 text-muted-foreground/50 dark:text-gray-600" />
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     )}
 

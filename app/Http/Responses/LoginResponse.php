@@ -15,23 +15,17 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-
         $user = Auth::user();
 
-        return match (true) {
-            $user->hasRole('field_officer') =>
-                redirect()->route('field-officer.dashboard'),
-
-            $user->hasRole('focal_person') =>
-                redirect()->route('focal-person.dashboard'),
-
-            $user->hasRole('program_head') =>
-                redirect()->route('program-head.dashboard'),
-
-            $user->hasRole('provincial_director') =>
-                redirect()->route('provincial-director.dashboard'),
-
-            default => redirect()->route('dashboard'),
+        $route = match (true) {
+            $user->hasRole('field_officer')       => 'field-officer.dashboard',
+            $user->hasRole('focal_person')        => 'focal-person.dashboard',
+            $user->hasRole('program_head')        => 'program-head.dashboard',
+            $user->hasRole('provincial_director') => 'provincial-director.dashboard',
+            default                               => 'dashboard',
         };
+
+        return redirect()->route($route)
+            ->with('success', 'Welcome back, ' . $user->name . '!');
     }
 }

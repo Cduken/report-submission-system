@@ -22,7 +22,7 @@ createInertiaApp({
         root.render(
             <StrictMode>
                 <App {...props} />
-                <Toaster />
+                <Toaster position="top-right" richColors />
             </StrictMode>,
         );
     },
@@ -31,5 +31,4 @@ createInertiaApp({
     },
 });
 
-// This will set light / dark mode on load...
 initializeTheme();

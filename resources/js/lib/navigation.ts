@@ -64,7 +64,7 @@ export function mainNavigationPath(role: string): NavItem[] {
                 {
                     title: 'Programs',
                     href: FocalPersonNavigationPath.programs().url,
-                    icon: Folder,
+                    icon: Layers,
                     // badge: {
                     //     countKey: 'pending_submissions_count', // amber — submissions to review
                     //     variant: 'warning',
@@ -107,6 +107,11 @@ export function mainNavigationPath(role: string): NavItem[] {
                     icon: Layers,
                 },
                 {
+                    title: 'Submission Logs',
+                    href: ProgramHeadNavigationPath.submissionLogs().url,
+                    icon: FileCheck,
+                },
+                {
                     title: 'User management',
                     href: ProgramHeadNavigationPath.manageUsers().url,
                     icon: Users,
@@ -130,6 +135,11 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: ProvincialDirectorNavigationPath.programs().url,
                     icon: Layers,
+                },
+                {
+                    title: 'Submission Logs',
+                    href: ProvincialDirectorNavigationPath.submissionLogs().url,
+                    icon: FileCheck,
                 },
             ];
         case 'admin':

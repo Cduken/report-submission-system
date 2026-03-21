@@ -84,8 +84,6 @@ interface DashboardProps {
     upcoming_deadlines: UpcomingDeadline[];
 }
 
-
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const formatDate = (dateString: string | null) => {
@@ -203,13 +201,13 @@ function SectionHeader({
                 >
                     {title}
                 </span>
-                {badge !== undefined && (
+                {/* {badge !== undefined && (
                     <span
                         className={`rounded px-1.5 py-0.5 text-xs font-medium ${hasColor ? badgeOnColor : defaultBadgeClasses[badgeVariant]}`}
                     >
                         {badge}
                     </span>
-                )}
+                )} */}
             </div>
             {action && (
                 <Link
@@ -310,8 +308,11 @@ export default function Dashboard() {
                     <div className="px-5 py-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-xl font-md tracking-tight text-foreground">
-                                    Welcome, <span className='font-bold'>{auth.user.name}</span>
+                                <h1 className="font-md text-xl tracking-tight text-foreground">
+                                    Welcome,{' '}
+                                    <span className="font-bold">
+                                        {auth.user.name}
+                                    </span>
                                 </h1>
                                 <div className="mt-1 flex flex-wrap items-center gap-3">
                                     <p className="text-sm text-muted-foreground">
@@ -504,13 +505,13 @@ export default function Dashboard() {
                                                                         report.title
                                                                     }
                                                                 </p>
-                                                                <span
+                                                                {/* <span
                                                                     className={`rounded px-1.5 py-0.5 text-xs font-medium ${priority.badgeClass}`}
                                                                 >
                                                                     {
                                                                         priority.label
                                                                     }
-                                                                </span>
+                                                                </span> */}
                                                                 {report.status ===
                                                                     'returned' && (
                                                                     <span className="flex items-center gap-1 rounded border border-red-300 bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-400">

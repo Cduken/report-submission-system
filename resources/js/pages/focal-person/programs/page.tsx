@@ -10,6 +10,7 @@ import {
     FolderOpen,
     Folders,
     Grid2x2,
+    Layers,
     List,
     Search,
     SlidersHorizontal,
@@ -343,19 +344,12 @@ export default function Programs() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 {/* ── Page header ───────────────────────────────────────────── */}
                 <div className="flex items-center justify-between gap-3">
-                    <div>
-                        <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
-                            <Folder className="h-5 w-5 text-primary dark:text-primary-400" />
+                    <div className="flex items-center justify-center gap-1">
+                        <Layers />
+                        <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
                             All Programs
                         </h1>
-                        {programs.data.length > 0 && (
-                            <p className="text-xs text-muted-foreground lg:text-sm dark:text-gray-400">
-                                Showing {programs.from} to {programs.to} of{' '}
-                                {programs.total} programs
-                            </p>
-                        )}
                     </div>
-
 
                     {/* View toggle */}
                     <div className="flex items-center gap-1 rounded-lg border bg-background p-1">
