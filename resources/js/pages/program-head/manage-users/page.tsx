@@ -41,9 +41,14 @@ export default function ManageUsers() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 {/* ── Page title ────────────────────────────────────────────── */}
-                <div className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-primary" />
-                    <h1 className="text-xl font-semibold">User Management</h1>
+                <div className=''>
+                    <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                        <Users className='dark:text-primary-400 h-5 w-5 text-primary' />
+                        User Management
+                    </h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Manage Users
+                    </p>
                 </div>
 
                 {/* ── Header with search + filters ──────────────────────────── */}

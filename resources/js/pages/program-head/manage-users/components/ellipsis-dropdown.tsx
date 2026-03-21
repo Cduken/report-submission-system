@@ -31,29 +31,34 @@ export default function EllipsisDropdown({ user }: { user: User }) {
                 <DropdownMenuItem asChild>
                     <Link
                         href={ViewController.viewUser(user)}
-                        className="flex items-center gap-3"
+                        className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted dark:hover:bg-gray-700"
                     >
-                        <Eye className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
                         <span>View</span>
+                        <Eye className="h-3.5 w-3.5 text-muted-foreground" />
                     </Link>
                 </DropdownMenuItem>
 
                 {/* Edit */}
-                <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-                    <div className="flex items-center gap-3">
-                        <Pencil className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
+                <DropdownMenuItem
+                    onClick={() => setIsEditOpen(true)}
+                    className='flex w-full items-center justify-between rounded-md px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted dark:hover:bg-gray-700'
+                >
+                    <div className="flex items-center justify-between w-full">
                         <span>Edit</span>
+                        <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                     </div>
                 </DropdownMenuItem>
+
+                <hr className='my-1' />
 
                 {/* Delete */}
                 <DropdownMenuItem
                     onClick={() => console.log('Delete user:', user.id)}
-                    className="text-destructive focus:text-destructive"
+                    className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm text-destructive focus:text-destructive "
                 >
-                    <div className="flex items-center gap-3">
-                        <Trash className="h-4 w-4" />
+                    <div className="flex items-center justify-between w-full ">
                         <span>Delete</span>
+                        <Trash className="h-4 w-4 text-destructive" />
                     </div>
                 </DropdownMenuItem>
             </DropdownMenuContent>

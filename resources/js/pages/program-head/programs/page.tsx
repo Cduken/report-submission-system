@@ -106,15 +106,19 @@ export default function ProgramsPage() {
                 {/* Toolbar */}
                 <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-2">
-                        <Layers className="h-4 w-4 text-muted-foreground" />
-                        <h1 className="text-sm font-semibold text-foreground dark:text-white">
-                            All Programs
-                        </h1>
-                        {programs?.length > 0 && (
-                            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground dark:bg-gray-700 dark:text-gray-400">
-                                {programs.length}
-                            </span>
-                        )}
+                        <div className='flex items-center gap-2'>
+                            <h1
+                                className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                                <Layers className="dark:text-primary-400 h-5 w-5 text-primary" />
+                                All Programs
+                            </h1>
+                            {programs?.length > 0 && (
+                                <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground dark:bg-gray-700 dark:text-gray-400">
+                                    {programs.length}
+                                </span>
+                            )}
+                        </div>
+
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">

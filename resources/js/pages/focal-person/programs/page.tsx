@@ -166,8 +166,8 @@ function ProgramGridCard({
                 </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between gap-2">
-                <div className="flex min-w-0 items-center gap-1.5 pl-11">
+            <div className="mt-4 flex items-center justify-between gap-2 border-t pt-2">
+                <div className="flex min-w-0 items-center gap-1.5">
                     <div className="h-5 w-5 rounded-full bg-gray-100 flex items-center justify-center dark:bg-gray-700">
                         <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                             {program.coordinator.name.charAt(0)}
