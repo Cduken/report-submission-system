@@ -18,7 +18,7 @@ export default function GridView({
     setSelecReviewProgram,
 }: Props) {
     return (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {programs.map((program, index) => {
                 const isSelected = program.id === selectReviewProgram?.id;
 
@@ -30,44 +30,54 @@ export default function GridView({
                             router.visit(ViewController.reports(program))
                         }
                         className={cn(
-                            'group flex cursor-pointer flex-col gap-3 rounded-xl border p-4 transition-all duration-200',
+                            'group relative flex cursor-pointer flex-col justify-between rounded-2xl p-5 transition-all duration-300',
+                            'border bg-card shadow-sm hover:-translate-y-1 hover:shadow-md',
                             isSelected
-                                ? 'border-primary/50 bg-muted shadow-sm'
-                                : 'border-border bg-card hover:bg-muted/50 hover:shadow-sm dark:border-gray-700 dark:bg-gray-900/50',
+                                ? 'border-primary ring-1 ring-primary/30 bg-primary/[0.03] dark:bg-primary/[0.08]'
+                                : 'border-slate-200/60 dark:border-gray-800 dark:bg-gray-900/50'
                         )}
                     >
-                        {/* Icon + name + ellipsis */}
-                        <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-start gap-3">
-                                <div className="rounded-lg bg-muted p-2.5 dark:bg-gray-800">
-                                    <Folders className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
+                        <div className="space-y-4">
+                            <div className="flex items-start justify-between">
+                                <div className={cn(
+                                    "rounded-xl p-2.5 transition-colors",
+                                    isSelected
+                                        ? "bg-primary text-white dark:text-primary-foreground"
+                                        : "bg-muted text-slate-500 dark:bg-gray-800 dark:text-gray-400"
+                                )}>
+                                    <Folders className="h-5 w-5" />
                                 </div>
-                                <div className="min-w-0">
-                                    <h2 className="truncate text-sm font-medium text-foreground dark:text-white">
-                                        {program.name}
-                                    </h2>
-                                    {program.description && (
-                                        <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground dark:text-gray-400">
-                                            {program.description}
-                                        </p>
+
+                                <div
+                                    className={cn(
+                                        "transition-all duration-200",
+                                        "opacity-40 group-hover:opacity-100 dark:opacity-60 dark:group-hover:opacity-100"
                                     )}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <EllipsisPopover program={program} />
                                 </div>
                             </div>
-                            <div
-                                className="flex-shrink-0"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <EllipsisPopover program={program} />
+
+                            <div className="min-w-0">
+                                <h2 className="truncate text-base font-semibold tracking-tight text-foreground dark:text-slate-100">
+                                    {program.name}
+                                </h2>
+                                {program.description && (
+                                    <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground dark:text-slate-400">
+                                        {program.description}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
-                        {/* Coordinator */}
+                        {/* Coordinator Section with enhanced contrast */}
                         {program.coordinator && (
-                            <div className="flex items-center gap-2 border-t pt-2 dark:border-gray-700">
-                                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground dark:bg-gray-700 dark:text-gray-300">
-                                    {program.coordinator.name.charAt(0)}
+                            <div className="mt-6 flex items-center gap-2 border-t border-border/50 pt-4 dark:border-gray-800/60">
+                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-primary/20 dark:text-primary-foreground/90">
+                                    {program.coordinator.name.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="truncate text-xs text-muted-foreground dark:text-gray-400">
+                                <span className="truncate text-xs font-medium text-slate-600 dark:text-slate-300">
                                     {program.coordinator.name}
                                 </span>
                             </div>

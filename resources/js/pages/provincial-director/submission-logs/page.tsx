@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+// focal-person/submission-logs/page.tsx
 import {
     Dialog,
     DialogContent,
@@ -294,21 +296,21 @@ export default function SubmissionLogs() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Submission Logs" />
 
-            <div className="flex-1 space-y-6 bg-background p-6 md:p-8">
-                {/* Header */}
-                <div className="rounded-sm border bg-card p-8">
-                    <h1 className="text-xl font-bold text-foreground md:text-2xl">
-                        Submission Logs
-                    </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        Click a report row to see the submission status of all
-                        field officers.
-                    </p>
-                </div>
+            <div className='p-4'>
+                <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                    <FileCheck className='dark:text-primary-400 h-5 w-5 text-primary' />
+                    Submission Logs
+                </h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                    Click a report row to see the submission status of all
+                    field officers.
+                </p>
+            </div>
 
+            <div className="flex-1 space-y-6 bg-background p-4 pt-0">
                 {/* Summary cards */}
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="rounded-sm border bg-card p-4">
+                    <div className="rounded-sm   border bg-card p-4">
                         <div className="mb-3 inline-flex rounded-md bg-muted p-3">
                             <File className="h-5 w-5" />
                         </div>
@@ -319,7 +321,7 @@ export default function SubmissionLogs() {
                             Total Reports
                         </p>
                     </div>
-                    <div className="rounded-sm border bg-card p-4">
+                    <div className="rounded-sm   border bg-card p-4">
                         <div className="mb-3 inline-flex rounded-md bg-emerald-500/10 p-3">
                             <FolderOpen className="h-5 w-5 text-emerald-500" />
                         </div>
@@ -330,7 +332,7 @@ export default function SubmissionLogs() {
                             Open Reports
                         </p>
                     </div>
-                    <div className="rounded-sm border bg-card p-4">
+                    <div className="rounded-sm   border bg-card p-4">
                         <div className="mb-3 inline-flex rounded-md bg-amber-500/10 p-3">
                             <FileClock className="h-5 w-5 text-amber-500" />
                         </div>
@@ -341,7 +343,7 @@ export default function SubmissionLogs() {
                             Overdue Reports
                         </p>
                     </div>
-                    <div className="rounded-sm border bg-card p-4">
+                    <div className="rounded-sm   border bg-card p-4">
                         <div className="mb-3 inline-flex rounded-md bg-blue-500/10 p-3">
                             <FileCheck className="h-5 w-5 text-blue-500" />
                         </div>
@@ -355,7 +357,7 @@ export default function SubmissionLogs() {
                 </div>
 
                 {/* Filters */}
-                <div className="rounded-sm border bg-card p-4 md:p-6">
+                <div className="rounded-sm   border bg-card p-4 md:p-6">
                     <div className="grid gap-3 md:grid-cols-2">
                         <div className="relative">
                             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -387,7 +389,7 @@ export default function SubmissionLogs() {
                 </div>
 
                 {/* Reports table */}
-                <div className="overflow-hidden rounded-sm border bg-card">
+                <div className="overflow-hidden rounded-sm   border bg-card">
                     <div className="border-b px-6 py-4">
                         <h2 className="text-sm font-semibold md:text-base">
                             Report List ({filteredReports.length})
