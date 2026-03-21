@@ -345,10 +345,20 @@ export default function Programs() {
                 {/* ── Page header ───────────────────────────────────────────── */}
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center justify-center gap-1">
-                        <Layers />
-                        <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
-                            All Programs
-                        </h1>
+                        <div>
+                            <h1
+                                className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                                <Layers className="dark:text-primary-400 h-5 w-5 text-primary" />
+                                All Programs
+                            </h1>
+                            {programs.data.length > 0 && (
+                                <p className="text-xs text-muted-foreground lg:text-sm dark:text-gray-400">
+                                    Showing {programs.from} to {programs.to} of{' '}
+                                    {programs.total} programs
+                                </p>
+                            )}
+                        </div>
+
                     </div>
 
                     {/* View toggle */}

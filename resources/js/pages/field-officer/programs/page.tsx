@@ -51,7 +51,7 @@ export default function Page() {
                                 onClick={() => setViewMode('grid')}
                                 className={`rounded p-2 transition-colors ${
                                     viewMode === 'grid'
-                                        ? 'dark:bg-primary-600 bg-primary text-primary-foreground dark:text-white'
+                                        ? 'bg-primary text-primary-foreground dark:bg-primary-600 '
                                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200'
                                 }`}
                                 title="Grid view"

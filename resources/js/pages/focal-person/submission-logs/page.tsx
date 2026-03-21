@@ -296,18 +296,18 @@ export default function SubmissionLogs() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Submission Logs" />
 
-            <div className="flex-1 space-y-6 bg-background p-6 md:p-8">
-                {/* Header */}
-                <div className="rounded-sm border bg-card p-8">
-                    <h1 className="text-xl font-bold text-foreground md:text-2xl">
-                        Submission Logs
-                    </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        Click a report row to see the submission status of all
-                        field officers.
-                    </p>
-                </div>
+            <div className='p-4'>
+                <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                    <FileCheck className='dark:text-primary-400 h-5 w-5 text-primary' />
+                    Submission Logs
+                </h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                    Click a report row to see the submission status of all
+                    field officers.
+                </p>
+            </div>
 
+            <div className="flex-1 space-y-6 bg-background p-4 pt-0">
                 {/* Summary cards */}
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="rounded-sm   border bg-card p-4">

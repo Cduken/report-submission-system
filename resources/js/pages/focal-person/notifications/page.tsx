@@ -1,4 +1,3 @@
-//notifications/page.tsx
 // notifications/page.tsx
 import { ScrollToTop } from '@/components/ui/scroll-to-top';
 import { useNotifications } from '@/hooks/use-notifications';
@@ -54,34 +53,35 @@ function getNotificationTheme(title: string) {
     const t = title.toLowerCase();
     if (t.includes('approved') || t.includes('success')) {
         return {
-            unreadBorder: 'border-emerald-200 dark:border-emerald-800',
-            unreadBg: 'bg-emerald-50 dark:bg-emerald-950/30',
-            badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
+            unreadBorder: 'border-green-500 bg-green-50 dark:border-green-800',
+            unreadBg: 'bg-green-50 dark:bg-green-950/30',
+            badge: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
             markReadBtn:
-                'border-emerald-200 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-950/50',
+                'border-green-200 text-green-600 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950/50',
             viewBtn:
-                'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600',
+                'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600',
         };
     }
     if (t.includes('rejected') || t.includes('denied')) {
         return {
-            unreadBorder: 'border-red-200 dark:border-red-800',
+            unreadBorder: 'border-red-500 bg-red-50 dark:border-red-800',
             unreadBg: 'bg-red-50 dark:bg-red-950/30',
             badge: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
             markReadBtn:
                 'border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50',
             viewBtn:
-                'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600',
+                'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600',
         };
     }
+    // Default/warning/pending notifications
     return {
-        unreadBorder: 'border-primary/20 dark:border-primary/10',
-        unreadBg: 'bg-primary/5 dark:bg-primary/10',
-        badge: 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground',
+        unreadBorder: 'border-amber-500 bg-amber-50 dark:border-amber-800',
+        unreadBg: 'bg-amber-50 dark:bg-amber-950/30',
+        badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
         markReadBtn:
-            'border-primary/20 text-primary hover:bg-primary/5 dark:border-primary/10 dark:text-primary-foreground dark:hover:bg-primary/20',
+            'border-amber-200 text-amber-600 hover:bg-amber-50 dark:border-amber-800 dark:text-amber-400 dark:hover:bg-amber-950/50',
         viewBtn:
-            'bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary dark:hover:bg-primary/90',
+            'bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-600',
     };
 }
 
@@ -187,103 +187,55 @@ export default function NotificationsPage() {
         remove(id);
     };
 
-    // Filter button styling helper with gradients
-    const getFilterButtonStyle = (value: NotificationFilter) => {
-        const baseClasses = "rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide capitalize transition-all duration-200";
-
-        if (filter === value) {
-            // Active filter - use gradient colors
-            switch(value) {
-                case 'all':
-                    return `${baseClasses} bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-md shadow-primary/30 ring-2 ring-primary/20`;
-                case 'unread':
-                    return `${baseClasses} bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/30 ring-2 ring-blue-400/30 dark:from-blue-600 dark:to-blue-700`;
-                case 'read':
-                    return `${baseClasses} bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-500/30 ring-2 ring-emerald-400/30 dark:from-emerald-600 dark:to-emerald-700`;
-                default:
-                    return `${baseClasses} bg-gradient-to-r from-primary/90 to-primary text-primary-foreground`;
-            }
-        } else {
-            // Inactive filters with subtle gradients on hover
-            switch(value) {
-                case 'all':
-                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary hover:ring-2 hover:ring-primary/30`;
-                case 'unread':
-                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-blue-600/5 hover:text-blue-600 hover:ring-2 hover:ring-blue-200 dark:hover:text-blue-400 dark:hover:from-blue-500/20 dark:hover:to-blue-600/10`;
-                case 'read':
-                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-emerald-500/10 hover:to-emerald-600/5 hover:text-emerald-600 hover:ring-2 hover:ring-emerald-200 dark:hover:text-emerald-400 dark:hover:from-emerald-500/20 dark:hover:to-emerald-600/10`;
-                default:
-                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary`;
-            }
-        }
-    };
-
-    // Stats card styling with gradients
-    const getStatsCardStyle = (type: 'total' | 'unread' | 'read') => {
-        const baseClasses = "rounded-sm border px-4 py-3 transition-all duration-200";
-
-        switch(type) {
-            case 'total':
-                return `${baseClasses} border-border bg-gradient-to-br from-card to-muted/30 hover:from-card hover:to-muted/50`;
-            case 'unread':
-                return `${baseClasses} border-primary/20 bg-gradient-to-br from-primary/5 via-primary/5 to-blue-500/5 hover:from-primary/10 hover:via-primary/10 hover:to-blue-500/10 dark:from-primary/10 dark:via-primary/10 dark:to-blue-500/10`;
-            case 'read':
-                return `${baseClasses} border-border bg-gradient-to-br from-muted/50 to-emerald-500/5 hover:from-muted/60 hover:to-emerald-500/10 dark:from-muted/30 dark:to-emerald-500/10`;
-            default:
-                return baseClasses;
-        }
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifications" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-sm p-4">
-                {/* Header Card */}
-                <div className="rounded-sm border border-border bg-card p-4 shadow-sm">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                            <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
-                                <BellRing className="h-5 w-5 text-primary" />
-                                Notifications
-                            </h1>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                                Stay updated with submission activity and report
-                                status changes.
-                            </p>
-                        </div>
-                        <button
-                            onClick={markAllNotificationsAsRead}
-                            disabled={unreadCount === 0}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-border bg-gradient-to-r from-card to-muted/30 px-3 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:border-primary/20 hover:from-primary/5 hover:to-primary/10 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            <CheckCheck className="h-4 w-4" />
-                            Mark all as read
-                        </button>
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h1 className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                            <BellRing className="h-5 w-5 text-primary dark:text-primary-400" />
+                            Notifications
+                        </h1>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Stay updated with submission activity and report
+                            status changes.
+                        </p>
                     </div>
-
-                    {/* Stats with gradients */}
+                    <button
+                        onClick={markAllNotificationsAsRead}
+                        disabled={unreadCount === 0}
+                        className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        <CheckCheck className="h-4 w-4" />
+                        Mark all as read
+                    </button>
+                </div>
+                {/* Header Card */}
+                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                    {/* Stats - Updated colors to match filter buttons */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className={getStatsCardStyle('total')}>
-                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                        <div className="rounded-lg border border-border bg-muted dark:bg-muted/20 px-4 py-3">
+                            <p className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
                                 Total
                             </p>
                             <p className="mt-1 text-lg font-semibold text-foreground">
                                 {notifications.total}
                             </p>
                         </div>
-                        <div className={getStatsCardStyle('unread')}>
-                            <p className="text-xs font-medium tracking-wide text-primary uppercase">
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
+                            <p className="text-xs font-medium tracking-wide text-amber-600 uppercase">
                                 Unread
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-primary">
+                            <p className="mt-1 text-lg font-semibold text-amber-600">
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className={getStatsCardStyle('read')}>
-                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                        <div className="rounded-lg border border-green-200 bg-green-50 dark:bg-green-950/20 px-4 py-3">
+                            <p className="text-xs font-medium tracking-wide text-green-600 uppercase">
                                 Read
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-foreground">
+                            <p className="mt-1 text-lg font-semibold text-green-600">
                                 {readCount}
                             </p>
                         </div>
@@ -291,12 +243,12 @@ export default function NotificationsPage() {
                 </div>
 
                 {/* List Card */}
-                <div className="rounded-sm border border-border bg-card p-4 shadow-sm">
-                    {/* Filter row with gradient buttons */}
+                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                    {/* Filter row */}
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-medium text-foreground">
-                            Filter by:
+                            Filter
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
                             {(['all', 'unread', 'read'] as const).map(
@@ -304,7 +256,15 @@ export default function NotificationsPage() {
                                     <button
                                         key={value}
                                         onClick={() => setFilter(value)}
-                                        className={getFilterButtonStyle(value)}
+                                        className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
+                                            filter === value
+                                                ? value === 'unread'
+                                                    ? 'bg-amber-500 text-white'
+                                                    : value === 'read'
+                                                        ? 'bg-green-500 text-white'
+                                                        : 'bg-primary text-primary-foreground'
+                                                : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                                        }`}
                                     >
                                         {value}
                                     </button>
@@ -315,21 +275,17 @@ export default function NotificationsPage() {
 
                     {/* Notification list */}
                     {filtered.length === 0 ? (
-                        <div className="rounded-sm border border-dashed border-border bg-gradient-to-b from-muted/20 to-muted/5 px-4 py-12 text-center">
+                        <div className="rounded-lg border border-dashed border-border px-4 py-12 text-center">
                             <Bell className="mx-auto h-9 w-9 text-muted-foreground/30" />
                             <p className="mt-3 text-sm font-medium text-foreground">
-                                No {filter !== 'all' ? filter : ''} notifications found
+                                No notifications found
                             </p>
                             <p className="mt-1 text-xs text-muted-foreground">
-                                {filter === 'unread'
-                                    ? "You've caught up on all your notifications!"
-                                    : filter === 'read'
-                                    ? "You haven't marked any notifications as read yet"
-                                    : "New updates will appear here once available."}
+                                New updates will appear here once available.
                             </p>
                         </div>
                     ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-3 h-[48vh] overflow-y-auto pr-3">
                             {filtered.map((item) => {
                                 const theme = getNotificationTheme(item.title);
                                 const isClickable = !!item.action_url;
@@ -340,50 +296,54 @@ export default function NotificationsPage() {
                                         onClick={() =>
                                             isClickable && handleCardClick(item)
                                         }
-                                        className={`group rounded-sm border px-4 py-3 transition-all ${
+                                        className={`group rounded-lg border px-4 py-3 transition-all ${
                                             item.isRead
-                                                ? 'border-border bg-card hover:bg-gradient-to-r hover:from-card hover:to-muted/20'
-                                                : `${theme.unreadBorder} ${theme.unreadBg} hover:bg-gradient-to-r hover:from-transparent hover:to-white/5`
+                                                ? 'border-border bg-card'
+                                                : `${theme.unreadBorder} ${theme.unreadBg}`
                                         } ${
                                             isClickable
                                                 ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
                                                 : 'cursor-default'
                                         }`}
                                     >
-                                        <div className="flex flex-wrap items-start justify-between gap-2">
-                                            <div className="min-w-0 flex-1">
+                                        <div className="flex flex-col sm:flex-row sm:flex-wrap items-start justify-between gap-2">
+                                            <div className="min-w-0 flex-1 w-full sm:w-auto">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     {!item.isRead && (
-                                                        <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary animate-pulse" />
+                                                        <span className={`h-2 w-2 flex-shrink-0 rounded-full ${
+                                                            item.title.toLowerCase().includes('approved')
+                                                                ? 'bg-green-500'
+                                                                : item.title.toLowerCase().includes('rejected')
+                                                                    ? 'bg-red-500'
+                                                                    : 'bg-amber-500'
+                                                        }`} />
                                                     )}
-                                                    <p className="text-sm font-semibold text-foreground">
+                                                    <p className="text-sm font-semibold text-foreground break-words">
                                                         {item.title}
                                                     </p>
                                                     {!item.isRead && (
                                                         <span
-                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase bg-gradient-to-r ${theme.badge}`}
+                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${theme.badge}`}
                                                         >
                                                             New
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="mt-1 text-sm text-muted-foreground">
+                                                <p className="mt-1 text-sm text-muted-foreground break-words">
                                                     {item.message}
                                                 </p>
                                             </div>
 
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
                                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                                    <Clock3 className="h-3.5 w-3.5" />
-                                                    {formatDateTime(
-                                                        item.created_at,
-                                                    )}
+                                                    <Clock3 className="h-3.5 w-3.5 flex-shrink-0" />
+                                                    <span className="whitespace-nowrap">
+                                                        {formatDateTime(item.created_at)}
+                                                    </span>
                                                 </div>
                                                 <button
-                                                    onClick={(e) =>
-                                                        handleRemove(e, item.id)
-                                                    }
-                                                    className="rounded p-1 text-muted-foreground/50 opacity-0 transition-all group-hover:opacity-100 hover:bg-gradient-to-r hover:from-destructive/10 hover:to-destructive/5 hover:text-destructive"
+                                                    onClick={(e) => handleRemove(e, item.id)}
+                                                    className="rounded p-1 text-muted-foreground/50 opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                                                     title="Dismiss notification"
                                                 >
                                                     <Trash2 className="h-3.5 w-3.5" />
@@ -392,32 +352,22 @@ export default function NotificationsPage() {
                                         </div>
 
                                         {!item.isRead && (
-                                            <div className="mt-3 flex items-center gap-2">
+                                            <div className="mt-3 flex flex-wrap items-center gap-2">
                                                 <button
-                                                    onClick={(e) =>
-                                                        handleMarkAsRead(
-                                                            e,
-                                                            item.id,
-                                                        )
-                                                    }
-                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border bg-gradient-to-r from-card to-muted/20 px-2.5 py-1.5 text-xs font-medium transition-all duration-200 hover:from-muted/30 hover:to-muted/40 ${theme.markReadBtn}`}
+                                                    onClick={(e) => handleMarkAsRead(e, item.id)}
+                                                    className={`inline-flex cursor-pointer items-center justify-center gap-1 rounded-md border bg-card px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
                                                 >
-                                                    <CheckCheck className="h-3.5 w-3.5" />
-                                                    Mark as read
+                                                    <CheckCheck className="h-3.5 w-3.5 flex-shrink-0" />
+                                                    <span className="whitespace-nowrap">Mark as read</span>
                                                 </button>
 
                                                 {item.action_url && (
                                                     <button
-                                                        onClick={(e) =>
-                                                            handleViewClick(
-                                                                e,
-                                                                item,
-                                                            )
-                                                        }
-                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md bg-gradient-to-r px-2.5 py-1.5 text-xs font-medium text-foreground transition-all duration-200 hover:shadow-md ${theme.viewBtn}`}
+                                                        onClick={(e) => handleViewClick(e, item)}
+                                                        className={`inline-flex cursor-pointer items-center justify-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-colors ${theme.viewBtn}`}
                                                     >
-                                                        <ExternalLink className="h-3.5 w-3.5" />
-                                                        View Report
+                                                        <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" />
+                                                        <span className="whitespace-nowrap">View Report</span>
                                                     </button>
                                                 )}
                                             </div>
@@ -425,9 +375,9 @@ export default function NotificationsPage() {
 
                                         {item.isRead && item.action_url && (
                                             <div className="mt-2">
-                                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:bg-gradient-to-r group-hover:from-primary/10 group-hover:to-transparent group-hover:bg-clip-text group-hover:text-transparent">
-                                                    <ExternalLink className="h-3 w-3" />
-                                                    Click to view report
+                                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:text-primary">
+                                                    <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                                                    <span className="break-words">Click to view report</span>
                                                 </span>
                                             </div>
                                         )}
@@ -451,7 +401,7 @@ export default function NotificationsPage() {
                         {!nextPageUrl &&
                             !loading &&
                             notificationList.length > 0 && (
-                                <p className="text-xs text-muted-foreground/50 bg-gradient-to-r from-transparent via-muted-foreground/10 to-transparent px-4 py-1">
+                                <p className="text-xs text-muted-foreground/50">
                                     You've seen all notifications
                                 </p>
                             )}

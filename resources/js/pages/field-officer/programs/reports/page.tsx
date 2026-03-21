@@ -267,7 +267,7 @@ export default function Reports() {
                                 }`}
                             >
                                 <div className="flex min-w-0 flex-1 flex-col gap-3">
-                                    <div className="flex items-start gap-3">
+                                    <div className="flex flex-1 min-w-0 items-start gap-3">
                                         <div
                                             className={`rounded-lg p-2.5 ${
                                                 report.submission_status ===
@@ -292,7 +292,7 @@ export default function Reports() {
                                             />
                                         </div>
 
-                                        <div className="flex flex-1 flex-col">
+                                        <div className="flex flex-1 min-w-0 flex-col">
                                             <h3 className="truncate text-sm font-medium text-gray-900 dark:text-white">
                                                 {report.title}
                                             </h3>
