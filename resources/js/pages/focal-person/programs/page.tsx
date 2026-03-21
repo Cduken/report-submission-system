@@ -6,6 +6,7 @@ import { BreadcrumbItem, LaravelPaginator, Program } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import {
     ClipboardCheck,
+    Folder,
     FolderOpen,
     Folders,
     Grid2x2,
@@ -140,7 +141,7 @@ function ProgramGridCard({
             }}
             className={`group block rounded-xl border bg-card p-4 transition-all hover:shadow-md ${
                 hasPending
-                    ? 'border-violet-200 hover:border-violet-300 dark:border-violet-800'
+                    ? 'border-l-amber-400 bg-amber-50 dark:bg-amber-950/20'
                     : 'hover:border-primary/20'
             }`}
         >
@@ -165,10 +166,14 @@ function ProgramGridCard({
             </div>
 
             <div className="mt-4 flex items-center justify-between gap-2">
-                <div className="flex min-w-0 items-center gap-1.5">
-                    <User className="h-3 w-3 shrink-0 text-muted-foreground" />
-                    <span className="truncate text-xs text-muted-foreground">
-                        {program.coordinator?.name}
+                <div className="flex min-w-0 items-center gap-1.5 pl-11">
+                    <div className="h-5 w-5 rounded-full bg-gray-100 flex items-center justify-center dark:bg-gray-700">
+                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                            {program.coordinator.name.charAt(0)}
+                        </span>
+                    </div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {program.coordinator.name}
                     </span>
                 </div>
                 <PendingReviewChip count={pendingCount} />
@@ -338,9 +343,19 @@ export default function Programs() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 {/* ── Page header ───────────────────────────────────────────── */}
                 <div className="flex items-center justify-between gap-3">
-                    <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
-                        All Programs
-                    </h1>
+                    <div>
+                        <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                            <Folder className="h-5 w-5 text-primary dark:text-primary-400" />
+                            All Programs
+                        </h1>
+                        {programs.data.length > 0 && (
+                            <p className="text-xs text-muted-foreground lg:text-sm dark:text-gray-400">
+                                Showing {programs.from} to {programs.to} of{' '}
+                                {programs.total} programs
+                            </p>
+                        )}
+                    </div>
+
 
                     {/* View toggle */}
                     <div className="flex items-center gap-1 rounded-lg border bg-background p-1">
@@ -558,7 +573,7 @@ export default function Programs() {
                         </div>
                     )}
 
-                    {/* Result count */}
+                    {/* Result count
                     {hasPrograms && (
                         <p className="text-xs text-muted-foreground">
                             Showing{' '}
@@ -575,7 +590,7 @@ export default function Programs() {
                             </span>{' '}
                             programs
                         </p>
-                    )}
+                    )} */}
                 </div>
 
                 {/* ── Loading spinner ───────────────────────────────────────── */}

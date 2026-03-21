@@ -22,34 +22,31 @@ const STATUS_CONFIG = {
         icon: Clock,
         badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
         leftBorder: 'border-l-amber-400',
+        bg: 'bg-amber-50 dark:bg-amber-950/20',
         glow: 'hover:shadow-amber-100 dark:hover:shadow-amber-950/30',
     },
     approved: {
         label: 'Approved',
         icon: CheckCircle2,
-        badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-        leftBorder: 'border-l-emerald-400',
-        glow: 'hover:shadow-emerald-100 dark:hover:shadow-emerald-950/30',
-    },
-    accepted: {
-        label: 'Approved',
-        icon: CheckCircle2,
-        badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-        leftBorder: 'border-l-emerald-400',
-        glow: 'hover:shadow-emerald-100 dark:hover:shadow-emerald-950/30',
+        badge: 'bg-green-500/10 text-green-600 dark:text-green-400',
+        leftBorder: 'border-l-green-400',
+        bg: 'bg-green-50 dark:bg-green-950/20',
+        glow: 'hover:shadow-green-100 dark:hover:shadow-green-950/30',
     },
     returned: {
         label: 'Returned',
         icon: RotateCcw,
         badge: 'bg-rose-500/10 text-rose-600 dark:text-rose-400',
         leftBorder: 'border-l-rose-400',
+        bg: 'bg-red-50 dark:bg-red-950/20',
         glow: 'hover:shadow-rose-100 dark:hover:shadow-rose-950/30',
     },
-    submitted: {
-        label: 'Submitted',
+    accepted: {
+        label: 'Accepted',
         icon: CheckCircle2,
         badge: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
         leftBorder: 'border-l-blue-400',
+        bg: 'bg-blue-50 dark:bg-blue-950/20',
         glow: 'hover:shadow-blue-100 dark:hover:shadow-blue-950/30',
     },
 } as const;
@@ -127,14 +124,14 @@ const formatTime = (value: string) =>
 function GridCard({ submission }: { submission: ReportSubmission }) {
     const cfg =
         STATUS_CONFIG[submission.status as StatusKey] ?? STATUS_CONFIG.pending;
-
+    console.log(submission.status)
     return (
         <Link
             href={ViewController.reportSubmissions([
                 submission.report!.program,
                 submission.report!,
             ])}
-            className={`group flex flex-col rounded-xl border border-l-4 border-border/60 bg-card p-5 transition-all hover:shadow-md ${cfg.leftBorder} ${cfg.glow}`}
+            className={`group flex flex-col rounded-xl border border-l-4 border-border/60 p-5 transition-all hover:shadow-md ${cfg.leftBorder} ${cfg.glow} ${cfg.bg}`}
         >
             {/* Top: title + status */}
             <div className="flex items-start justify-between gap-2">

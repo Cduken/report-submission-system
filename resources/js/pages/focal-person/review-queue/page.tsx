@@ -14,6 +14,7 @@ import {
     ArrowRight,
     CalendarClock,
     ClipboardCheck,
+    ClipboardList,
     Clock3,
     FileSearch,
     Search,
@@ -277,23 +278,22 @@ export default function ReviewQueuePage() {
             <Head title="Review Queue" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                <CardHeader className="">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                                <ClipboardList className="h-5 w-5 text-primary dark:text-primary-400" />
+                                Review Queue
+                            </CardTitle>
+                            <CardDescription>
+                                Submissions awaiting your review, sorted by
+                                oldest first by default.
+                            </CardDescription>
+                        </div>
+                    </div>
+                </CardHeader>
                 {/* ── Header Card ── */}
                 <Card className="gap-4 py-5">
-                    <CardHeader className="px-5">
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <CardTitle className="flex items-center gap-2 text-xl">
-                                    <ClipboardCheck className="h-5 w-5 text-violet-500" />
-                                    Review Queue
-                                </CardTitle>
-                                <CardDescription>
-                                    Submissions awaiting your review, sorted by
-                                    oldest first by default.
-                                </CardDescription>
-                            </div>
-                        </div>
-                    </CardHeader>
-
                     <CardContent className="space-y-4 px-5">
                         {/* Stats */}
                         <div className="grid gap-3 sm:grid-cols-3">
@@ -301,7 +301,7 @@ export default function ReviewQueuePage() {
                                 label="Pending Review"
                                 value={stats?.total ?? 0}
                                 icon={<ClipboardCheck className="h-4 w-4" />}
-                                variant="violet"
+                                variant="warning"
                             />
                             <StatCard
                                 label="Overdue Reports"
@@ -362,7 +362,7 @@ export default function ReviewQueuePage() {
                                         onClick={() => setSortBy(item.key)}
                                         className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors ${
                                             sortBy === item.key
-                                                ? 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-700 dark:bg-violet-950/30 dark:text-violet-300'
+                                                ? 'bg-[#1d293d] text-muted dark:bg-gray-900 dark:text-foreground'
                                                 : 'hover:bg-accent'
                                         }`}
                                     >

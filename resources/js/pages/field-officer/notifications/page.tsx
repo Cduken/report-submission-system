@@ -215,7 +215,7 @@ export default function NotificationsPage() {
                 <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
                     {/* Stats - Updated colors to match filter buttons */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-border bg-muted px-4 py-3">
+                        <div className="rounded-lg border border-border bg-muted dark:bg-muted/20 px-4 py-3">
                             <p className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
                                 Total
                             </p>
@@ -223,7 +223,7 @@ export default function NotificationsPage() {
                                 {notifications.total}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
                             <p className="text-xs font-medium tracking-wide text-amber-600 uppercase">
                                 Unread
                             </p>
@@ -231,7 +231,7 @@ export default function NotificationsPage() {
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3">
+                        <div className="rounded-lg border border-green-200 bg-green-50 dark:bg-green-950/20 px-4 py-3">
                             <p className="text-xs font-medium tracking-wide text-green-600 uppercase">
                                 Read
                             </p>
@@ -306,8 +306,8 @@ export default function NotificationsPage() {
                                                 : 'cursor-default'
                                         }`}
                                     >
-                                        <div className="flex flex-wrap items-start justify-between gap-2">
-                                            <div className="min-w-0 flex-1">
+                                        <div className="flex flex-col sm:flex-row sm:flex-wrap items-start justify-between gap-2">
+                                            <div className="min-w-0 flex-1 w-full sm:w-auto">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     {!item.isRead && (
                                                         <span className={`h-2 w-2 flex-shrink-0 rounded-full ${
@@ -318,7 +318,7 @@ export default function NotificationsPage() {
                                                                     : 'bg-amber-500'
                                                         }`} />
                                                     )}
-                                                    <p className="text-sm font-semibold text-foreground">
+                                                    <p className="text-sm font-semibold text-foreground break-words">
                                                         {item.title}
                                                     </p>
                                                     {!item.isRead && (
@@ -329,22 +329,20 @@ export default function NotificationsPage() {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="mt-1 text-sm text-muted-foreground">
+                                                <p className="mt-1 text-sm text-muted-foreground break-words">
                                                     {item.message}
                                                 </p>
                                             </div>
 
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
                                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                                    <Clock3 className="h-3.5 w-3.5" />
-                                                    {formatDateTime(
-                                                        item.created_at,
-                                                    )}
+                                                    <Clock3 className="h-3.5 w-3.5 flex-shrink-0" />
+                                                    <span className="whitespace-nowrap">
+                                                        {formatDateTime(item.created_at)}
+                                                    </span>
                                                 </div>
                                                 <button
-                                                    onClick={(e) =>
-                                                        handleRemove(e, item.id)
-                                                    }
+                                                    onClick={(e) => handleRemove(e, item.id)}
                                                     className="rounded p-1 text-muted-foreground/50 opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                                                     title="Dismiss notification"
                                                 >
@@ -354,32 +352,22 @@ export default function NotificationsPage() {
                                         </div>
 
                                         {!item.isRead && (
-                                            <div className="mt-3 flex items-center gap-2">
+                                            <div className="mt-3 flex flex-wrap items-center gap-2">
                                                 <button
-                                                    onClick={(e) =>
-                                                        handleMarkAsRead(
-                                                            e,
-                                                            item.id,
-                                                        )
-                                                    }
-                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border bg-card px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
+                                                    onClick={(e) => handleMarkAsRead(e, item.id)}
+                                                    className={`inline-flex cursor-pointer items-center justify-center gap-1 rounded-md border bg-card px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
                                                 >
-                                                    <CheckCheck className="h-3.5 w-3.5" />
-                                                    Mark as read
+                                                    <CheckCheck className="h-3.5 w-3.5 flex-shrink-0" />
+                                                    <span className="whitespace-nowrap">Mark as read</span>
                                                 </button>
 
                                                 {item.action_url && (
                                                     <button
-                                                        onClick={(e) =>
-                                                            handleViewClick(
-                                                                e,
-                                                                item,
-                                                            )
-                                                        }
-                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-colors ${theme.viewBtn}`}
+                                                        onClick={(e) => handleViewClick(e, item)}
+                                                        className={`inline-flex cursor-pointer items-center justify-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-colors ${theme.viewBtn}`}
                                                     >
-                                                        <ExternalLink className="h-3.5 w-3.5" />
-                                                        View Report
+                                                        <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" />
+                                                        <span className="whitespace-nowrap">View Report</span>
                                                     </button>
                                                 )}
                                             </div>
@@ -388,8 +376,8 @@ export default function NotificationsPage() {
                                         {item.isRead && item.action_url && (
                                             <div className="mt-2">
                                                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:text-primary">
-                                                    <ExternalLink className="h-3 w-3" />
-                                                    Click to view report
+                                                    <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                                                    <span className="break-words">Click to view report</span>
                                                 </span>
                                             </div>
                                         )}

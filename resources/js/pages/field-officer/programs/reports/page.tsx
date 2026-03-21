@@ -269,7 +269,7 @@ export default function Reports() {
                                             />
                                         </div>
 
-                                        <div className="flex min-w-0 flex-1 flex-col">
+                                        <div className="flex flex-1 flex-col">
                                             <h3 className="truncate text-sm font-medium text-gray-900 dark:text-white">
                                                 {report.title}
                                             </h3>

@@ -54,25 +54,28 @@ export default function GridView({
                                         accepted={report.accepted_count}
                                     />
                                 </div>
-                                <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                                    <FileText className="h-3 w-3 shrink-0" />
-                                    Deadline:{' '}
-                                    {formatDate(
-                                        report.deadline ?? report.created_at,
-                                    )}
-                                </p>
-                                <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                                    <Clock className="h-3 w-3 shrink-0" />
-                                    Created: {formatDate(report.created_at)}
-                                </p>
+                                <div className='flex gap-2'>
+                                    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                                        <FileText className="h-3 w-3 shrink-0" />
+                                        Deadline:{' '}
+                                        {formatDate(
+                                            report.deadline ?? report.created_at,
+                                        )}
+                                    </p>
+                                    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                                        <Clock className="h-3 w-3 shrink-0" />
+                                        Created: {formatDate(report.created_at)}
+                                    </p>
+                                </div>
+
                             </div>
 
-                            <button
+                            {/* <button
                                 onClick={(e) => e.preventDefault()}
                                 className="shrink-0 rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
                             >
                                 <EllipsisVertical className="h-4 w-4 text-muted-foreground" />
-                            </button>
+                            </button> */}
                         </div>
 
                         {hasAny && (
